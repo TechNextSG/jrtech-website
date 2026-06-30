@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Services — JR-Tech Solution Sdn Bhd</title>
+  <meta name="description" content="JR-Tech offers kitchen design & build, equipment supply, chemicals, maintenance, and grease trap service. 18 technicians, 24/7 support. Penang, Malaysia."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Services-page local styles ── */
+
+    /* Service nav pills */
+    .svc-nav {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 70px;
+      z-index: 100;
+    }
+    #site-header.compact ~ .svc-nav { top: 58px; }
+    .svc-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .svc-nav-inner::-webkit-scrollbar { display: none; }
+    .svc-pill {
+      padding: 15px 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: #5a6378;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: none;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-block;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .svc-pill:hover { color: #1B4FD8; }
+    .svc-pill.active { color: #1B4FD8; border-bottom-color: #1B4FD8; }
+
+    /* Service sections layout */
+    .svc-section {
+      padding: 72px 0;
+    }
+    .svc-section.svc-alt {
+      background: #f4f7fb;
+    }
+    .svc-section + .svc-section {
+      border-top: 1px solid #e2e8f0;
+    }
+    .svc-alt + .svc-section,
+    .svc-section + .svc-alt {
+      border-top: none;
+    }
+
+    .svc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    .svc-grid.flip { direction: rtl; }
+    .svc-grid.flip > * { direction: ltr; }
+    @media (max-width: 768px) {
+      .svc-grid,
+      .svc-grid.flip { grid-template-columns: 1fr; direction: ltr; }
+    }
+
+    /* Service number — decorative, not sequential */
+    .svc-num {
+      font-size: 4rem;
+      font-weight: 700;
+      color: #e8f0fd;
+      line-height: 1;
+      margin-bottom: 8px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .svc-alt .svc-num { color: #dde7f9; }
+
+    .svc-body .eyebrow { margin-bottom: 6px; }
+    .svc-body .section-title { margin-bottom: 16px; }
+    .svc-body .section-sub { color: #5a6378; max-width: 100%; margin-bottom: 20px; }
+
+    /* Feature list */
+    .svc-features {
+      list-style: none;
+      padding: 0;
+      margin-top: 4px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .svc-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: #3a4460;
+      padding: 9px 0;
+      border-bottom: 1px solid #e2e8f0;
+      line-height: 1.5;
+    }
+    .svc-alt .svc-features { border-top-color: #d4dff0; }
+    .svc-alt .svc-features li { border-bottom-color: #d4dff0; }
+    .svc-features li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #1B4FD8;
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    /* Visual panel (right-hand side) */
+    .svc-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .svc-visual-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+    .svc-visual-card:hover {
+      box-shadow: 0 4px 16px rgba(27,79,216,0.09);
+      border-color: #c7d9fb;
+    }
+    .svc-alt .svc-visual-card { background: #ffffff; }
+    .svc-vc-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      background: #eff4ff;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .svc-vc-icon svg { color: #1B4FD8; }
+    .svc-vc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 3px;
+    }
+    .svc-vc-desc {
+      font-size: 0.8rem;
+      color: #5a6378;
+      line-height: 1.55;
+    }
+
+    /* Process steps */
+    .process-steps {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .ps-step {
+      flex: 1;
+      min-width: 80px;
+      background: #ffffff;
+      padding: 14px 12px;
+      text-align: center;
+      border-right: 1px solid #e2e8f0;
+      position: relative;
+    }
+    .ps-step:last-child { border-right: none; }
+    .ps-step-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1B4FD8;
+      margin-bottom: 4px;
+    }
+    .ps-step-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      line-height: 1.35;
+    }
+    @media (max-width: 600px) {
+      .process-steps { flex-direction: column; }
+      .ps-step { border-right: none; border-bottom: 1px solid #e2e8f0; }
+      .ps-step:last-child { border-bottom: none; }
+    }
+
+    /* Stats row — 5 columns for this page */
+    .stats-row-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) {
+      .stats-row-5 { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .stats-row-5 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* CTA button group */
+    .cta-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Highlight callout for maintenance */
+    .maint-highlight {
+      background: #eff4ff;
+      border: 1px solid #c7d9fb;
+      border-left: 4px solid #1B4FD8;
+      border-radius: 0 6px 6px 0;
+      padding: 16px 20px;
+      font-size: 0.875rem;
+      color: #1a1a2e;
+      line-height: 1.65;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .maint-highlight span { color: #1B4FD8; }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
+<header id="site-header">
+  <div class="hdr-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-main">JR-Tech Solution</span>
+      <span class="logo-tag">Sdn. Bhd.</span>
+    </a>
+    <nav id="main-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About Us</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="products.html" class="nav-link">Products</a>
+      <a href="contact.html" class="nav-link">Contact Us</a>
+    </nav>
+    <a href="quote.html" class="btn-quote-nav">Get a Quote</a>
+    <button class="burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div id="mobile-nav" class="mobile-nav hidden">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="services.html">Services</a>
+    <a href="products.html">Products</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="quote.html" class="mob-cta">Get a Quote</a>
+  </div>
+</header>
+
+<!-- ══ PAGE BANNER ══════════════════════════════════════════════════════════ -->
+<section class="page-banner">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span aria-hidden="true">›</span>
+      <span>Services</span>
+    </nav>
+    <h1>Our Services</h1>
+    <p>Five integrated service lines to keep your kitchen running at peak performance.</p>
+  </div>
+</section>
+
+<!-- ══ SERVICE NAV PILLS ════════════════════════════════════════════════════ -->
+<nav class="svc-nav" aria-label="Services navigation">
+  <div class="svc-nav-inner">
+    <a href="#design"      class="svc-pill">Kitchen Design &amp; Build</a>
+    <a href="#equipment"   class="svc-pill">Equipment Supply</a>
+    <a href="#chemicals"   class="svc-pill">Chemicals</a>
+    <a href="#maintenance" class="svc-pill">Maintenance</a>
+    <a href="#grease"      class="svc-pill">Grease Trap</a>
+  </div>
+</nav>
+
+<!-- ══ SERVICE 1: KITCHEN DESIGN & BUILD ════════════════════════════════════ -->
+<section id="design" class="svc-section">
+  <div class="container">
+    <div class="svc-grid reveal">
+      <div class="svc-body">
+        <div class="svc-num">01</div>
+        <p class="eyebrow">Kitchen Design &amp; Build</p>
+        <h2 class="section-title">From Concept to Commissioning</h2>
+        <div class="divider"></div>
+        <p class="section-sub">JR-Tech's engineering team takes your kitchen from initial concept to fully operational space. We analyse your menu requirements, throughput volumes, equipment needs and compliance obligations to produce a layout that maximises efficiency and minimises operating costs. Our in-house stainless steel fabrication workshop lets us custom-build counters, shelving, extraction hoods and cooking stations to exact specification — saving cost and complexity.</p>
+        <ul class="svc-features">
+          <li>Commercial kitchen space planning &amp; layout</li>
+          <li>Custom stainless steel fabrication</li>
+          <li>LP Gas system design &amp; authority submission</li>
+          <li>Cafeteria &amp; restaurant concept design</li>
+          <li>Turnkey installation and commissioning</li>
+        </ul>
+
+        <div class="process-steps">
+          <div class="ps-step">
+            <div class="ps-step-num">Step 1</div>
+            <div class="ps-step-label">Consultation</div>
+          </div>
+          <div class="ps-step">
+            <div class="ps-step-num">Step 2</div>
+            <div class="ps-step-label">Space Planning</div>
+          </div>
+          <div class="ps-step">
+            <div class="ps-step-num">Step 3</div>
+            <div class="ps-step-label">Design &amp; Approval</div>
+          </div>
+          <div class="ps-step">
+            <div class="ps-step-num">Step 4</div>
+            <div class="ps-step-label">Fabrication</div>
+          </div>
+          <div class="ps-step">
+            <div class="ps-step-num">Step 5</div>
+            <div class="ps-step-label">Installation</div>
+          </div>
+          <div class="ps-step">
+            <div class="ps-step-num">Step 6</div>
+            <div class="ps-step-label">Handover</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="svc-visual">
+        <div class="svc-visual-card reveal d1">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Layout &amp; Space Planning</div>
+            <div class="svc-vc-desc">Workflow-optimised layouts designed around your menu, throughput, and compliance requirements.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d2">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">In-House Fabrication Workshop</div>
+            <div class="svc-vc-desc">Custom stainless steel counters, hoods, and stations fabricated to exact specification in our own workshop.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d3">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Turnkey Delivery</div>
+            <div class="svc-vc-desc">Single point of responsibility from authority submissions through to commissioning and staff handover.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d4">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Gas System &amp; Compliance</div>
+            <div class="svc-vc-desc">LP Gas system design, authority submission, and certification handled end-to-end.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICE 2: EQUIPMENT SUPPLY ─────────────────────────────────────────── -->
+<section id="equipment" class="svc-section svc-alt">
+  <div class="container">
+    <div class="svc-grid flip reveal">
+      <div class="svc-body">
+        <div class="svc-num">02</div>
+        <p class="eyebrow">Equipment Supply</p>
+        <h2 class="section-title">Full-Range Kitchen Equipment Supply</h2>
+        <div class="divider"></div>
+        <p class="section-sub">With 157+ products across our proprietary brands and global partners, JR-Tech matches the right equipment to your exact operational requirements. Every product we supply comes with full technical support, a comprehensive spare parts inventory, and after-sales service backed by 18 in-house technicians.</p>
+        <ul class="svc-features">
+          <li>157+ products across 4 proprietary brands</li>
+          <li>MegCook, J-Nox, JR-Chem, Tamago</li>
+          <li>24-hour response to equipment enquiries</li>
+          <li>Complimentary training and demo for all equipment</li>
+          <li>Full spare parts always in stock</li>
+        </ul>
+      </div>
+
+      <div class="svc-visual">
+        <div class="svc-visual-card reveal d1">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">MegCook — Cooking Equipment</div>
+            <div class="svc-vc-desc">Commercial ranges, wok burners, steamers, and fryers engineered for high-volume Malaysian kitchens.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d2">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">J-Nox — Stainless Steel Furniture</div>
+            <div class="svc-vc-desc">Food-grade work tables, shelving, sinks, and trolleys built for durability and hygiene compliance.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d3">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Tamago — Refrigeration</div>
+            <div class="svc-vc-desc">Under-counter chillers, blast freezers, and cold room solutions for every scale of operation.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d4">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">24-Hour Enquiry Response</div>
+            <div class="svc-vc-desc">Specifications, pricing, and demos arranged within 24 hours of your initial enquiry.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICE 3: CHEMICALS & CLEANING ──────────────────────────────────────── -->
+<section id="chemicals" class="svc-section">
+  <div class="container">
+    <div class="svc-grid reveal">
+      <div class="svc-body">
+        <div class="svc-num">03</div>
+        <p class="eyebrow">Chemicals &amp; Cleaning Solutions</p>
+        <h2 class="section-title">Food-Safe, HACCP-Compliant Chemical Supply</h2>
+        <div class="divider"></div>
+        <p class="section-sub">JR-Tech supplies a complete range of food-safe, HACCP-compliant chemical solutions for commercial kitchen cleaning, dishwasher dosing, grease management and bio-treatment. Our JR-Chem product line includes industrial dishwashers and auto-dosing systems formulated for high-volume commercial kitchen environments.</p>
+        <ul class="svc-features">
+          <li>HACCP-compliant chemical product range</li>
+          <li>Auto-dosing dishwasher and wash systems</li>
+          <li>Recurring supply subscription programmes</li>
+          <li>Food-safe formulations for all kitchen surfaces</li>
+          <li>Grease management and bio-treatment chemicals</li>
+        </ul>
+      </div>
+
+      <div class="svc-visual">
+        <div class="svc-visual-card reveal d1">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">JR-Chem Product Line</div>
+            <div class="svc-vc-desc">Proprietary HACCP-compliant formulations covering all cleaning, sanitising, and bio-treatment needs.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d2">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Auto-Dosing Systems</div>
+            <div class="svc-vc-desc">Dishwasher dosing units that deliver exact chemical quantities per cycle — no wastage, consistent results.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d3">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Subscription Supply</div>
+            <div class="svc-vc-desc">Set-and-forget delivery schedules keep your chemical stock replenished without manual reordering.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICE 4: MAINTENANCE ───────────────────────────────────────────────── -->
+<section id="maintenance" class="svc-section svc-alt">
+  <div class="container">
+    <div class="svc-grid flip reveal">
+      <div class="svc-body">
+        <div class="svc-num">04</div>
+        <p class="eyebrow">Kitchen Service &amp; Maintenance</p>
+        <h2 class="section-title">18 Technicians. 24 Hours. 7 Days a Week.</h2>
+        <div class="divider"></div>
+        <div class="maint-highlight">Response guarantee: any breakdown, anywhere in Penang — <span>within 24 hours, every day of the year.</span></div>
+        <p class="section-sub">Our preventive maintenance programme keeps your kitchen at peak performance and prevents costly downtime. Every maintenance visit includes equipment performance checks, cleaning, component inspection, and a detailed service report.</p>
+        <ul class="svc-features">
+          <li>18 in-house technicians on standby</li>
+          <li>7-day per week availability</li>
+          <li>24-hour breakdown response guarantee</li>
+          <li>Detailed service report after every visit</li>
+          <li>Preventive maintenance scheduling</li>
+          <li>100% spare parts in stock at all times</li>
+        </ul>
+      </div>
+
+      <div class="svc-visual">
+        <div class="svc-visual-card reveal d1">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">18 In-House Technicians</div>
+            <div class="svc-vc-desc">A dedicated team of trained engineers — not subcontractors — ensures consistent quality on every call.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d2">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">24-Hour Response Guarantee</div>
+            <div class="svc-vc-desc">Breakdown calls logged any time receive a confirmed on-site response within 24 hours.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d3">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Service Reports Every Visit</div>
+            <div class="svc-vc-desc">Full written report delivered after each maintenance call — equipment condition, work completed, and next steps.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d4">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">100% Spare Parts In Stock</div>
+            <div class="svc-vc-desc">All critical components for the equipment we service are held in our Penang warehouse — no waiting for parts.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICE 5: GREASE TRAP ───────────────────────────────────────────────── -->
+<section id="grease" class="svc-section">
+  <div class="container">
+    <div class="svc-grid reveal">
+      <div class="svc-body">
+        <div class="svc-num">05</div>
+        <p class="eyebrow">Grease Trap Service</p>
+        <h2 class="section-title">Keep Your Kitchen Compliant and Running</h2>
+        <div class="divider"></div>
+        <p class="section-sub">Grease trap management is a legal requirement and operational necessity for every commercial kitchen. JR-Tech provides scheduled cleaning, bio-treatment dosing and compliance documentation to keep your kitchen operating without interruption. Our bio-treatment solutions extend cleaning intervals and reduce disposal costs.</p>
+        <ul class="svc-features">
+          <li>Scheduled grease trap cleaning programmes</li>
+          <li>Bio-treatment dosing systems</li>
+          <li>Compliance documentation for authority submissions</li>
+          <li>Emergency grease trap service available</li>
+        </ul>
+      </div>
+
+      <div class="svc-visual">
+        <div class="svc-visual-card reveal d1">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Scheduled Cleaning Programmes</div>
+            <div class="svc-vc-desc">Regular cleaning on a schedule that matches your kitchen volume — monthly, quarterly, or custom.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d2">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Bio-Treatment Dosing</div>
+            <div class="svc-vc-desc">Enzymatic dosing systems reduce grease build-up between cleans, extending intervals and lowering disposal costs.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d3">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Compliance Documentation</div>
+            <div class="svc-vc-desc">Full service records and authority-ready documentation provided after every cleaning visit.</div>
+          </div>
+        </div>
+        <div class="svc-visual-card reveal d4">
+          <div class="svc-vc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div>
+            <div class="svc-vc-title">Emergency Service</div>
+            <div class="svc-vc-desc">Grease trap blockage or overflow? Our team is available for urgent call-outs seven days a week.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ROW ─────────────────────────────────────────────────────────────── -->
+<section class="section svc-alt">
+  <div class="container">
+    <div class="stats-row-5 reveal">
+      <div class="stat-box">
+        <div class="stat-num" data-count="18" data-suffix="">18</div>
+        <div class="stat-label">Technicians</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">24hr</div>
+        <div class="stat-label">Response</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Days / Week</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" data-count="157" data-suffix="+">157+</div>
+        <div class="stat-label">Products</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Spare Parts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA BANNER ────────────────────────────────────────────────────────────── -->
+<section class="cta-banner">
+  <div class="container">
+    <h2>Need a Custom Kitchen Solution?</h2>
+    <p>Tell us about your project and our team will respond within one business day.</p>
+    <div class="cta-btns">
+      <a href="quote.html"   class="btn btn-white">Get a Quote</a>
+      <a href="contact.html" class="btn btn-outline" style="color:#ffffff; border-color:rgba(255,255,255,0.5);" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='transparent'">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ─────────────────────────────────────────────────────────────────── -->
+<footer id="site-footer">
+  <div class="ftr-inner">
+    <div class="ftr-brand">
+      <div class="ftr-logo">JR-Tech Solution Sdn. Bhd.</div>
+      <p>Malaysia's trusted commercial kitchen solution provider. Established 2009, Penang.</p>
+      <a href="https://www.facebook.com/jrtech09" target="_blank" class="ftr-fb" aria-label="Facebook">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+    </div>
+    <div class="ftr-col">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="services.html">Services</a>
+      <a href="products.html">Products</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="quote.html">Get a Quote</a>
+    </div>
+    <div class="ftr-col">
+      <h4>Services</h4>
+      <a href="services.html#design">Kitchen Design &amp; Build</a>
+      <a href="services.html#equipment">Equipment Supply</a>
+      <a href="services.html#chemicals">Chemicals &amp; Cleaning</a>
+      <a href="services.html#maintenance">Maintenance Service</a>
+      <a href="services.html#grease">Grease Trap Service</a>
+    </div>
+    <div class="ftr-col">
+      <h4>Contact Us</h4>
+      <p>556-Y, Mukim 13, Batu Uban,<br>Jalan Sultan Azlan Shah,<br>11700 Gelugor, Penang</p>
+      <p><a href="tel:+6046572916">+604-657 2916</a><br><a href="tel:+6046575916">+604-657 5916</a></p>
+      <p><a href="mailto:info@jrtech.com.my">info@jrtech.com.my</a></p>
+      <p>Mon–Fri: 8:30 AM – 5:45 PM</p>
+    </div>
+  </div>
+  <div class="ftr-bottom">
+    <p>© 2026 JR-Tech Solution Sdn Bhd (856691-H). All rights reserved.</p>
+    <p>Penang, Malaysia</p>
+  </div>
+</footer>
+
+<!-- ══ WHATSAPP FLOAT ─────────────────────────────────────────────────────────── -->
+<a href="https://wa.me/6046572916" class="wa-float" target="_blank" aria-label="WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- ══ SCRIPTS ─────────────────────────────────────────────────────────────────── -->
+<script>
+(function(){
+  // Active nav highlight
+  var cur = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-link, #mobile-nav a').forEach(function(a){
+    if(a.getAttribute('href') === cur) a.classList.add('active');
+  });
+
+  // Mobile menu
+  var b = document.getElementById('burger');
+  var m = document.getElementById('mobile-nav');
+  if(b && m) b.addEventListener('click', function(){ m.classList.toggle('hidden'); });
+
+  // Scroll reveal
+  var ro = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); }});
+  }, {threshold: 0.1});
+  document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el); });
+
+  // Counter anim
+  function runCount(el){
+    var target = +el.dataset.count, suffix = el.dataset.suffix||'', dur = 1600, t0 = performance.now();
+    (function tick(now){
+      var p = Math.min((now-t0)/dur,1), v = Math.round((1-Math.pow(1-p,3))*target);
+      el.textContent = (target>=1000?v.toLocaleString():v)+suffix;
+      if(p<1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  var co = new IntersectionObserver(function(e){ e.forEach(function(x){ if(x.isIntersecting){ runCount(x.target); co.unobserve(x.target); }}); },{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(function(el){ co.observe(el); });
+
+  // Header shrink on scroll
+  var hdr = document.getElementById('site-header');
+  window.addEventListener('scroll', function(){ hdr.classList.toggle('compact', scrollY > 50); }, {passive:true});
+
+  // Service nav active pill on scroll
+  var sections = ['design','equipment','chemicals','maintenance','grease'];
+  var pills = document.querySelectorAll('.svc-pill');
+  function onScroll(){
+    var scrollY = window.scrollY + 140;
+    var current = sections[0];
+    sections.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el && el.offsetTop <= scrollY) current = id;
+    });
+    pills.forEach(function(p){
+      p.classList.toggle('active', p.getAttribute('href') === '#'+current);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

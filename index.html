@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JR-Tech Solution Sdn Bhd — Commercial Kitchen Solution Provider | Penang, Malaysia</title>
+  <meta name="description" content="JR-Tech Solution — Malaysia's trusted commercial kitchen design, equipment supply, maintenance and chemical provider since 2009. Serving Intel, Gleneagles, Tealive and 50+ enterprises."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Open Sans', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1a1a2e;
+      background: #ffffff;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+
+    /* ── Reveal animation ── */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+    /* ── Container ── */
+    .inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    #site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: #0f1c3f;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      transition: padding .25s ease;
+    }
+    #site-header.compact .hdr-inner { padding-top: 10px; padding-bottom: 10px; }
+    .hdr-inner {
+      max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+      display: flex; align-items: center; gap: 32px;
+    }
+    .logo { flex-shrink: 0; display: flex; flex-direction: column; }
+    .logo-main { font-size: 18px; font-weight: 700; color: #ffffff; letter-spacing: -.01em; line-height: 1.2; }
+    .logo-tag { font-size: 11px; color: rgba(255,255,255,.55); font-weight: 400; letter-spacing: .04em; }
+    #main-nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .nav-link {
+      font-size: 14px; font-weight: 500; color: rgba(255,255,255,.8);
+      padding: 6px 12px; border-radius: 4px;
+      transition: color .2s, background .2s;
+    }
+    .nav-link:hover, .nav-link.active { color: #fff; background: rgba(255,255,255,.1); }
+    .btn-quote-nav {
+      display: inline-block;
+      background: #1B4FD8; color: #fff;
+      font-size: 14px; font-weight: 600;
+      padding: 8px 20px; border-radius: 4px;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .btn-quote-nav:hover { background: #1740b0; }
+    .burger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px; margin-left: 8px;
+    }
+    .burger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; }
+    .mobile-nav {
+      background: #0f1c3f;
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding: 12px 24px 20px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .mobile-nav a {
+      font-size: 15px; font-weight: 500; color: rgba(255,255,255,.85);
+      padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .mobile-nav a:last-child { border-bottom: none; }
+    .mobile-nav .mob-cta {
+      margin-top: 10px; background: #1B4FD8;
+      color: #fff; text-align: center; border-radius: 4px; padding: 12px;
+      font-weight: 600; border-bottom: none;
+    }
+    .mobile-nav.hidden { display: none; }
+
+    /* ══════════════════════════════════════
+       BUTTONS
+    ══════════════════════════════════════ */
+    .btn-primary {
+      display: inline-block;
+      background: #1B4FD8; color: #fff;
+      font-size: 15px; font-weight: 600;
+      padding: 11px 26px; border-radius: 4px;
+      transition: background .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { background: #1740b0; box-shadow: 0 4px 16px rgba(27,79,216,.35); }
+    .btn-outline-white {
+      display: inline-block;
+      border: 2px solid rgba(255,255,255,.75); color: #fff;
+      font-size: 15px; font-weight: 600;
+      padding: 9px 26px; border-radius: 4px;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-outline-white:hover { border-color: #fff; background: rgba(255,255,255,.1); }
+    .btn-outline-blue {
+      display: inline-block;
+      border: 2px solid #1B4FD8; color: #1B4FD8;
+      font-size: 15px; font-weight: 600;
+      padding: 9px 26px; border-radius: 4px;
+      transition: background .2s, color .2s;
+    }
+    .btn-outline-blue:hover { background: #1B4FD8; color: #fff; }
+
+    /* ══════════════════════════════════════
+       SECTION TYPOGRAPHY
+    ══════════════════════════════════════ */
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: #1B4FD8; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 32px; font-weight: 700; line-height: 1.25;
+      color: #1a1a2e; text-wrap: balance;
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      font-size: 16px; color: #5a6378; line-height: 1.65;
+      max-width: 640px;
+    }
+
+    /* ══════════════════════════════════════
+       SECTION 1 — HERO
+    ══════════════════════════════════════ */
+    .hero {
+      background: #0f1c3f;
+      padding: 72px 0 64px;
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 420px; gap: 56px; align-items: center;
+    }
+    .hero-left .eyebrow { color: rgba(255,255,255,.6); }
+    .hero-left .eyebrow::before {
+      content: ''; display: inline-block;
+      width: 20px; height: 2px; background: #1B4FD8;
+      vertical-align: middle; margin-right: 8px; margin-bottom: 2px;
+    }
+    .hero-h1 {
+      font-size: 40px; font-weight: 700; line-height: 1.2;
+      color: #fff; text-wrap: balance; margin-bottom: 18px;
+    }
+    .hero-desc { font-size: 16px; color: rgba(255,255,255,.72); line-height: 1.7; margin-bottom: 32px; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 44px; }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid rgba(255,255,255,.12);
+      padding-top: 32px;
+    }
+    .hero-stat {
+      padding-right: 20px;
+      border-right: 1px solid rgba(255,255,255,.12);
+    }
+    .hero-stat:last-child { border-right: none; padding-right: 0; padding-left: 0; }
+    .hero-stat:not(:first-child) { padding-left: 20px; }
+    .hero-stat-num { font-size: 28px; font-weight: 700; color: #fff; line-height: 1.1; }
+    .hero-stat-num span { font-size: 18px; }
+    .hero-stat-label { font-size: 12px; color: rgba(255,255,255,.55); margin-top: 4px; }
+
+    /* Hero right — product cards */
+    .hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .hero-card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 6px; padding: 20px 16px;
+      transition: background .2s, border-color .2s;
+    }
+    .hero-card:hover { background: rgba(255,255,255,.1); border-color: rgba(27,79,216,.5); }
+    .hero-card-icon {
+      width: 36px; height: 36px; border-radius: 6px;
+      background: #1B4FD8; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px;
+    }
+    .hero-card-icon svg { color: #fff; }
+    .hero-card-name { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .hero-card-desc { font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.5; }
+
+    /* ══════════════════════════════════════
+       SECTION 2 — ABOUT SNAPSHOT
+    ══════════════════════════════════════ */
+    .about-section { background: #fff; padding: 72px 0; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+    }
+    .about-text .section-title { margin-bottom: 18px; }
+    .about-text p { color: #5a6378; margin-bottom: 14px; }
+    .about-text .cta-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 14px; font-weight: 600; color: #1B4FD8;
+      margin-top: 8px; transition: gap .2s;
+    }
+    .about-text .cta-link:hover { gap: 10px; }
+    .about-stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    }
+    .about-stat-card {
+      background: #f4f7fb; padding: 28px 24px;
+    }
+    .about-stat-card:first-child { border-radius: 6px 0 0 0; }
+    .about-stat-card:nth-child(2) { border-radius: 0 6px 0 0; }
+    .about-stat-card:nth-child(3) { border-radius: 0 0 0 6px; }
+    .about-stat-card:last-child { border-radius: 0 0 6px 0; }
+    .about-stat-num {
+      font-size: 36px; font-weight: 700; color: #1B4FD8;
+      line-height: 1.1; font-variant-numeric: tabular-nums;
+    }
+    .about-stat-label { font-size: 13px; color: #5a6378; margin-top: 6px; line-height: 1.4; }
+
+    /* ══════════════════════════════════════
+       SECTION 3 — SERVICES
+    ══════════════════════════════════════ */
+    .services-section { background: #f4f7fb; padding: 72px 0; }
+    .section-header { margin-bottom: 40px; }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+      margin-bottom: 40px;
+    }
+    .service-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px; padding: 28px 24px;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .service-card:hover { box-shadow: 0 6px 24px rgba(15,28,63,.09); border-color: #c7d4e8; }
+    .service-icon {
+      width: 44px; height: 44px; border-radius: 8px;
+      background: #eef2fb; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .service-icon svg { color: #1B4FD8; }
+    .service-card h3 { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+    .service-card p { font-size: 14px; color: #5a6378; line-height: 1.6; }
+    .section-cta { text-align: center; }
+
+    /* ══════════════════════════════════════
+       SECTION 4 — PRODUCTS
+    ══════════════════════════════════════ */
+    .products-section { background: #fff; padding: 72px 0; }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    .product-card {
+      border: 1px solid #e2e8f0; border-radius: 4px;
+      overflow: hidden;
+      transition: box-shadow .2s, border-color .2s;
+      display: flex; flex-direction: column;
+    }
+    .product-card:hover { box-shadow: 0 6px 24px rgba(15,28,63,.09); border-color: #c7d4e8; }
+    .product-card-top {
+      background: #0f1c3f; padding: 24px 20px 20px;
+    }
+    .product-brand { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .product-line { font-size: 12px; color: rgba(255,255,255,.55); font-weight: 500; }
+    .product-card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .product-card-body p { font-size: 14px; color: #5a6378; line-height: 1.6; flex: 1; margin-bottom: 20px; }
+    .product-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 600; color: #1B4FD8;
+      transition: gap .2s;
+    }
+    .product-link:hover { gap: 8px; }
+
+    /* ══════════════════════════════════════
+       SECTION 5 — WHY JR-TECH
+    ══════════════════════════════════════ */
+    .why-section { background: #f4f7fb; padding: 72px 0; }
+    .why-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    .why-card {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 4px;
+      padding: 28px 22px;
+      transition: box-shadow .2s;
+    }
+    .why-card:hover { box-shadow: 0 4px 18px rgba(15,28,63,.08); }
+    .why-icon {
+      width: 48px; height: 48px; border-radius: 8px;
+      background: #eef2fb; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .why-icon svg { color: #1B4FD8; }
+    .why-card h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+    .why-card p { font-size: 14px; color: #5a6378; line-height: 1.6; }
+
+    /* ══════════════════════════════════════
+       SECTION 6 — CLIENTS
+    ══════════════════════════════════════ */
+    .clients-section { background: #fff; padding: 72px 0; }
+    .clients-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+      margin-top: 36px;
+    }
+    .client-pill {
+      border: 1px solid #e2e8f0; border-radius: 4px;
+      padding: 14px 12px; text-align: center;
+      font-size: 13px; font-weight: 600; color: #5a6378;
+      background: #f4f7fb;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .client-pill:hover { border-color: #1B4FD8; color: #1B4FD8; background: #eef2fb; }
+    .client-pill.more { color: #1B4FD8; font-weight: 700; border-color: #c7d4e8; }
+
+    /* ══════════════════════════════════════
+       SECTION 7 — CTA BANNER
+    ══════════════════════════════════════ */
+    .cta-banner { background: #1B4FD8; padding: 64px 0; text-align: center; }
+    .cta-banner h2 { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 12px; text-wrap: balance; }
+    .cta-banner p { font-size: 16px; color: rgba(255,255,255,.8); margin-bottom: 32px; }
+    .cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .btn-white {
+      display: inline-block;
+      background: #fff; color: #1B4FD8;
+      font-size: 15px; font-weight: 600;
+      padding: 11px 28px; border-radius: 4px;
+      transition: background .2s, box-shadow .2s;
+    }
+    .btn-white:hover { background: #f0f4ff; box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    #site-footer { background: #0f1c3f; color: rgba(255,255,255,.7); padding: 56px 0 0; }
+    .ftr-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px 48px;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px;
+    }
+    .ftr-logo { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .ftr-brand p { font-size: 14px; line-height: 1.65; margin-bottom: 16px; }
+    .ftr-fb {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,.12); color: #fff;
+      transition: background .2s;
+    }
+    .ftr-fb:hover { background: #1877f2; }
+    .ftr-col h4 { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 16px; }
+    .ftr-col a { display: block; font-size: 14px; color: rgba(255,255,255,.65); margin-bottom: 8px; transition: color .2s; }
+    .ftr-col a:hover { color: #fff; }
+    .ftr-col p { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.65; margin-bottom: 10px; }
+    .ftr-col p a { display: inline; margin-bottom: 0; }
+    .ftr-bottom {
+      border-top: 1px solid rgba(255,255,255,.1);
+      max-width: 1200px; margin: 0 auto;
+      padding: 18px 24px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    }
+    .ftr-bottom p { font-size: 13px; color: rgba(255,255,255,.45); }
+
+    /* ══════════════════════════════════════
+       WHATSAPP FLOAT
+    ══════════════════════════════════════ */
+    .wa-float {
+      position: fixed; bottom: 28px; right: 28px; z-index: 200;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #25d366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 18px rgba(37,211,102,.45);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .wa-float:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(37,211,102,.55); }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-cards { grid-template-columns: repeat(4, 1fr); }
+      .hero-h1 { font-size: 34px; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .why-grid { grid-template-columns: repeat(2, 1fr); }
+      .ftr-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      #main-nav, .btn-quote-nav { display: none; }
+      .burger { display: flex; }
+      .hero { padding: 48px 0 40px; }
+      .hero-h1 { font-size: 28px; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); row-gap: 20px; }
+      .hero-stat:nth-child(2) { border-right: none; }
+      .hero-stat:nth-child(3) { border-right: 1px solid rgba(255,255,255,.12); }
+      .hero-cards { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .products-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .clients-grid { grid-template-columns: repeat(3, 1fr); }
+      .section-title { font-size: 26px; }
+      .cta-banner h2 { font-size: 24px; }
+      .ftr-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 480px) {
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .hero-cards { grid-template-columns: 1fr 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .products-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .clients-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="site-header">
+  <div class="hdr-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-main">JR-Tech Solution</span>
+      <span class="logo-tag">Sdn. Bhd.</span>
+    </a>
+    <nav id="main-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About Us</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="products.html" class="nav-link">Products</a>
+      <a href="contact.html" class="nav-link">Contact Us</a>
+    </nav>
+    <a href="quote.html" class="btn-quote-nav">Get a Quote</a>
+    <button class="burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div id="mobile-nav" class="mobile-nav hidden">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="services.html">Services</a>
+    <a href="products.html">Products</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="quote.html" class="mob-cta">Get a Quote</a>
+  </div>
+</header>
+
+<!-- ══ SECTION 1: HERO ══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left reveal">
+      <span class="eyebrow">Commercial Kitchen Solutions — Est. 2009</span>
+      <h1 class="hero-h1">Malaysia's Trusted Kitchen Solution Provider</h1>
+      <p class="hero-desc">16+ years engineering world-class commercial kitchens for Malaysia's leading corporations, hospitals and F&amp;B brands. From design to installation to 24/7 service.</p>
+      <div class="hero-btns">
+        <a href="services.html" class="btn-primary">Explore Our Services</a>
+        <a href="quote.html" class="btn-outline-white">Request a Quote</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num"><span data-count="16" data-suffix="+">16+</span></div>
+          <div class="hero-stat-label">Years Experience</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num"><span data-count="50" data-suffix="+">50+</span></div>
+          <div class="hero-stat-label">Enterprise Clients</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num"><span data-count="18">18</span></div>
+          <div class="hero-stat-label">Technicians</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">24/7</div>
+          <div class="hero-stat-label">Support Coverage</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-cards reveal">
+      <div class="hero-card">
+        <div class="hero-card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <div class="hero-card-name">MegCook</div>
+        <div class="hero-card-desc">Robot Chef System — 800+ cooking menus</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        </div>
+        <div class="hero-card-name">J-Nox</div>
+        <div class="hero-card-desc">Commercial Induction Cookers — 144 models</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z"/><path d="M4 8v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+        </div>
+        <div class="hero-card-name">JR-Chem</div>
+        <div class="hero-card-desc">Dishwashers &amp; Wash Systems — 840+ plates/hr</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+        </div>
+        <div class="hero-card-name">Tamago</div>
+        <div class="hero-card-desc">Food Serving Equipment — Hotels &amp; hospitals</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 2: ABOUT SNAPSHOT ══ -->
+<section class="about-section">
+  <div class="inner">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <span class="eyebrow">About JR-Tech Solution</span>
+        <h2 class="section-title">Penang's Commercial Kitchen Engineering Firm Since 2009</h2>
+        <p>Founded in 2009, JR-Tech Solution Sdn Bhd is Penang's leading commercial kitchen engineering firm. We serve multinational corporations, premier hospitals, and major F&amp;B chains — delivering end-to-end kitchen solutions from initial design through installation, maintenance, and chemical supply.</p>
+        <p>Our integrated approach means clients work with one expert partner from concept to commissioning and beyond.</p>
+        <a href="about.html" class="cta-link">
+          Learn More About Us
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="about-stats-grid reveal">
+        <div class="about-stat-card">
+          <div class="about-stat-num" data-count="128">128</div>
+          <div class="about-stat-label">Projects Completed</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num" data-count="14200" data-suffix=" sqm">14,200 sqm</div>
+          <div class="about-stat-label">Kitchen Area Serviced</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num" data-count="18">18</div>
+          <div class="about-stat-label">Certified Technicians</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num">24hr</div>
+          <div class="about-stat-label">Breakdown Response</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 3: SERVICES ══ -->
+<section class="services-section">
+  <div class="inner">
+    <div class="section-header reveal">
+      <span class="eyebrow">What We Do</span>
+      <h2 class="section-title">Our Services</h2>
+      <p class="section-sub">Five integrated service lines covering every aspect of commercial kitchen operations.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        </div>
+        <h3>Kitchen Design &amp; Build</h3>
+        <p>Space planning, workflow optimisation, layout design, and full stainless steel fabrication for any commercial kitchen scale.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <h3>Equipment Supply</h3>
+        <p>157+ products across proprietary and partner brands. MegCook, J-Nox, JR-Chem and Tamago — supplied, installed and commissioned.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Chemicals &amp; Cleaning</h3>
+        <p>HACCP-compliant chemical solutions and auto-dosing systems. Safe, effective, and certified for food-service environments.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>Maintenance Service</h3>
+        <p>18 technicians on call 24 hours a day, 7 days a week. Preventive maintenance schedules and rapid breakdown response.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Grease Trap Service</h3>
+        <p>Scheduled grease trap cleaning, bio-treatment and full compliance documentation for regulatory and audit requirements.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <h3>Technical Training</h3>
+        <p>Equipment operation, safety protocols, and food-safe handling practices. On-site training for kitchen staff and supervisors.</p>
+      </div>
+    </div>
+    <div class="section-cta reveal">
+      <a href="services.html" class="btn-primary">View All Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 4: PRODUCTS ══ -->
+<section class="products-section">
+  <div class="inner">
+    <div class="section-header reveal">
+      <span class="eyebrow">Proprietary Brands</span>
+      <h2 class="section-title">Our Product Brands</h2>
+      <p class="section-sub">Proprietary brands engineered for Malaysia's commercial kitchen demands.</p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card reveal">
+        <div class="product-card-top">
+          <div class="product-brand">MegCook</div>
+          <div class="product-line">Robot Chef System</div>
+        </div>
+        <div class="product-card-body">
+          <p>800+ pre-programmed cooking menus. Consistent results, reduced labour dependency.</p>
+          <a href="products.html#megcook" class="product-link">
+            View Products
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-card-top">
+          <div class="product-brand">J-Nox</div>
+          <div class="product-line">Commercial Induction Cooker Series</div>
+        </div>
+        <div class="product-card-body">
+          <p>38% lower energy consumption. No open flame. Green kitchen certified. 144 models available.</p>
+          <a href="products.html#jnox" class="product-link">
+            View Products
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-card-top">
+          <div class="product-brand">JR-Chem</div>
+          <div class="product-line">Dishwashers &amp; Wash Systems</div>
+        </div>
+        <div class="product-card-body">
+          <p>Italian pump technology. Up to 840+ plates per 60 minutes. Rental &amp; purchase options.</p>
+          <a href="products.html#jrchem" class="product-link">
+            View Products
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-card-top">
+          <div class="product-brand">Tamago</div>
+          <div class="product-line">Food Serving Equipment</div>
+        </div>
+        <div class="product-card-body">
+          <p>Precision serving solutions for hotels, hospitals and high-volume F&amp;B operations.</p>
+          <a href="products.html#tamago" class="product-link">
+            View Products
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 5: WHY JR-TECH ══ -->
+<section class="why-section">
+  <div class="inner">
+    <div class="section-header reveal">
+      <span class="eyebrow">Our Advantage</span>
+      <h2 class="section-title">Why Choose JR-Tech?</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>24/7 Support</h3>
+        <p>18 technicians on call 24 hours a day, 7 days a week. Rapid breakdown response with guaranteed call-out SLA.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <h3>AI Kitchen Technology</h3>
+        <p>MegCook robot chefs with 800+ pre-programmed menus. Industry-leading automation that reduces labour and ensures consistency.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>Full Spare Parts Stock</h3>
+        <p>100% spare parts always held in stock. Zero wait time for critical repairs — your kitchen operations are never delayed.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>16+ Years Expertise</h3>
+        <p>Deep F&amp;B engineering knowledge across hospitals, corporate cafeterias, hotels and high-volume restaurants. Every kitchen type, covered.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 6: CLIENTS ══ -->
+<section class="clients-section">
+  <div class="inner">
+    <div class="section-header reveal" style="text-align:center;">
+      <span class="eyebrow">Our Clients</span>
+      <h2 class="section-title">Trusted By Malaysia's Leading Enterprises</h2>
+    </div>
+    <div class="clients-grid reveal">
+      <div class="client-pill">First Solar</div>
+      <div class="client-pill">Intel</div>
+      <div class="client-pill">Infineon</div>
+      <div class="client-pill">B.Braun</div>
+      <div class="client-pill">Micron</div>
+      <div class="client-pill">Osram</div>
+      <div class="client-pill">Inari Technology</div>
+      <div class="client-pill">Gleneagles Hospital</div>
+      <div class="client-pill">Adventist Hospital</div>
+      <div class="client-pill">Tealive</div>
+      <div class="client-pill">Bask Bear Coffee</div>
+      <div class="client-pill">Sushi Tei</div>
+      <div class="client-pill">James Foo</div>
+      <div class="client-pill">CapitaLand</div>
+      <div class="client-pill more">+ 50 More</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 7: CTA BANNER ══ -->
+<section class="cta-banner reveal">
+  <div class="inner">
+    <h2>Ready to Build Your Dream Kitchen?</h2>
+    <p>Contact our team today for a free consultation and quote.</p>
+    <div class="cta-btns">
+      <a href="quote.html" class="btn-white">Get a Free Quote</a>
+      <a href="contact.html" class="btn-outline-white">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer id="site-footer">
+  <div class="ftr-inner">
+    <div class="ftr-brand">
+      <div class="ftr-logo">JR-Tech Solution Sdn. Bhd.</div>
+      <p>Malaysia's trusted commercial kitchen solution provider. Established 2009, Penang.</p>
+      <a href="https://www.facebook.com/jrtech09" target="_blank" class="ftr-fb" aria-label="Facebook">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+    </div>
+    <div class="ftr-col">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="services.html">Services</a>
+      <a href="products.html">Products</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="quote.html">Get a Quote</a>
+    </div>
+    <div class="ftr-col">
+      <h4>Services</h4>
+      <a href="services.html#design">Kitchen Design &amp; Build</a>
+      <a href="services.html#equipment">Equipment Supply</a>
+      <a href="services.html#chemicals">Chemicals &amp; Cleaning</a>
+      <a href="services.html#maintenance">Maintenance Service</a>
+      <a href="services.html#grease">Grease Trap Service</a>
+    </div>
+    <div class="ftr-col">
+      <h4>Contact Us</h4>
+      <p>556-Y, Mukim 13, Batu Uban,<br>Jalan Sultan Azlan Shah,<br>11700 Gelugor, Penang</p>
+      <p><a href="tel:+6046572916">+604-657 2916</a><br><a href="tel:+6046575916">+604-657 5916</a></p>
+      <p><a href="mailto:info@jrtech.com.my">info@jrtech.com.my</a></p>
+      <p>Mon–Fri: 8:30 AM – 5:45 PM</p>
+    </div>
+  </div>
+  <div class="ftr-bottom">
+    <p>© 2026 JR-Tech Solution Sdn Bhd (856691-H). All rights reserved.</p>
+    <p>Penang, Malaysia</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/6046572916" class="wa-float" target="_blank" aria-label="WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+(function(){
+  // Active nav highlight
+  var cur = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-link, #mobile-nav a').forEach(function(a){
+    if(a.getAttribute('href') === cur) a.classList.add('active');
+  });
+  // Mobile menu
+  var b = document.getElementById('burger');
+  var m = document.getElementById('mobile-nav');
+  if(b && m) b.addEventListener('click', function(){ m.classList.toggle('hidden'); });
+  // Scroll reveal
+  var ro = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); }});
+  }, {threshold: 0.1});
+  document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el); });
+  // Counter anim
+  function runCount(el){
+    var target = +el.dataset.count, suffix = el.dataset.suffix||'', dur = 1600, t0 = performance.now();
+    (function tick(now){
+      var p = Math.min((now-t0)/dur,1), v = Math.round((1-Math.pow(1-p,3))*target);
+      el.textContent = (target>=1000?v.toLocaleString():v)+suffix;
+      if(p<1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  var co = new IntersectionObserver(function(e){ e.forEach(function(x){ if(x.isIntersecting){ runCount(x.target); co.unobserve(x.target); }}); },{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(function(el){ co.observe(el); });
+  // Header shrink on scroll
+  var hdr = document.getElementById('site-header');
+  window.addEventListener('scroll', function(){ hdr.classList.toggle('compact', scrollY > 50); }, {passive:true});
+})();
+</script>
+</body>
+</html>
