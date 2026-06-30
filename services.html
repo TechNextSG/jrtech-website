@@ -15,7 +15,7 @@
     /* Service nav pills */
     .svc-nav {
       background: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #D0D8E4;
       position: sticky;
       top: 70px;
       z-index: 100;
@@ -46,18 +46,18 @@
       display: inline-block;
       transition: color 0.2s, border-color 0.2s;
     }
-    .svc-pill:hover { color: #1B4FD8; }
-    .svc-pill.active { color: #1B4FD8; border-bottom-color: #1B4FD8; }
+    .svc-pill:hover { color: #7A8FA0; }
+    .svc-pill.active { color: #7A8FA0; border-bottom-color: #7A8FA0; }
 
     /* Service sections layout */
     .svc-section {
       padding: 72px 0;
     }
     .svc-section.svc-alt {
-      background: #f4f7fb;
+      background: #EBECF0;
     }
     .svc-section + .svc-section {
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid #D0D8E4;
     }
     .svc-alt + .svc-section,
     .svc-section + .svc-alt {
@@ -81,7 +81,7 @@
     .svc-num {
       font-size: 4rem;
       font-weight: 700;
-      color: #e8f0fd;
+      color: #E0E5EA;
       line-height: 1;
       margin-bottom: 8px;
       font-variant-numeric: tabular-nums;
@@ -98,7 +98,7 @@
       list-style: none;
       padding: 0;
       margin-top: 4px;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid #D0D8E4;
     }
     .svc-features li {
       display: flex;
@@ -107,7 +107,7 @@
       font-size: 0.875rem;
       color: #3a4460;
       padding: 9px 0;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #D0D8E4;
       line-height: 1.5;
     }
     .svc-alt .svc-features { border-top-color: #d4dff0; }
@@ -117,7 +117,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #1B4FD8;
+      background: #7A8FA0;
       flex-shrink: 0;
       margin-top: 7px;
     }
@@ -130,7 +130,7 @@
     }
     .svc-visual-card {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #D0D8E4;
       border-radius: 6px;
       padding: 18px 20px;
       display: flex;
@@ -140,7 +140,7 @@
     }
     .svc-visual-card:hover {
       box-shadow: 0 4px 16px rgba(27,79,216,0.09);
-      border-color: #c7d9fb;
+      border-color: #9AAABB;
     }
     .svc-alt .svc-visual-card { background: #ffffff; }
     .svc-vc-icon {
@@ -153,7 +153,7 @@
       align-items: center;
       justify-content: center;
     }
-    .svc-vc-icon svg { color: #1B4FD8; }
+    .svc-vc-icon svg { color: #7A8FA0; }
     .svc-vc-title {
       font-size: 0.875rem;
       font-weight: 700;
@@ -172,7 +172,7 @@
       gap: 0;
       flex-wrap: wrap;
       margin-top: 28px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #D0D8E4;
       border-radius: 6px;
       overflow: hidden;
     }
@@ -182,7 +182,7 @@
       background: #ffffff;
       padding: 14px 12px;
       text-align: center;
-      border-right: 1px solid #e2e8f0;
+      border-right: 1px solid #D0D8E4;
       position: relative;
     }
     .ps-step:last-child { border-right: none; }
@@ -191,7 +191,7 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #1B4FD8;
+      color: #7A8FA0;
       margin-bottom: 4px;
     }
     .ps-step-label {
@@ -202,7 +202,7 @@
     }
     @media (max-width: 600px) {
       .process-steps { flex-direction: column; }
-      .ps-step { border-right: none; border-bottom: 1px solid #e2e8f0; }
+      .ps-step { border-right: none; border-bottom: 1px solid #D0D8E4; }
       .ps-step:last-child { border-bottom: none; }
     }
 
@@ -211,7 +211,7 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 2px;
-      background: #e2e8f0;
+      background: #D0D8E4;
       border-radius: 6px;
       overflow: hidden;
     }
@@ -233,8 +233,8 @@
     /* Highlight callout for maintenance */
     .maint-highlight {
       background: #eff4ff;
-      border: 1px solid #c7d9fb;
-      border-left: 4px solid #1B4FD8;
+      border: 1px solid #9AAABB;
+      border-left: 4px solid #7A8FA0;
       border-radius: 0 6px 6px 0;
       padding: 16px 20px;
       font-size: 0.875rem;
@@ -243,7 +243,7 @@
       margin-bottom: 20px;
       font-weight: 600;
     }
-    .maint-highlight span { color: #1B4FD8; }
+    .maint-highlight span { color: #7A8FA0; }
   </style>
 </head>
 <body>
@@ -262,10 +262,12 @@
       <a href="products.html" class="nav-link">Products</a>
       <a href="contact.html" class="nav-link">Contact Us</a>
     </nav>
-    <a href="quote.html" class="btn-quote-nav">Get a Quote</a>
-    <button class="burger" id="burger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="hdr-right">
+      <a href="quote.html" class="btn-quote-nav">Get a Quote</a>
+      <button class="burger" id="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
   <div id="mobile-nav" class="mobile-nav hidden">
     <a href="index.html">Home</a>
