@@ -129,25 +129,16 @@
       gap: 12px;
     }
     .svc-visual-card {
-      background: #ffffff;
-      border: 1px solid #D0D8E4;
       border-radius: 6px;
       padding: 18px 20px;
       display: flex;
       align-items: flex-start;
       gap: 14px;
-      transition: box-shadow 0.25s, border-color 0.25s;
     }
-    .svc-visual-card:hover {
-      box-shadow: 0 4px 16px rgba(27,79,216,0.09);
-      border-color: #9AAABB;
-    }
-    .svc-alt .svc-visual-card { background: #ffffff; }
     .svc-vc-icon {
       width: 40px;
       height: 40px;
       border-radius: 6px;
-      background: #eff4ff;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -172,17 +163,17 @@
       gap: 0;
       flex-wrap: wrap;
       margin-top: 28px;
-      border: 1px solid #D0D8E4;
+      border: 1px solid rgba(144,186,210,.2);
       border-radius: 6px;
       overflow: hidden;
+      background: linear-gradient(135deg, #F8FAFB 0%, #EBF1F6 50%, #F4F7FA 100%);
     }
     .ps-step {
       flex: 1;
       min-width: 80px;
-      background: #ffffff;
       padding: 14px 12px;
       text-align: center;
-      border-right: 1px solid #D0D8E4;
+      border-right: 1px solid rgba(144,186,210,.2);
       position: relative;
     }
     .ps-step:last-child { border-right: none; }
@@ -211,7 +202,7 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 2px;
-      background: #D0D8E4;
+      background: linear-gradient(135deg, #C8D4E0 0%, #B8C8D8 50%, #C8D4E0 100%);
       border-radius: 6px;
       overflow: hidden;
     }

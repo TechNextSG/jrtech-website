@@ -12,9 +12,8 @@
   <style>
     /* â”€â”€ Page-level overrides for products.html â”€â”€ */
 
-    /* Page banner */
+    /* Page banner — inherit global metallic from style.css */
     .page-banner {
-      background: #0D1117;
       padding: 64px 24px 56px;
       text-align: center;
       color: #fff;
@@ -110,14 +109,34 @@
     @media (max-width: 520px) { .brands-grid { grid-template-columns: 1fr; } }
 
     .brand-card {
-      background: #fff;
-      border: 1px solid #D0D8E4;
-      border-top: 4px solid #D0D8E4;
+      background: linear-gradient(135deg,
+        #F8FAFB 0%, #EBF1F6 22%,
+        #F4F7FA 45%, #E8EEF3 68%,
+        #F5F8FA 100%
+      );
+      border: 1px solid rgba(144,186,210,.2);
+      border-top: 4px solid rgba(144,186,210,.3);
       border-radius: 4px;
       padding: 24px 22px 22px;
-      transition: box-shadow .18s;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow .25s ease, border-color .25s ease, transform .25s ease;
     }
-    .brand-card:hover { box-shadow: 0 4px 16px rgba(15,28,63,.10); }
+    .brand-card::after {
+      content: '';
+      position: absolute;
+      top: -25%; left: -80%;
+      width: 55%; height: 150%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,.24), transparent);
+      transform: skewX(-20deg);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .brand-card:hover::after { animation: metalSheen .55s ease forwards; }
+    .brand-card:hover {
+      box-shadow: 0 6px 22px rgba(90,122,144,.16), 0 0 0 1px rgba(144,186,210,.25);
+      transform: translateY(-3px);
+    }
     .brand-card.megcook { border-top-color: #7A8FA0; }
     .brand-card.jnox    { border-top-color: #2563eb; }
     .brand-card.jrchem  { border-top-color: #1e40af; }
