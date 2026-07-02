@@ -225,11 +225,9 @@
   var suggBox  = document.getElementById('jrt-cb-sugg');
   var form     = document.getElementById('jrt-cb-form');
   var input    = document.getElementById('jrt-cb-input');
-  var isOpen        = false;
-  var greeted       = false;
-  var seenSugg      = {};   /* {text: true} — no-repeat tracker */
-  var autoCloseTimer = null;
-  var AUTO_CLOSE_DELAY = 5000; /* ms after bot reply before panel closes */
+  var isOpen   = false;
+  var greeted  = false;
+  var seenSugg = {};   /* {text: true} — no-repeat tracker */
 
   /* ─────────────────────── HELPERS ───────────────────────────────────── */
   function scrollBottom(){ msgs.scrollTop = msgs.scrollHeight; }
@@ -334,23 +332,10 @@
     return null;
   }
 
-  function cancelAutoClose(){
-    if(autoCloseTimer){ clearTimeout(autoCloseTimer); autoCloseTimer = null; }
-  }
-
-  function scheduleAutoClose(){
-    cancelAutoClose();
-    autoCloseTimer = setTimeout(function(){
-      autoCloseTimer = null;
-      if(isOpen) toggleChat();
-    }, AUTO_CLOSE_DELAY);
-  }
-
   /* ─────────────────────── SEND ──────────────────────────────────────── */
   function send(text){
     text = text.trim();
     if(!text) return;
-    cancelAutoClose();
     input.value = '';
     suggBox.innerHTML = '';
     addBubble(text, 'user');
@@ -367,7 +352,6 @@
         addBubble(FALLBACK_RESP, 'bot');
         showSuggestions(FALLBACK_FU);
       }
-      scheduleAutoClose();
     }, delay);
   }
 
@@ -388,24 +372,16 @@
   }
 
   /* ─────────────────────── EVENTS ────────────────────────────────────── */
-  btn.addEventListener('click', function(){
-    cancelAutoClose();
-    toggleChat();
-  });
+  btn.addEventListener('click', toggleChat);
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
     send(input.value);
   });
 
-  /* Cancel auto-close when user starts typing */
-  input.addEventListener('focus', cancelAutoClose);
-  input.addEventListener('input', cancelAutoClose);
-
   /* Close panel when clicking outside */
   document.addEventListener('click', function(e){
     if(isOpen && !document.getElementById('jrt-cb-wrap').contains(e.target)){
-      cancelAutoClose();
       toggleChat();
     }
   });
