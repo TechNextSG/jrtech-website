@@ -1227,3 +1227,242 @@ tbody td:first-child { font-weight: 600; color: #1a1a2e; }
   outline: 2px solid #7A8FA0;
   outline-offset: 2px;
 }
+
+/* ═══ FUTURISTIC INTERACTIVE SYSTEM ═══════════════════════════════════ */
+
+/* Scroll progress bar */
+#scroll-prog {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px; width: 0%;
+  background: linear-gradient(90deg, #607D8E 0%, #B8CDD8 50%, #9BBDCF 100%);
+  z-index: 9999;
+  pointer-events: none;
+  transition: width 0.08s linear;
+}
+
+/* Cursor glow */
+#cursor-glow {
+  position: fixed;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(144,186,210,0.06) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+@media (hover: none) { #cursor-glow { display: none; } }
+
+/* Stagger animation system */
+.stagger > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.48s ease, transform 0.48s ease;
+}
+.stagger > *.stagger-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Word-by-word section title reveal */
+.word-reveal {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.word-reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Button click ripple */
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  width: 6px; height: 6px;
+  margin: -3px 0 0 -3px;
+  background: rgba(255,255,255,0.45);
+  transform: scale(0);
+  animation: rippleOut 0.6s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes rippleOut {
+  to { transform: scale(28); opacity: 0; }
+}
+
+/* Card shimmer on hover (::after overlay) */
+.card, .pcard, .mvv-card, .contact-info-card, .hero-img-card {
+  overflow: hidden;
+}
+.card::after, .pcard::after, .mvv-card::after, .contact-info-card::after, .hero-img-card::after {
+  content: '';
+  position: absolute;
+  top: -25%; left: -80%;
+  width: 55%; height: 150%;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.10) 50%, transparent 100%);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 2;
+}
+.card:hover::after, .pcard:hover::after, .mvv-card:hover::after,
+.contact-info-card:hover::after, .hero-img-card:hover::after {
+  animation: metalSheen 0.55s ease forwards;
+}
+
+/* Dark section dot-grid (futuristic HUD) */
+.stats-band {
+  background-image: radial-gradient(rgba(144,186,210,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+#site-header {
+  background-image: radial-gradient(rgba(144,186,210,0.035) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Contact info card metallic hover */
+.contact-info-card {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  position: relative;
+}
+.contact-info-card:hover {
+  border-color: #8FAEC0;
+  box-shadow: 0 6px 20px rgba(90,122,144,0.14), 0 0 0 1px rgba(144,186,210,0.3);
+}
+
+/* MVV card enhanced */
+.mvv-card {
+  border-top: 2px solid #7A8FA0;
+  position: relative;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+.mvv-card:hover {
+  border-top-color: #B8CDD8;
+  box-shadow: 0 0 18px rgba(144,186,210,0.18), 0 8px 24px rgba(90,122,144,0.13);
+}
+
+/* Timeline metallic */
+.timeline::before {
+  background: linear-gradient(180deg, transparent 0%, #8FAEC0 20%, #8FAEC0 80%, transparent 100%);
+}
+.tl-dot {
+  background: linear-gradient(135deg, #C8D8E4 0%, #7A8FA0 100%);
+  box-shadow: 0 0 10px rgba(144,186,210,0.45);
+}
+
+/* About year metallic text */
+.about-year {
+  background: linear-gradient(180deg, #D4E4EE 0%, #9BBDCF 50%, #607D8E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Form inputs metallic focus */
+input:focus, select:focus, textarea:focus {
+  border-color: #8FAEC0 !important;
+  box-shadow: 0 0 0 3px rgba(144,186,210,0.18), 0 0 12px rgba(144,186,210,0.10) !important;
+  outline: none;
+}
+
+/* WhatsApp float pulsing glow */
+.wa-float {
+  box-shadow: 0 4px 16px rgba(37,211,102,0.4), 0 0 0 0 rgba(37,211,102,0);
+  animation: waPulse 2.8s ease-in-out infinite;
+}
+@keyframes waPulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(37,211,102,0.4), 0 0 0 0 rgba(37,211,102,0); }
+  50%        { box-shadow: 0 4px 22px rgba(37,211,102,0.55), 0 0 0 9px rgba(37,211,102,0); }
+}
+
+/* Pcard quote button metallic upgrade */
+.pcard-quote {
+  background: linear-gradient(180deg, #EEF2F5 0%, #E4EBF0 100%);
+  border: 1px solid #C4D2DC;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.pcard-quote::after {
+  content: '';
+  position: absolute;
+  top: -25%; left: -80%;
+  width: 55%; height: 150%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.25), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+.pcard-quote:hover {
+  background: linear-gradient(180deg, #5A7A90 0%, #3D5060 100%);
+  color: #ffffff;
+  border-color: #7A9AB0;
+  box-shadow: 0 4px 14px rgba(90,122,144,0.3);
+}
+.pcard-quote:hover::after { animation: metalSheen 0.48s ease forwards; }
+
+/* Glance card body overlay on hover */
+.glance-card .glance-body {
+  transition: transform 0.35s ease;
+}
+.glance-card:hover .glance-body {
+  transform: translateY(-4px);
+}
+
+/* Section eyebrow metallic */
+.eyebrow {
+  background: linear-gradient(90deg, #8FAEC0, #7A8FA0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* pj-card image zoom is already set, add glow to border */
+.pj-card:hover {
+  border-color: #8FAEC0;
+}
+
+/* Client cell hover accent */
+.cli:hover {
+  box-shadow: inset 0 -3px 0 rgba(144,186,210,0.6);
+}
+
+/* Stats item pulse on entry */
+.stat-item {
+  transition: transform 0.3s ease;
+}
+.stat-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Brand cell stagger shimmer effect */
+.brand-cell {
+  position: relative;
+  overflow: hidden;
+}
+.brand-cell::after {
+  content: '';
+  position: absolute;
+  top: -25%; left: -80%;
+  width: 55%; height: 150%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.12), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+.brand-cell:hover::after { animation: metalSheen 0.5s ease forwards; }
+
+/* SVC cell shimmer */
+.svc-cell {
+  position: relative;
+  overflow: hidden;
+}
+.svc-cell::after {
+  content: '';
+  position: absolute;
+  top: -25%; left: -80%;
+  width: 55%; height: 150%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.10), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+.svc-cell:hover::after { animation: metalSheen 0.5s ease forwards; }
