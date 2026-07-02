@@ -228,17 +228,40 @@
       margin: 0;
     }
     .pcard-quote {
-      display: inline-block;
-      margin-top: auto;
-      padding-top: 12px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #7A8FA0;
+      display: block;
+      width: calc(100% + 32px);
+      margin: 10px -16px -16px;
+      padding: 11px 16px;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      text-align: center;
+      color: #3D5060;
       text-decoration: none;
-      transition: color .15s;
+      background: linear-gradient(180deg, #EEF2F5 0%, #E0E9EE 100%);
+      border: none;
+      border-top: 1px solid #C4D2DC;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
     }
-    .pcard-quote:hover { color: #5E7585; }
-    .pcard-quote:focus-visible { outline: 2px solid #7A8FA0; outline-offset: 2px; border-radius: 2px; }
+    .pcard-quote::after {
+      content: '';
+      position: absolute;
+      top: -25%; left: -80%;
+      width: 55%; height: 150%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+      transform: skewX(-20deg);
+      pointer-events: none;
+    }
+    .pcard-quote:hover {
+      background: linear-gradient(180deg, #5A7A90 0%, #3D5060 100%);
+      color: #ffffff;
+      border-top-color: #7A9AB0;
+    }
+    .pcard-quote:hover::after { animation: metalSheen 0.48s ease forwards; }
+    .pcard-quote:focus-visible { outline: 2px solid #7A8FA0; outline-offset: 2px; }
 
     /* No results */
     .no-results {
@@ -434,7 +457,7 @@
           <p class="pcard-brand">MegCook</p>
           <p class="pcard-name">C35PB01</p>
           <p class="pcard-cat">Automatic Cooking Machine</p>
-          <a href="quote.html?product=C35PB01" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=C35PB01" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -446,7 +469,7 @@
           <p class="pcard-brand">MegCook</p>
           <p class="pcard-name">C44PB01</p>
           <p class="pcard-cat">Automatic Cooking Machine</p>
-          <a href="quote.html?product=C44PB01" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=C44PB01" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -458,7 +481,7 @@
           <p class="pcard-brand">MegCook</p>
           <p class="pcard-name">Cooking Machine (3520W-CE)</p>
           <p class="pcard-cat">Robot Chef</p>
-          <a href="quote.html?product=3520W-CE" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=3520W-CE" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -470,7 +493,7 @@
           <p class="pcard-brand">MegCook</p>
           <p class="pcard-name">Cooking Machine (3520W)</p>
           <p class="pcard-cat">Robot Chef</p>
-          <a href="quote.html?product=3520W" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=3520W" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -483,7 +506,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-B300IV-B105</p>
           <p class="pcard-cat">Freestanding 4-Burner Induction</p>
-          <a href="quote.html?product=LT-B300IV-B105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-B300IV-B105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -495,7 +518,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-B300IV-B135</p>
           <p class="pcard-cat">Freestanding 4-Burner Induction</p>
-          <a href="quote.html?product=LT-B300IV-B135" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-B300IV-B135" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -507,7 +530,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-B300VI-B105</p>
           <p class="pcard-cat">Freestanding 6-Burner Induction</p>
-          <a href="quote.html?product=LT-B300VI-B105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-B300VI-B105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -519,7 +542,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-B300VI-B135</p>
           <p class="pcard-cat">Freestanding 6-Burner Induction</p>
-          <a href="quote.html?product=LT-B300VI-B135" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-B300VI-B135" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -531,7 +554,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ200-BS105</p>
           <p class="pcard-cat">Tabletop Auto Cooking</p>
-          <a href="quote.html?product=LT-CCJ200-BS105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ200-BS105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -543,7 +566,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ300-BA105</p>
           <p class="pcard-cat">Tabletop Auto Cooking</p>
-          <a href="quote.html?product=LT-CCJ300-BA105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ300-BA105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -555,7 +578,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ300-BA205</p>
           <p class="pcard-cat">Tabletop Auto Cooking</p>
-          <a href="quote.html?product=LT-CCJ300-BA205" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ300-BA205" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -567,7 +590,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ300-BC105</p>
           <p class="pcard-cat">Intelligent Stir Fryer</p>
-          <a href="quote.html?product=LT-CCJ300-BC105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ300-BC105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -579,7 +602,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ300-BS105</p>
           <p class="pcard-cat">Tabletop Auto Cooking</p>
-          <a href="quote.html?product=LT-CCJ300-BS105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ300-BS105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -591,7 +614,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ300-ZA205</p>
           <p class="pcard-cat">Tabletop Auto Cooking</p>
-          <a href="quote.html?product=LT-CCJ300-ZA205" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ300-ZA205" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -603,7 +626,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ300-ZB105</p>
           <p class="pcard-cat">Freestanding Auto Cooking</p>
-          <a href="quote.html?product=LT-CCJ300-ZB105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ300-ZB105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -615,7 +638,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ360-BC105</p>
           <p class="pcard-cat">Intelligent Stir Fryer</p>
-          <a href="quote.html?product=LT-CCJ360-BC105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ360-BC105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -627,7 +650,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ360-BS105</p>
           <p class="pcard-cat">Tabletop Auto Cooking</p>
-          <a href="quote.html?product=LT-CCJ360-BS105" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ360-BS105" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -639,7 +662,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ600-ZA225</p>
           <p class="pcard-cat">Automatic Cooking Machine</p>
-          <a href="quote.html?product=LT-CCJ600-ZA225" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ600-ZA225" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -651,7 +674,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-CCJ600-ZB225</p>
           <p class="pcard-cat">Automatic Cooking Machine</p>
-          <a href="quote.html?product=LT-CCJ600-ZB225" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-CCJ600-ZB225" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -663,7 +686,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D1000-E130</p>
           <p class="pcard-cat">Single Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D1000-E130" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D1000-E130" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -675,7 +698,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D1000II-E130</p>
           <p class="pcard-cat">Double Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D1000II-E130" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D1000II-E130" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -687,7 +710,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D1200-E130/E135/E145</p>
           <p class="pcard-cat">Single Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D1200-E130" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D1200-E130" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -699,7 +722,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D1200II-E130/E135</p>
           <p class="pcard-cat">Double Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D1200II-E130" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D1200II-E130" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -711,7 +734,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D550-E108/E112/E115</p>
           <p class="pcard-cat">Single Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D550-E108" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D550-E108" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -723,7 +746,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D550II-E108/E112/E115</p>
           <p class="pcard-cat">Double Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D550II-E108" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D550II-E108" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -735,7 +758,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D600-E112</p>
           <p class="pcard-cat">Single Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D600-E112" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D600-E112" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -747,7 +770,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D600II-E112</p>
           <p class="pcard-cat">Double Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D600II-E112" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D600II-E112" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -759,7 +782,7 @@
           <p class="pcard-brand">J-Nox</p>
           <p class="pcard-name">LT-D700-E115</p>
           <p class="pcard-cat">Single Wok Induction Cooker</p>
-          <a href="quote.html?product=LT-D700-E115" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=LT-D700-E115" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -772,7 +795,7 @@
           <p class="pcard-brand">JR-Chem</p>
           <p class="pcard-name">Utensil Washer</p>
           <p class="pcard-cat">Industrial Utensil Washer</p>
-          <a href="quote.html?product=Utensil-Washer" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=Utensil-Washer" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -784,7 +807,7 @@
           <p class="pcard-brand">JR-Chem</p>
           <p class="pcard-name">VT-1 Door Type with Work Station</p>
           <p class="pcard-cat">Door Type Dishwasher</p>
-          <a href="quote.html?product=VT-1" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=VT-1" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -796,7 +819,7 @@
           <p class="pcard-brand">JR-Chem</p>
           <p class="pcard-name">VT-3</p>
           <p class="pcard-cat">Commercial Dishwasher</p>
-          <a href="quote.html?product=VT-3" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=VT-3" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -808,7 +831,7 @@
           <p class="pcard-brand">JR-Chem</p>
           <p class="pcard-name">VTF11DM</p>
           <p class="pcard-cat">Mini Flight Dishwasher</p>
-          <a href="quote.html?product=VTF11DM" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=VTF11DM" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -820,7 +843,7 @@
           <p class="pcard-brand">JR-Chem</p>
           <p class="pcard-name">VTF21DM</p>
           <p class="pcard-cat">Flight Type Dishwasher</p>
-          <a href="quote.html?product=VTF21DM" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=VTF21DM" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -833,7 +856,7 @@
           <p class="pcard-brand">Tamago</p>
           <p class="pcard-name">TC-100</p>
           <p class="pcard-cat">Food Serving Equipment</p>
-          <a href="quote.html?product=TC-100" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=TC-100" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
@@ -845,7 +868,7 @@
           <p class="pcard-brand">Tamago</p>
           <p class="pcard-name">TC-50</p>
           <p class="pcard-cat">Food Serving Equipment</p>
-          <a href="quote.html?product=TC-50" class="pcard-quote">Request Quote â†’</a>
+          <a href="quote.html?product=TC-50" class="pcard-quote">Request Quote &#8250;</a>
         </div>
       </article>
 
