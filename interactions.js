@@ -61,6 +61,10 @@
   applyTilt('.svc-cell',           5);
   applyTilt('.stat-box',           5);
   applyTilt('.stat-item',          4);
+  applyTilt('.svc-visual-card',    7);
+  applyTilt('.diff-card',          6);
+  applyTilt('.brand-card',         6);
+  applyTilt('.mv-card',            5);
 
   /* ── Magnetic Buttons ─────────────────────────────────── */
   var MAGNET = 0.28;

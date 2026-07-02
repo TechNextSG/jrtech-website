@@ -367,8 +367,10 @@ ul, ol { list-style: none; padding: 0; }
   .ftr-inner { grid-template-columns: 1fr 1fr; gap: 28px; }
 }
 @media (max-width: 480px) {
-  .ftr-inner { grid-template-columns: 1fr; }
-  .ftr-bottom { flex-direction: column; text-align: center; }
+  .ftr-inner { grid-template-columns: 1fr 1fr; gap: 20px 12px; padding: 28px 16px 16px; }
+  .ftr-brand { grid-column: 1 / -1; }
+  .ftr-inner > .ftr-col:last-child { grid-column: 1 / -1; }
+  .ftr-bottom { flex-direction: column; text-align: center; gap: 3px; }
 }
 
 /* === WHATSAPP FLOAT === */
@@ -1811,3 +1813,31 @@ input:focus, select:focus, textarea:focus {
 }
 .cta-band > * { position: relative; z-index: 1; }
 .cta-band .container { position: relative; z-index: 1; }
+
+/* ── Quote page grid & sidebar cards ────────────────────────────────── */
+.quote-grid { grid-template-columns: 1.6fr 1fr; }
+@media (max-width: 768px) { .quote-grid { grid-template-columns: 1fr; } }
+
+.quote-sidebar-card {
+  background: linear-gradient(135deg,
+    #F8FAFB 0%, #EBF1F6 22%,
+    #F4F7FA 45%, #E8EEF3 68%,
+    #F5F8FA 100%
+  );
+  border: 1px solid rgba(144,186,210,.2);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow .3s ease;
+}
+.quote-sidebar-card::after {
+  content: '';
+  position: absolute;
+  top: -25%; left: -80%;
+  width: 55%; height: 150%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,.28), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+.quote-sidebar-card:hover::after { animation: metalSheen 0.55s ease forwards; }
+.quote-sidebar-card:hover { box-shadow: 0 4px 16px rgba(90,122,144,.12); }

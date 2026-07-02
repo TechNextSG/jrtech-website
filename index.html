@@ -11,12 +11,40 @@
   <link rel="stylesheet" href="style.css"/>
   <style>
     /* ── HERO SLIDER ── */
-    .hero-slider { position: relative; height: 520px; overflow: hidden; background: #0a1628; }
+    .hero-slider {
+      position: relative; height: 520px; overflow: hidden; isolation: isolate;
+      background: linear-gradient(112deg,
+        #040810 0%, #0C1828 10%, #172840 19%, #1F3550 27%,
+        #152840 36%, #0A1822 46%, #142435 54%, #1D3248 63%,
+        #172840 72%, #0C1828 82%, #040810 100%
+      );
+    }
     @media(max-width:768px){ .hero-slider { height: auto; min-height: 380px; } }
+    .hero-slider::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        112deg,
+        transparent 0px, transparent 50px,
+        rgba(144,189,215,.04) 50px, rgba(144,189,215,.04) 52px,
+        transparent 52px
+      );
+      z-index: -1; pointer-events: none;
+    }
+    .hero-slider::after {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 36%; height: 100%;
+      background: linear-gradient(to right,
+        transparent 0%, rgba(184,214,238,.04) 20%,
+        rgba(255,255,255,.08) 50%, rgba(184,214,238,.04) 80%, transparent 100%
+      );
+      animation: metalBgSweep 13s linear infinite;
+      animation-delay: -4s;
+      z-index: -1; pointer-events: none;
+    }
     .slide { position: absolute; inset: 0; display: flex; align-items: center; opacity: 0; transition: opacity .7s ease; pointer-events: none; }
     .slide.active { opacity: 1; pointer-events: auto; }
-    .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
-    .slide-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,15,40,.88) 0%, rgba(5,15,40,.55) 55%, rgba(5,15,40,.2) 100%); }
     .slide-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; width: 100%; }
     @media(max-width:768px){ .slide-content { grid-template-columns: 1fr; padding: 60px 24px 40px; } }
     .slide-text { color: #fff; }
@@ -177,19 +205,111 @@
     .brand-cell-link { font-size: .72rem; font-weight: 600; color: #7A8FA0; display: flex; align-items: center; gap: 4px; }
     .brand-cell-link:hover { color: #5E7585; }
 
-    /* ── MISSION & VISION ── */
-    .mv-grid { display: grid; grid-template-columns: 1fr 1fr; }
-    @media(max-width:768px){ .mv-grid { grid-template-columns: 1fr; } }
-    .mv-panel { position: relative; min-height: 340px; display: flex; align-items: center; padding: 60px 48px; overflow: hidden; }
-    @media(max-width:768px){ .mv-panel { padding: 48px 28px; min-height: 240px; } }
-    .mv-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
-    .mv-bg::after { content: ''; position: absolute; inset: 0; }
-    .mv-panel.mission .mv-bg::after { background: rgba(10,22,65,.88); }
-    .mv-panel.vision .mv-bg::after { background: rgba(5,30,20,.84); }
-    .mv-body { position: relative; z-index: 2; color: #fff; max-width: 440px; }
-    .mv-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: #B0C0CC; margin-bottom: 14px; }
-    .mv-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
-    .mv-text { font-size: .875rem; color: rgba(255,255,255,.75); line-height: 1.8; }
+    /* ── MISSION, VISION & VALUES (redesign) ── */
+    .mv-section {
+      background: linear-gradient(112deg,
+        #030710 0%, #0A1622 10%, #132232 19%, #1A2E42 27%,
+        #112032 36%, #07111C 46%, #111E2E 54%, #192C40 63%,
+        #132232 72%, #0A1622 82%, #030710 100%
+      );
+      padding: 72px 0;
+      isolation: isolate;
+      overflow: hidden;
+      position: relative;
+      border-top: 1px solid rgba(144,186,210,.08);
+      border-bottom: 1px solid rgba(144,186,210,.08);
+    }
+    .mv-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        112deg,
+        transparent 0px, transparent 50px,
+        rgba(144,189,215,.03) 50px, rgba(144,189,215,.03) 52px,
+        transparent 52px
+      );
+      z-index: 0; pointer-events: none;
+    }
+    .mv-section::after {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 36%; height: 100%;
+      background: linear-gradient(to right,
+        transparent 0%, rgba(184,214,238,.03) 20%,
+        rgba(255,255,255,.07) 50%, rgba(184,214,238,.03) 80%, transparent 100%
+      );
+      animation: metalBgSweep 11s linear infinite;
+      animation-delay: -2s;
+      z-index: 0; pointer-events: none;
+    }
+    .mv-section > .container { position: relative; z-index: 1; }
+    .mv-section-hdr { text-align: center; margin-bottom: 40px; }
+    .mv-section-title { color: #fff; font-size: clamp(1.4rem,2.5vw,2rem); font-weight: 800; margin-bottom: 0; }
+    .mv-eyebrow { color: #9BBDCF; -webkit-text-fill-color: #9BBDCF; }
+    .mv-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    @media(max-width:900px){ .mv-cards { grid-template-columns: 1fr; gap: 12px; } }
+    .mv-card {
+      background: linear-gradient(135deg,
+        rgba(255,255,255,.04) 0%, rgba(144,186,210,.07) 50%, rgba(255,255,255,.02) 100%
+      );
+      border: 1px solid rgba(144,186,210,.18);
+      border-radius: 8px;
+      padding: 36px 28px 32px;
+      position: relative; overflow: hidden; cursor: default;
+      transition: border-color .35s, box-shadow .35s, transform .3s, background .35s;
+    }
+    .mv-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 0;
+      background: linear-gradient(180deg, #9BBDCF 0%, #607D8E 100%);
+      transition: height .4s ease;
+    }
+    .mv-card:hover {
+      background: linear-gradient(135deg,
+        rgba(255,255,255,.07) 0%, rgba(144,186,210,.12) 50%, rgba(255,255,255,.04) 100%
+      );
+      border-color: rgba(155,189,207,.4);
+      box-shadow: 0 0 28px rgba(144,186,210,.12), 0 12px 40px rgba(0,0,0,.35);
+      transform: translateY(-5px);
+    }
+    .mv-card:hover::before { height: 100%; }
+    .mv-card::after {
+      content: '';
+      position: absolute; top: -25%; left: -80%;
+      width: 55%; height: 150%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,.08), transparent);
+      transform: skewX(-20deg); pointer-events: none;
+    }
+    .mv-card:hover::after { animation: metalSheen .6s ease forwards; }
+    .mv-card-num {
+      position: absolute; top: -8px; right: 18px;
+      font-size: 6rem; font-weight: 900;
+      color: rgba(144,186,210,.05); line-height: 1;
+      user-select: none; pointer-events: none; transition: color .35s;
+    }
+    .mv-card:hover .mv-card-num { color: rgba(144,186,210,.1); }
+    .mv-card-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(144,186,210,.18), rgba(96,125,142,.08));
+      border: 1px solid rgba(144,186,210,.22);
+      display: flex; align-items: center; justify-content: center;
+      color: #9BBDCF; margin-bottom: 20px;
+      transition: background .3s, border-color .3s, box-shadow .3s;
+    }
+    .mv-card:hover .mv-card-icon {
+      background: linear-gradient(135deg, rgba(144,186,210,.26), rgba(96,125,142,.16));
+      border-color: rgba(155,189,207,.45);
+      box-shadow: 0 0 18px rgba(144,186,210,.2);
+    }
+    .mv-card-label { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .2em; color: #7A8FA0; margin-bottom: 10px; }
+    .mv-card-title { font-size: 1.15rem; font-weight: 800; color: #fff; line-height: 1.25; margin-bottom: 14px; }
+    .mv-card-text { font-size: .845rem; color: rgba(255,255,255,.55); line-height: 1.75; }
+    .mv-card-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; }
+    .mv-card-list li { font-size: .82rem; color: rgba(255,255,255,.55); display: flex; align-items: center; gap: 8px; }
+    .mv-card-list li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: linear-gradient(135deg,#9BBDCF,#7A8FA0); flex-shrink: 0; box-shadow: 0 0 4px rgba(155,189,207,.4); }
+    .mv-card-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,transparent,transparent); transition: background .4s; }
+    .mv-card:hover .mv-card-bar { background: linear-gradient(90deg,transparent,#8FAEC0 40%,#B8CDD8 60%,transparent); }
 
     /* ── SERVICES ICONS ── */
     .services-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; border: 1px solid #C4D2DC; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(90,122,144,0.08); }
@@ -376,7 +496,6 @@
 
   <!-- Slide 1: MegCook -->
   <div class="slide active">
-    <div class="slide-bg" style="background-image:url('img/front-view-professional-kitchen-1-scaled.jpg')"></div>
     <div class="slide-content">
       <div class="slide-text">
         <span class="slide-tag">MegCook Robot Chef</span>
@@ -397,7 +516,6 @@
 
   <!-- Slide 2: JR-Chem -->
   <div class="slide">
-    <div class="slide-bg" style="background-image:url('img/front-view-professional-kitchen-1-scaled.jpg')"></div>
     <div class="slide-content">
       <div class="slide-text">
         <span class="slide-tag">JR-Chem Dishwashers</span>
@@ -418,7 +536,6 @@
 
   <!-- Slide 3: J-Nox -->
   <div class="slide">
-    <div class="slide-bg" style="background-image:url('img/s4.jpg')"></div>
     <div class="slide-content">
       <div class="slide-text">
         <span class="slide-tag">J-Nox Induction Series</span>
@@ -439,7 +556,6 @@
 
   <!-- Slide 4: Tamago -->
   <div class="slide">
-    <div class="slide-bg" style="background-image:url('img/beautiful-light-lamp-decoration-scaled.jpg')"></div>
     <div class="slide-content">
       <div class="slide-text">
         <span class="slide-tag">Tamago Serving Equipment</span>
@@ -575,25 +691,58 @@
   </div>
 </section>
 
-<!-- ═══ MISSION & VISION ═══ -->
-<div class="mv-grid">
-  <div class="mv-panel mission">
-    <div class="mv-bg" style="background-image:url('img/front-view-professional-kitchen-1-scaled.jpg')"></div>
-    <div class="mv-body reveal">
-      <div class="mv-label">Our Mission</div>
-      <h2 class="mv-title">Delivering Kitchen Excellence</h2>
-      <p class="mv-text">To become Malaysia's leading premier provider in Kitchen Facility Services, delivering quality products and technical excellence that exceeds client expectations at every engagement.</p>
+<!-- ═══ MISSION, VISION & VALUES ═══ -->
+<section class="mv-section">
+  <div class="container">
+    <div class="mv-section-hdr reveal">
+      <p class="eyebrow mv-eyebrow">Our Foundation</p>
+      <h2 class="mv-section-title">Mission, Vision &amp; Values</h2>
+      <div class="divider" style="margin:14px auto 0;"></div>
+    </div>
+    <div class="mv-cards stagger">
+
+      <div class="mv-card">
+        <div class="mv-card-num">01</div>
+        <div class="mv-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <div class="mv-card-label">Our Mission</div>
+        <h3 class="mv-card-title">Delivering Kitchen Excellence</h3>
+        <p class="mv-card-text">To become Malaysia's leading premier provider in Kitchen Facility Services, delivering quality products and technical excellence that exceeds client expectations at every engagement.</p>
+        <div class="mv-card-bar"></div>
+      </div>
+
+      <div class="mv-card">
+        <div class="mv-card-num">02</div>
+        <div class="mv-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div class="mv-card-label">Our Vision</div>
+        <h3 class="mv-card-title">Leading the Industry</h3>
+        <p class="mv-card-text">To be the premier kitchen solution provider and the leading commercial kitchen engineering platform in Malaysia — recognised for innovation, reliability and service excellence.</p>
+        <div class="mv-card-bar"></div>
+      </div>
+
+      <div class="mv-card">
+        <div class="mv-card-num">03</div>
+        <div class="mv-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="mv-card-label">Our Values</div>
+        <h3 class="mv-card-title">Partnership &amp; Excellence</h3>
+        <ul class="mv-card-list">
+          <li>Client Partnership &amp; Transparency</li>
+          <li>Quality Commitment &amp; Precision</li>
+          <li>Continuous Innovation</li>
+          <li>Environmental Responsibility</li>
+          <li>Team Excellence</li>
+        </ul>
+        <div class="mv-card-bar"></div>
+      </div>
+
     </div>
   </div>
-  <div class="mv-panel vision">
-    <div class="mv-bg" style="background-image:url('img/beautiful-light-lamp-decoration-scaled.jpg')"></div>
-    <div class="mv-body reveal">
-      <div class="mv-label">Our Vision</div>
-      <h2 class="mv-title">Leading the Industry</h2>
-      <p class="mv-text">To be the premier kitchen solution provider and the leading commercial kitchen engineering platform in Malaysia — recognised for innovation, reliability and service excellence.</p>
-    </div>
-  </div>
-</div>
+</section>
 
 <!-- ═══ SERVICES ICONS ═══ -->
 <section class="section section-alt">
