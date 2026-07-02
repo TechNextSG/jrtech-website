@@ -42,17 +42,121 @@
     .slider-prev { left: 16px; }
     .slider-next { right: 16px; }
 
-    /* ── AT A GLANCE ── */
-    .glance-grid { display: grid; grid-template-columns: repeat(3,1fr); }
+    /* ── PILLARS (replaces At a Glance) ── */
+    .glance-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      background: #070C17;
+      border-top: 1px solid rgba(144,186,210,0.08);
+      border-bottom: 1px solid rgba(144,186,210,0.08);
+    }
     @media(max-width:768px){ .glance-grid { grid-template-columns: 1fr; } }
-    .glance-card { position: relative; min-height: 260px; overflow: hidden; display: flex; align-items: flex-end; }
-    .glance-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform .5s ease; }
-    .glance-card:hover .glance-bg { transform: scale(1.05); }
-    .glance-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(5,15,40,.85) 0%, rgba(5,15,40,.3) 60%, transparent 100%); }
-    .glance-body { position: relative; z-index: 2; padding: 28px 28px 32px; color: #fff; }
-    .glance-num { font-size: .7rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #9BBDCF; margin-bottom: 6px; }
-    .glance-title { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
-    .glance-sub { font-size: .8rem; color: rgba(255,255,255,.65); line-height: 1.55; }
+    .glance-card {
+      position: relative;
+      padding: 48px 40px 52px;
+      border-right: 1px solid rgba(144,186,210,0.09);
+      overflow: hidden;
+      transition: background 0.35s ease;
+      cursor: default;
+    }
+    .glance-card:last-child { border-right: none; }
+    @media(max-width:768px){ .glance-card { border-right: none; border-bottom: 1px solid rgba(144,186,210,0.09); } }
+    .glance-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 0;
+      background: linear-gradient(180deg, #9BBDCF, #607D8E);
+      transition: height 0.4s ease;
+    }
+    .glance-card:hover { background: rgba(144,186,210,0.04); }
+    .glance-card:hover::before { height: 100%; }
+
+    /* watermark number */
+    .glance-wm {
+      position: absolute;
+      top: -8px; right: 24px;
+      font-size: 7rem;
+      font-weight: 900;
+      line-height: 1;
+      color: rgba(144,186,210,0.05);
+      letter-spacing: -.02em;
+      user-select: none;
+      pointer-events: none;
+      transition: color 0.35s;
+    }
+    .glance-card:hover .glance-wm { color: rgba(144,186,210,0.09); }
+
+    /* icon box */
+    .glance-icon-box {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(144,186,210,0.14), rgba(96,125,142,0.08));
+      border: 1px solid rgba(144,186,210,0.22);
+      display: flex; align-items: center; justify-content: center;
+      color: #9BBDCF;
+      margin-bottom: 24px;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .glance-card:hover .glance-icon-box {
+      background: linear-gradient(135deg, rgba(144,186,210,0.22), rgba(96,125,142,0.14));
+      border-color: rgba(155,189,207,0.40);
+      box-shadow: 0 0 18px rgba(144,186,210,0.15);
+    }
+
+    .glance-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #7A8FA0;
+      margin-bottom: 10px;
+    }
+    .glance-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 14px;
+      line-height: 1.2;
+    }
+    .glance-sub {
+      font-size: .845rem;
+      color: rgba(255,255,255,0.52);
+      line-height: 1.72;
+      margin: 0;
+    }
+
+    /* bottom accent bar */
+    .glance-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, transparent);
+      transition: background 0.4s ease;
+    }
+    .glance-card:hover .glance-bar {
+      background: linear-gradient(90deg, transparent, #8FAEC0 40%, #B8CDD8 60%, transparent);
+    }
+
+    /* bullet list inside cards */
+    .glance-list {
+      list-style: none;
+      padding: 0; margin: 14px 0 0;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .glance-list li {
+      font-size: .78rem;
+      color: rgba(255,255,255,0.45);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .glance-list li::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #9BBDCF, #7A8FA0);
+      flex-shrink: 0;
+      box-shadow: 0 0 4px rgba(155,189,207,0.4);
+    }
 
     /* ── PRODUCT BRANDS ── */
     .brands-intro { text-align: center; max-width: 600px; margin: 0 auto 40px; }
@@ -277,32 +381,63 @@
   </div>
 </div>
 
-<!-- ═══ AT A GLANCE ═══ -->
+<!-- ═══ PILLARS ═══ -->
 <div class="glance-grid">
+
   <div class="glance-card">
-    <div class="glance-bg" style="background-image:url('img/Cost-Effective.jpg')"></div>
-    <div class="glance-body">
-      <div class="glance-num">01 &mdash; Our Commitment</div>
-      <div class="glance-title">Cost Effective</div>
-      <div class="glance-sub">Competitive pricing without compromising quality. Value-engineered kitchen solutions for every budget.</div>
+    <span class="glance-wm">01</span>
+    <div class="glance-icon-box">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
     </div>
+    <div class="glance-label">Our Commitment</div>
+    <div class="glance-title">Cost Effective</div>
+    <p class="glance-sub">Competitive pricing without compromising quality. Value-engineered kitchen solutions for every budget.</p>
+    <ul class="glance-list">
+      <li>Transparent project quotation</li>
+      <li>Flexible rental &amp; purchase options</li>
+      <li>No hidden maintenance costs</li>
+    </ul>
+    <div class="glance-bar"></div>
   </div>
+
   <div class="glance-card">
-    <div class="glance-bg" style="background-image:url('img/Strict-Standard.jpg')"></div>
-    <div class="glance-body">
-      <div class="glance-num">02 &mdash; Our Standard</div>
-      <div class="glance-title">Strict Standard</div>
-      <div class="glance-sub">HACCP-compliant processes, stringent quality checks and industry-certified equipment across every project.</div>
+    <span class="glance-wm">02</span>
+    <div class="glance-icon-box">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+      </svg>
     </div>
+    <div class="glance-label">Our Standard</div>
+    <div class="glance-title">Strict Standard</div>
+    <p class="glance-sub">HACCP-compliant processes, stringent quality checks and industry-certified equipment across every project.</p>
+    <ul class="glance-list">
+      <li>HACCP &amp; food-safety compliant</li>
+      <li>Industry-certified equipment</li>
+      <li>Stringent pre-delivery QC checks</li>
+    </ul>
+    <div class="glance-bar"></div>
   </div>
+
   <div class="glance-card">
-    <div class="glance-bg" style="background-image:url('img/b3.jpg')"></div>
-    <div class="glance-body">
-      <div class="glance-num">03 &mdash; Our Promise</div>
-      <div class="glance-title">Best Value</div>
-      <div class="glance-sub">Full lifecycle support — design, installation, maintenance and chemicals — all under one roof.</div>
+    <span class="glance-wm">03</span>
+    <div class="glance-icon-box">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+      </svg>
     </div>
+    <div class="glance-label">Our Promise</div>
+    <div class="glance-title">Best Value</div>
+    <p class="glance-sub">Full lifecycle support — design, installation, maintenance and chemicals — all under one roof.</p>
+    <ul class="glance-list">
+      <li>Single-vendor end-to-end service</li>
+      <li>24/7 breakdown &amp; repair support</li>
+      <li>16+ years of proven expertise</li>
+    </ul>
+    <div class="glance-bar"></div>
   </div>
+
 </div>
 
 <!-- ═══ PRODUCT BRANDS ═══ -->
