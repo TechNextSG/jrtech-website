@@ -80,9 +80,13 @@
     .pd-desc-block h3::before{content:'';width:3px;height:18px;background:linear-gradient(180deg,#9BBDCF,#5A7A90);border-radius:2px;flex-shrink:0;}
     .pd-desc-block p{font-size:.875rem;color:#4a5568;line-height:1.8;}
 
-    /* Additional product images */
-    .pd-gallery-extra{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:44px;}
-    .pd-gallery-extra img{width:100%;border-radius:8px;object-fit:cover;border:1px solid #E0E5EA;}
+    /* Additional product images / accessory grid */
+    .pd-gallery-extra{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin-bottom:44px;}
+    @media(max-width:700px){.pd-gallery-extra{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:420px){.pd-gallery-extra{grid-template-columns:repeat(2,1fr);}}
+    .acc-card{display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .acc-card img{width:100%;aspect-ratio:1;object-fit:contain;background:#F5F7F9;border-radius:10px;padding:14px;border:1px solid #E0E5EA;box-sizing:border-box;}
+    .acc-name{font-size:.78rem;color:#4A5A6A;text-align:center;line-height:1.4;}
 
     /* ── Specs ── */
     .pd-specs-section{padding:48px 0;background:#F7F8FA;border-top:1px solid #E8ECF0;border-bottom:1px solid #E8ECF0;}
@@ -420,8 +424,13 @@
   if(extraImgs.length){
     var extEl = document.getElementById('pd-extra-imgs');
     extEl.style.display = 'grid';
-    extEl.innerHTML = extraImgs.map(function(src){
-      return '<img src="'+src+'" alt="'+p.name+'" loading="lazy" onerror="this.style.display=\'none\'">';
+    extEl.innerHTML = extraImgs.map(function(item){
+      var src  = (typeof item === 'string') ? item : item.src;
+      var name = (typeof item === 'string') ? '' : (item.name || '');
+      return '<div class="acc-card">'
+           + '<img src="'+src+'" alt="'+name+'" loading="lazy" onerror="this.parentNode.style.display=\'none\'">'
+           + (name ? '<span class="acc-name">'+name+'</span>' : '')
+           + '</div>';
     }).join('');
   }
 

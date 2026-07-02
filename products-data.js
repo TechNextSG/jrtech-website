@@ -37,15 +37,15 @@ var _JNOX_FEAT = [
 ];
 
 var _JNOX_ACC = [
-  _JN_BASE+'Custom-Flat-Basket.png',
-  _JN_BASE+'Freestanding-Pasta-Basket.png',
-  _JN_BASE+'Desktop-Fryer-Basket.png',
-  _JN_BASE+'Desktop-Fryer-Basket-1.png',
-  _JN_BASE+'Freestanding-Fryer-Basket.png',
-  _JN_BASE+'High-grade-Soup-Valve.png',
-  _JN_BASE+'Oil-Drain-Valve.png',
-  _JN_BASE+'Two-Rings-Iron-Wok.png',
-  _JN_BASE+'Composite-Bottom-Stainless-Steel-Pot.png'
+  { src: _JN_BASE+'Custom-Flat-Basket.png',                   name: 'Custom Flat Basket' },
+  { src: _JN_BASE+'Freestanding-Pasta-Basket.png',            name: 'Freestanding Pasta Basket' },
+  { src: _JN_BASE+'Desktop-Fryer-Basket.png',                 name: 'Desktop Fryer Basket' },
+  { src: _JN_BASE+'Desktop-Fryer-Basket-1.png',               name: 'Desktop Fryer Basket' },
+  { src: _JN_BASE+'Freestanding-Fryer-Basket.png',            name: 'Freestanding Fryer Basket' },
+  { src: _JN_BASE+'High-grade-Soup-Valve.png',                name: 'High-grade Soup Valve' },
+  { src: _JN_BASE+'Oil-Drain-Valve.png',                      name: 'Oil Drain Valve' },
+  { src: _JN_BASE+'Two-Rings-Iron-Wok.png',                   name: 'Two Rings Iron Wok' },
+  { src: _JN_BASE+'Composite-Bottom-Stainless-Steel-Pot.png', name: 'Composite Bottom Stainless Steel Pot' }
 ];
 
 var JRT_PRODUCTS = [
