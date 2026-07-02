@@ -46,7 +46,7 @@
 </header>
 
 <!-- PAGE BANNER -->
-<section class="page-banner">
+<section class="page-banner" style="background-image:url('img/front-view-professional-kitchen-1-scaled.jpg')">
   <div class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="index.html">Home</a>
@@ -56,6 +56,9 @@
     <h1>Request a Quote</h1>
     <p>Fill in your details and our team will respond within 24 hours.</p>
   </div>
+  <button class="hero-scroll" onclick="this.closest('.page-banner').nextElementSibling.scrollIntoView({behavior:'smooth'})" aria-label="Scroll down">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
 </section>
 
 <!-- QUOTE SECTION -->

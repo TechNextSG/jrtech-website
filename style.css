@@ -411,18 +411,56 @@ ul, ol { list-style: none; padding: 0; }
 .page-banner {
   background: #0D1117;
   color: #ffffff;
-  padding: 70px 0 56px;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
   border-bottom: 1px solid rgba(122,143,160,0.15);
 }
+.page-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(13,17,23,0.92) 0%, rgba(13,17,23,0.68) 100%);
+}
+.page-banner .container {
+  position: relative;
+  z-index: 1;
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
 .page-banner h1 {
-  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   text-wrap: balance;
+  line-height: 1.15;
 }
 .page-banner p {
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.6);
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  max-width: 540px;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.45);
+  z-index: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  animation: heroScrollBounce 2s ease-in-out infinite;
+}
+@keyframes heroScrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(9px); }
 }
 .breadcrumb {
   display: flex;
