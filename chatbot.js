@@ -20,6 +20,7 @@
     'background:#0D1117;border:1px solid rgba(155,189,207,.14);border-radius:16px;',
     'box-shadow:0 16px 48px rgba(0,0,0,.55);z-index:9989;',
     'display:flex;flex-direction:column;overflow:hidden;',
+    'max-height:560px;',
     'transform:translateY(24px) scale(0.95);opacity:0;pointer-events:none;',
     'transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .22s ease;}',
     '#jrt-cb-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all;}',
@@ -30,7 +31,7 @@
     '#jrt-cb-head .cb-status{font-size:.67rem;color:#4CD96B;display:flex;align-items:center;gap:4px;}',
     '#jrt-cb-head .cb-status::before{content:"";width:6px;height:6px;background:#4CD96B;border-radius:50%;display:inline-block;}',
 
-    '#jrt-cb-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;height:320px;scroll-behavior:smooth;}',
+    '#jrt-cb-msgs{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;height:320px;scroll-behavior:smooth;}',
     '#jrt-cb-msgs::-webkit-scrollbar{width:4px}',
     '#jrt-cb-msgs::-webkit-scrollbar-track{background:transparent}',
     '#jrt-cb-msgs::-webkit-scrollbar-thumb{background:rgba(155,189,207,.2);border-radius:4px}',
@@ -224,9 +225,11 @@
   var suggBox  = document.getElementById('jrt-cb-sugg');
   var form     = document.getElementById('jrt-cb-form');
   var input    = document.getElementById('jrt-cb-input');
-  var isOpen   = false;
-  var greeted  = false;
-  var seenSugg = {};   /* {text: true} — no-repeat tracker */
+  var isOpen        = false;
+  var greeted       = false;
+  var seenSugg      = {};   /* {text: true} — no-repeat tracker */
+  var autoCloseTimer = null;
+  var AUTO_CLOSE_DELAY = 5000; /* ms after bot reply before panel closes */
 
   /* ─────────────────────── HELPERS ───────────────────────────────────── */
   function scrollBottom(){ msgs.scrollTop = msgs.scrollHeight; }
@@ -273,18 +276,81 @@
   }
 
   /* ─────────────────────── INTENT MATCHING ───────────────────────────── */
+  var KW = [
+    { id:'products',         kws:['product','sell','offer','carry','equipment','brand','catalog','machine','range','model','item','what'] },
+    { id:'megcook',          kws:['megcook','robot','chef','cook','cooking','automatic','recipe','stir','fry','frying','pot','meal','food','auto'] },
+    { id:'jnox',             kws:['jnox','induction','wok','burner','cooker','flame','gas','electric','heating','energy','hob','coil'] },
+    { id:'jrchem',           kws:['jrchem','dish','wash','dishwash','plate','rinse','flight','warewash','utensil','rack','tray','clean'] },
+    { id:'tamago',           kws:['tamago','serve','serving','hold','holding','buffet','chill','counter','cold','hot','tray','display'] },
+    { id:'services',         kws:['service','install','supply','maintain','design','build','kitchen','fitout','consult','project','help'] },
+    { id:'quote',            kws:['quote','price','cost','afford','budget','purchase','buy','rent','rental','fee','pay','cheapest','expensive'] },
+    { id:'rental',           kws:['rent','rental','lease','hire','monthly','payment','installment','deposit'] },
+    { id:'haccp',            kws:['haccp','hygiene','safe','food','comply','audit','standard','certif','sanit'] },
+    { id:'contact',          kws:['contact','phone','call','email','reach','speak','whatsapp','hotline','number','talk'] },
+    { id:'location',         kws:['where','location','address','penang','office','visit','showroom','gelugor','find','direction'] },
+    { id:'demo',             kws:['demo','trial','test','try','see','show','demonstrate','live','watch','view'] },
+    { id:'clients',          kws:['client','customer','user','reference','hospital','hotel','corporate','factory','intel','who'] },
+    { id:'warranty',         kws:['warrant','guarantee','after','spare','part','breakdown','cover','defect'] },
+    { id:'maintenance',      kws:['maintain','repair','technician','support','breakdown','fix','service','fault'] },
+    { id:'chemicals',        kws:['chemical','detergent','sanitise','clean','grease','trap','supply','soap'] },
+    { id:'about',            kws:['about','who','company','establish','founded','history','year','experience','since','background'] },
+    { id:'induction_vs_gas', kws:['induction','gas','compare','switch','benefit','saving','versus','vs','difference'] }
+  ];
+
   function match(text){
     var t = text.trim().toLowerCase();
+
+    /* 1. Primary: full-string regex */
     for(var i=0; i<INTENTS.length; i++){
       if(INTENTS[i].pat.test(t)) return INTENTS[i];
     }
+
+    /* 2. Fallback: token keyword scoring (handles short/misspelled/fuzzy input) */
+    var words = t.replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(function(w){ return w.length > 1; });
+    if(!words.length) return null;
+    var scores = {};
+    KW.forEach(function(ik){ scores[ik.id] = 0; });
+    words.forEach(function(word){
+      KW.forEach(function(ik){
+        for(var k=0; k<ik.kws.length; k++){
+          var kw = ik.kws[k];
+          /* prefix or substring match in either direction */
+          if(word === kw || word.indexOf(kw) === 0 || kw.indexOf(word) === 0){
+            scores[ik.id]++;
+            break;
+          }
+        }
+      });
+    });
+    var bestId = null, bestScore = 0;
+    KW.forEach(function(ik){
+      if(scores[ik.id] > bestScore){ bestScore = scores[ik.id]; bestId = ik.id; }
+    });
+    if(bestId && bestScore > 0){
+      for(var j=0; j<INTENTS.length; j++){
+        if(INTENTS[j].id === bestId) return INTENTS[j];
+      }
+    }
     return null;
+  }
+
+  function cancelAutoClose(){
+    if(autoCloseTimer){ clearTimeout(autoCloseTimer); autoCloseTimer = null; }
+  }
+
+  function scheduleAutoClose(){
+    cancelAutoClose();
+    autoCloseTimer = setTimeout(function(){
+      autoCloseTimer = null;
+      if(isOpen) toggleChat();
+    }, AUTO_CLOSE_DELAY);
   }
 
   /* ─────────────────────── SEND ──────────────────────────────────────── */
   function send(text){
     text = text.trim();
     if(!text) return;
+    cancelAutoClose();
     input.value = '';
     suggBox.innerHTML = '';
     addBubble(text, 'user');
@@ -301,6 +367,7 @@
         addBubble(FALLBACK_RESP, 'bot');
         showSuggestions(FALLBACK_FU);
       }
+      scheduleAutoClose();
     }, delay);
   }
 
@@ -321,16 +388,24 @@
   }
 
   /* ─────────────────────── EVENTS ────────────────────────────────────── */
-  btn.addEventListener('click', toggleChat);
+  btn.addEventListener('click', function(){
+    cancelAutoClose();
+    toggleChat();
+  });
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
     send(input.value);
   });
 
+  /* Cancel auto-close when user starts typing */
+  input.addEventListener('focus', cancelAutoClose);
+  input.addEventListener('input', cancelAutoClose);
+
   /* Close panel when clicking outside */
   document.addEventListener('click', function(e){
     if(isOpen && !document.getElementById('jrt-cb-wrap').contains(e.target)){
+      cancelAutoClose();
       toggleChat();
     }
   });
