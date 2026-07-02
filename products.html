@@ -1011,8 +1011,22 @@
   } else {
     applyFilter('all');
   }
+
+  // Product card click → detail page (skip clicks on the quote link itself)
+  cards.forEach(function(card){
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e){
+      if(e.target.closest('.pcard-quote')) return;
+      var quoteLink = card.querySelector('.pcard-quote');
+      if(!quoteLink) return;
+      var m = quoteLink.href.match(/[?&]product=([^&]+)/);
+      if(!m) return;
+      window.location.href = 'product.html?id=' + m[1];
+    });
+  });
 })();
 </script>
 <script src="interactions.js"></script>
+<script src="chatbot.js"></script>
 </body>
 </html>
