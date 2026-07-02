@@ -244,6 +244,97 @@
     .btn-outline-w::after { content:''; position:absolute; top:-25%; left:-80%; width:55%; height:150%; background:linear-gradient(to right,transparent,rgba(255,255,255,.22),transparent); transform:skewX(-20deg); pointer-events:none; }
     .btn-outline-w:hover { border-color: #B8CDD8; background: rgba(144,186,210,.12); transform: translateY(-1px); }
     .btn-outline-w:hover::after { animation: metalSheen .48s ease forwards; }
+
+    /* ══════════════════════════════════════════════════════
+       METALLIC REFLECTIVE BACKGROUNDS
+       Applied to: .stats-band · .glance-grid · .cta-band
+    ════════════════════════════════════════════════════════ */
+    @keyframes metalBgSweep {
+      0%   { transform: skewX(-18deg) translateX(-120%); }
+      100% { transform: skewX(-18deg) translateX(420%); }
+    }
+
+    /* ── Stacking context so z-index:-1 stays inside each section ── */
+    .stats-band, .glance-grid, .cta-band {
+      isolation: isolate;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Metallic angled gradient base ── */
+    .stats-band {
+      background: linear-gradient(112deg,
+        #040810 0%,  #0C1828 10%,
+        #172840 19%, #1F3550 27%,
+        #152840 36%, #0A1822 46%,
+        #142435 54%, #1D3248 63%,
+        #172840 72%, #0C1828 82%,
+        #040810 100%
+      ) !important;
+    }
+    .glance-grid {
+      background: linear-gradient(112deg,
+        #030710 0%,  #0A1622 10%,
+        #132232 19%, #1A2E42 27%,
+        #112032 36%, #07111C 46%,
+        #111E2E 54%, #192C40 63%,
+        #132232 72%, #0A1622 82%,
+        #030710 100%
+      ) !important;
+    }
+    .cta-band {
+      background: linear-gradient(112deg,
+        #040810 0%,  #0C1828 10%,
+        #172840 19%, #1F3550 27%,
+        #152840 36%, #0A1822 46%,
+        #142435 54%, #1D3248 63%,
+        #172840 72%, #0C1828 82%,
+        #040810 100%
+      ) !important;
+    }
+
+    /* ── Fine brushed-metal lines (static texture, z below content) ── */
+    .stats-band::before, .glance-grid::before, .cta-band::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        112deg,
+        transparent      0px, transparent      50px,
+        rgba(144,189,215,.052) 50px, rgba(144,189,215,.052) 52px,
+        transparent      52px, transparent     100px,
+        rgba(144,189,215,.028) 100px, rgba(144,189,215,.028) 102px,
+        transparent      102px, transparent    150px,
+        rgba(144,189,215,.015) 150px, rgba(144,189,215,.015) 151px,
+        transparent      151px
+      );
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* ── Animated reflection sweep (z below content) ── */
+    .stats-band::after, .glance-grid::after, .cta-band::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 36%;
+      height: 100%;
+      background: linear-gradient(to right,
+        transparent          0%,
+        rgba(184,214,238,.03) 20%,
+        rgba(255,255,255,.09) 42%,
+        rgba(200,228,248,.15) 50%,
+        rgba(255,255,255,.09) 58%,
+        rgba(184,214,238,.03) 80%,
+        transparent          100%
+      );
+      animation: metalBgSweep 9s linear infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+    /* Stagger so sections don't sweep simultaneously */
+    .glance-grid::after { animation-delay: -3.1s; }
+    .cta-band::after    { animation-delay: -6.4s; }
   </style>
 </head>
 <body>
