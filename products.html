@@ -15,22 +15,20 @@
     /* Page banner */
     .page-banner {
       background: #0D1117;
+      padding: 64px 24px 56px;
       text-align: center;
       color: #fff;
     }
     .page-banner h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-size: clamp(28px, 5vw, 44px);
       font-weight: 700;
-      margin: 0 0 16px;
+      margin: 0 0 12px;
       color: #fff;
-      line-height: 1.15;
     }
     .page-banner p {
-      font-size: 1rem;
+      font-size: 16px;
       color: rgba(255,255,255,.72);
       margin: 0;
-      max-width: 540px;
-      margin-inline: auto;
     }
 
     /* â”€â”€ Filter bar â”€â”€ */
@@ -368,14 +366,9 @@
 </header>
 
 <!-- ================== PAGE BANNER ================== -->
-<section class="page-banner" style="background-image:url('img/s4.jpg')">
-  <div class="container">
-    <h1>Our Products</h1>
-    <p>157+ commercial kitchen products across four proprietary brands.</p>
-  </div>
-  <button class="hero-scroll" onclick="this.closest('.page-banner').nextElementSibling.scrollIntoView({behavior:'smooth'})" aria-label="Scroll down">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
-  </button>
+<section class="page-banner">
+  <h1>Our Products</h1>
+  <p>157+ commercial kitchen products across four proprietary brands.</p>
 </section>
 
 <!-- ================== FILTER BAR ================== -->

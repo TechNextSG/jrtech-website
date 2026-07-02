@@ -10,9 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    .page-banner { background: #0D1117; color: #fff; }
-    .page-banner h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; margin-bottom: 16px; line-height: 1.15; }
-    .page-banner p { font-size: 1rem; color: rgba(255,255,255,.65); max-width: 540px; }
+    .page-banner { background: #0D1117; color: #fff; padding: 70px 0 56px; }
+    .page-banner h1 { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 700; margin-bottom: 8px; }
+    .page-banner p { font-size: .9rem; color: rgba(255,255,255,.65); }
     .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: .75rem; color: rgba(255,255,255,.5); margin-bottom: 16px; }
     .breadcrumb a { color: rgba(255,255,255,.65); }
     .breadcrumb a:hover { color: #fff; }
@@ -100,15 +100,12 @@
   </div>
 </header>
 
-<div class="page-banner" style="background-image:url('img/front-view-professional-kitchen-1-scaled.jpg')">
+<div class="page-banner">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>About Us</span></div>
     <h1>About JR-Tech Solution</h1>
     <p>16+ years engineering Malaysia's most demanding commercial kitchens.</p>
   </div>
-  <button class="hero-scroll" onclick="this.closest('.page-banner').nextElementSibling.scrollIntoView({behavior:'smooth'})" aria-label="Scroll down">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
-  </button>
 </div>
 
 <!-- OUR STORY -->
