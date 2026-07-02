@@ -379,9 +379,15 @@
     send(input.value);
   });
 
-  /* Close panel when clicking outside */
+  /* Close panel when clicking outside.
+     Guard with document.body.contains(e.target): if the clicked element was
+     removed from the DOM before the event bubbled (e.g. a suggestion chip
+     cleared by suggBox.innerHTML=''), .contains() returns false and we would
+     wrongly close the panel — skip the close in that case. */
   document.addEventListener('click', function(e){
-    if(isOpen && !document.getElementById('jrt-cb-wrap').contains(e.target)){
+    if(isOpen
+       && document.body.contains(e.target)
+       && !document.getElementById('jrt-cb-wrap').contains(e.target)){
       toggleChat();
     }
   });
