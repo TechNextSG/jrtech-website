@@ -1540,21 +1540,13 @@ input:focus, select:focus, textarea:focus {
   ) !important;
 }
 
-/* --- LIGHT METALLIC CARD BASE ------------------------------------------ */
-/* Applied to all cards that were flat white/grey */
+/* --- CARDS: clean white backgrounds ------------------------------------------ */
 .card,
 .mvv-card,
 .diff-card,
-.contact-info-card,
+.contact-info-card { background: #ffffff !important; border-color: rgba(90,120,140,.12) !important; }
 .svc-visual-card,
-.brand-item {
-  background: linear-gradient(135deg,
-    #F8FAFB 0%, #EBF1F6 22%,
-    #F4F7FA 45%, #E8EEF3 68%,
-    #F5F8FA 100%
-  ) !important;
-  border-color: rgba(144,186,210,.2) !important;
-}
+.brand-item { background: #f8fafb !important; border-color: rgba(90,120,140,.1) !important; }
 
 /* Shimmer ::after on cards missing it */
 .svc-visual-card,

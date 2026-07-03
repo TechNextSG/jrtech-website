@@ -10,65 +10,114 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    /* ── HERO SLIDER ── */
-    .hero-slider {
-      position: relative; height: 520px; overflow: hidden; isolation: isolate;
+    /* ── HERO VIDEO TEMPLATE ── */
+    @keyframes playPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,.28); }
+      60%       { box-shadow: 0 0 0 20px rgba(255,255,255,.0); }
+    }
+    .hero-v2 {
+      position: relative; padding: 72px 0 60px; overflow: hidden; isolation: isolate;
       background: linear-gradient(112deg,
-        #040810 0%, #0C1828 10%, #172840 19%, #1F3550 27%,
-        #152840 36%, #0A1822 46%, #142435 54%, #1D3248 63%,
-        #172840 72%, #0C1828 82%, #040810 100%
+        #050A12 0%, #0C1828 15%, #172840 30%,
+        #1A2E44 50%, #132030 70%, #0A1622 85%, #050A12 100%
       );
     }
-    @media(max-width:768px){ .hero-slider { height: auto; min-height: 380px; } }
-    .hero-slider::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: repeating-linear-gradient(
-        112deg,
+    .hero-v2::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(112deg,
         transparent 0px, transparent 50px,
-        rgba(144,189,215,.04) 50px, rgba(144,189,215,.04) 52px,
-        transparent 52px
+        rgba(144,189,215,.03) 50px, rgba(144,189,215,.03) 52px, transparent 52px
       );
       z-index: -1; pointer-events: none;
     }
-    .hero-slider::after {
-      content: '';
-      position: absolute; top: 0; left: 0;
-      width: 36%; height: 100%;
-      background: linear-gradient(to right,
-        transparent 0%, rgba(184,214,238,.04) 20%,
-        rgba(255,255,255,.08) 50%, rgba(184,214,238,.04) 80%, transparent 100%
-      );
-      animation: metalBgSweep 13s linear infinite;
-      animation-delay: -4s;
-      z-index: -1; pointer-events: none;
+    .hero-v2-grid {
+      max-width: 1200px; margin: 0 auto; padding: 0 40px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center;
     }
-    .slide { position: absolute; inset: 0; display: flex; align-items: center; opacity: 0; transition: opacity .7s ease; pointer-events: none; }
-    .slide.active { opacity: 1; pointer-events: auto; }
-    .slide-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; width: 100%; }
-    @media(max-width:768px){ .slide-content { grid-template-columns: 1fr; padding: 60px 24px 40px; } }
-    .slide-text { color: #fff; }
-    .slide-tag { display: inline-block; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: #B8CDD8; background: rgba(144,186,210,.15); border: 1px solid rgba(184,205,216,.4); padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    .slide-title { font-size: clamp(1.6rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.2; margin-bottom: 14px; }
-    .slide-title span { color: #9BBDCF; }
-    .slide-desc { font-size: .9rem; color: rgba(255,255,255,.75); line-height: 1.75; margin-bottom: 22px; max-width: 420px; }
-    .slide-bullets { list-style: none; padding: 0; margin-bottom: 26px; display: flex; flex-direction: column; gap: 7px; }
-    .slide-bullets li { font-size: .82rem; color: rgba(255,255,255,.8); display: flex; align-items: center; gap: 8px; }
-    .slide-bullets li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #9BBDCF; flex-shrink: 0; }
-    .slide-btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: linear-gradient(180deg,#8FAEC0 0%,#7A8FA0 40%,#607A8E 60%,#7A8FA0 100%); color: #fff; font-size: .85rem; font-weight: 600; border-radius: 4px; border: 1px solid rgba(160,200,220,.35); position: relative; overflow: hidden; transition: box-shadow .28s, transform .2s; box-shadow: 0 2px 6px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.15); }
+    @media(max-width:900px){ .hero-v2-grid { grid-template-columns: 1fr; gap: 36px; padding: 0 24px; } }
+    .hero-v2-text { color: #fff; }
+    .hero-v2-eyebrow {
+      display: inline-block; font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .14em; color: #B8CDD8;
+      background: rgba(144,186,210,.12); border: 1px solid rgba(184,205,216,.3);
+      padding: 5px 14px; border-radius: 20px; margin-bottom: 20px;
+    }
+    .hero-v2-title { font-size: clamp(1.9rem,3.8vw,2.9rem); font-weight: 800; line-height: 1.16; margin-bottom: 14px; }
+    .hero-v2-title span { color: #9BBDCF; }
+    .hero-v2-desc { font-size: .92rem; color: rgba(255,255,255,.7); line-height: 1.78; margin-bottom: 28px; max-width: 440px; }
+    .hero-v2-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
+    .slide-btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: linear-gradient(180deg,#8FAEC0 0%,#7A8FA0 40%,#607A8E 60%,#7A8FA0 100%); color: #fff; font-size: .875rem; font-weight: 600; border-radius: 4px; border: 1px solid rgba(160,200,220,.35); position: relative; overflow: hidden; transition: box-shadow .28s, transform .2s; box-shadow: 0 2px 6px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.15); }
     .slide-btn::after { content:''; position:absolute; top:-25%; left:-80%; width:55%; height:150%; background:linear-gradient(to right,transparent,rgba(255,255,255,.3),transparent); transform:skewX(-20deg); pointer-events:none; }
     .slide-btn:hover { background: linear-gradient(180deg,#9DC0D4 0%,#8FAEC0 40%,#7A9AB0 60%,#8FAEC0 100%); box-shadow: 0 6px 18px rgba(122,143,160,.45); transform: translateY(-1px); }
     .slide-btn:hover::after { animation: metalSheen .48s ease forwards; }
-    .slide-img-wrap { display: flex; align-items: center; justify-content: center; }
-    @media(max-width:768px){ .slide-img-wrap { display: none; } }
-    .slide-img-wrap img { max-height: 300px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 8px 30px rgba(0,0,0,.5)); }
-    .slider-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.35); cursor: pointer; transition: background .25s, transform .25s; border: none; }
-    .dot.active { background: #fff; transform: scale(1.3); }
-    .slider-prev, .slider-next { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
-    .slider-prev:hover, .slider-next:hover { background: rgba(255,255,255,.25); }
-    .slider-prev { left: 16px; }
-    .slider-next { right: 16px; }
+    .hero-v2-stats {
+      display: flex; gap: 0; flex-wrap: wrap;
+      border-top: 1px solid rgba(144,186,210,.12); padding-top: 22px;
+    }
+    .hero-v2-stat {
+      flex: 1; min-width: 64px; text-align: center;
+      border-right: 1px solid rgba(144,186,210,.1); padding: 0 14px;
+    }
+    .hero-v2-stat:first-child { padding-left: 0; text-align: left; }
+    .hero-v2-stat:last-child { border-right: none; }
+    .hero-v2-num {
+      display: block; font-size: 1.4rem; font-weight: 800;
+      background: linear-gradient(180deg,#fff 0%,#B8CDD8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 1.1; margin-bottom: 4px;
+    }
+    .hero-v2-lbl { font-size: .6rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: rgba(184,205,216,.5); }
+    /* ── Video placeholder frame ── */
+    .hero-v2-video-frame {
+      position: relative; aspect-ratio: 16/9;
+      border-radius: 10px; overflow: hidden;
+      background: linear-gradient(135deg, #080F1E 0%, #0C1828 45%, #14243A 100%);
+      border: 1px solid rgba(144,186,210,.2);
+      box-shadow: 0 24px 64px rgba(0,0,0,.55), 0 0 0 1px rgba(144,186,210,.07);
+      cursor: pointer; transition: box-shadow .3s ease, border-color .3s;
+    }
+    .hero-v2-video-frame:hover { box-shadow: 0 32px 80px rgba(0,0,0,.65), 0 0 0 1px rgba(144,186,210,.18); border-color: rgba(144,186,210,.3); }
+    .hero-v2-grid-lines {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(144,186,210,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(144,186,210,.045) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+    .hero-v2-glow {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 55%; height: 55%; border-radius: 50%;
+      background: radial-gradient(circle, rgba(144,186,210,.06) 0%, transparent 70%);
+    }
+    .hero-v2-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 76px; height: 76px; border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      border: 2px solid rgba(255,255,255,.52);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(6px);
+      animation: playPulse 2.8s ease-in-out infinite;
+      transition: transform .25s ease, background .25s;
+    }
+    .hero-v2-video-frame:hover .hero-v2-play { transform: translate(-50%,-50%) scale(1.1); background: rgba(255,255,255,.18); }
+    .hero-v2-play svg { margin-left: 5px; }
+    .hero-v2-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(5,10,20,.88) 0%, transparent 100%);
+      padding: 32px 20px 16px;
+      color: rgba(255,255,255,.6); font-size: .68rem;
+      font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-v2-caption::before { content: ''; width: 20px; height: 1px; background: rgba(184,205,216,.4); flex-shrink: 0; }
+    .hero-v2-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .hero-v2-badge {
+      font-size: .61rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em;
+      color: rgba(184,205,216,.55); background: rgba(144,186,210,.08);
+      border: 1px solid rgba(144,186,210,.16); padding: 4px 11px; border-radius: 20px;
+    }
 
     /* ── PILLARS (replaces At a Glance) ── */
     .glance-grid {
@@ -491,102 +540,47 @@
   </div>
 </header>
 
-<!-- ═══ HERO SLIDER ═══ -->
-<div class="hero-slider" id="hero-slider">
+<!-- ═══ HERO ═══ -->
+<section class="hero-v2">
+  <div class="hero-v2-grid">
 
-  <!-- Slide 1: MegCook -->
-  <div class="slide active">
-    <div class="slide-content">
-      <div class="slide-text">
-        <span class="slide-tag">MegCook Robot Chef</span>
-        <h1 class="slide-title">A New Start For <span>Robot Chefs</span></h1>
-        <p class="slide-desc">AI-powered cooking automation for high-volume commercial kitchens. Consistent results, every single time.</p>
-        <ul class="slide-bullets">
-          <li>Free Cooking Buddy System included</li>
-          <li>More than 800 cooking menus pre-loaded</li>
-          <li>Significantly reduce kitchen labour dependency</li>
-        </ul>
-        <a href="products.html#megcook" class="slide-btn">View MegCook Range &#8250;</a>
+    <!-- ── Text ── -->
+    <div class="hero-v2-text reveal">
+      <span class="hero-v2-eyebrow">Malaysia's #1 Commercial Kitchen Solution Provider</span>
+      <h1 class="hero-v2-title">Engineering Kitchens<br>That <span>Perform</span></h1>
+      <p class="hero-v2-desc">Design, supply, maintenance and chemical solutions for commercial kitchens across Malaysia. Trusted by Intel, Gleneagles, Tealive and 50+ enterprises since 2009.</p>
+      <div class="hero-v2-btns">
+        <a href="quote.html" class="slide-btn">Get a Free Quote &rsaquo;</a>
+        <a href="products.html" class="btn-outline-w">Browse Products</a>
       </div>
-      <div class="slide-img-wrap">
-        <img src="img/megcook.png" alt="MegCook Robot Chef"/>
+      <div class="hero-v2-stats">
+        <div class="hero-v2-stat"><span class="hero-v2-num">16+</span><span class="hero-v2-lbl">Years Experience</span></div>
+        <div class="hero-v2-stat"><span class="hero-v2-num">157+</span><span class="hero-v2-lbl">Products</span></div>
+        <div class="hero-v2-stat"><span class="hero-v2-num">50+</span><span class="hero-v2-lbl">Enterprise Clients</span></div>
+        <div class="hero-v2-stat"><span class="hero-v2-num">HACCP</span><span class="hero-v2-lbl">Certified</span></div>
       </div>
     </div>
-  </div>
 
-  <!-- Slide 2: JR-Chem -->
-  <div class="slide">
-    <div class="slide-content">
-      <div class="slide-text">
-        <span class="slide-tag">JR-Chem Dishwashers</span>
-        <h1 class="slide-title">Rental &amp; <span>Purchase</span> Available</h1>
-        <p class="slide-desc">Industrial dishwashing systems powered by Italian pump technology for the highest throughput.</p>
-        <ul class="slide-bullets">
-          <li>840+ plates washed per 60 minutes</li>
-          <li>HACCP-compliant auto-dosing chemical system</li>
-          <li>Flexible rental or outright purchase options</li>
-        </ul>
-        <a href="products.html#jrchem" class="slide-btn">View JR-Chem Range &#8250;</a>
+    <!-- ── Video Placeholder ── -->
+    <div class="reveal">
+      <div class="hero-v2-video-frame" role="button" aria-label="Watch our kitchen solutions video">
+        <div class="hero-v2-grid-lines"></div>
+        <div class="hero-v2-glow"></div>
+        <div class="hero-v2-play">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="hero-v2-caption">Kitchen Solutions in Action &mdash; Demo Video Coming Soon</div>
       </div>
-      <div class="slide-img-wrap">
-        <img src="img/JR-Chem.png" alt="JR-Chem Dishwasher"/>
+      <div class="hero-v2-badges">
+        <span class="hero-v2-badge">Established 2009</span>
+        <span class="hero-v2-badge">Penang, Malaysia</span>
+        <span class="hero-v2-badge">End-to-End Service</span>
+        <span class="hero-v2-badge">24/7 Support</span>
       </div>
     </div>
-  </div>
 
-  <!-- Slide 3: J-Nox -->
-  <div class="slide">
-    <div class="slide-content">
-      <div class="slide-text">
-        <span class="slide-tag">J-Nox Induction Series</span>
-        <h1 class="slide-title">Commercial <span>Induction</span> Cooker Series</h1>
-        <p class="slide-desc">No open flame. Green kitchen certified. The safe, energy-efficient choice for modern commercial kitchens.</p>
-        <ul class="slide-bullets">
-          <li>38% lower energy consumption vs. gas</li>
-          <li>No open flame — safer working environment</li>
-          <li>144 models to suit every kitchen application</li>
-        </ul>
-        <a href="products.html#jnox" class="slide-btn">View J-Nox Range &#8250;</a>
-      </div>
-      <div class="slide-img-wrap">
-        <img src="img/jnox-2.png" alt="J-Nox Induction Cooker"/>
-      </div>
-    </div>
   </div>
-
-  <!-- Slide 4: Tamago -->
-  <div class="slide">
-    <div class="slide-content">
-      <div class="slide-text">
-        <span class="slide-tag">Tamago Serving Equipment</span>
-        <h1 class="slide-title">Perfect <span>Serving</span> Every Time</h1>
-        <p class="slide-desc">Precision food serving solutions designed for hotels, hospitals and high-volume F&amp;B operations.</p>
-        <ul class="slide-bullets">
-          <li>Temperature-controlled serving stations</li>
-          <li>Designed for hotels, hospitals and cafeterias</li>
-          <li>Full after-sales and spare parts support</li>
-        </ul>
-        <a href="products.html#tamago" class="slide-btn">View Tamago Range &#8250;</a>
-      </div>
-      <div class="slide-img-wrap">
-        <img src="img/tamago.png" alt="Tamago Serving Equipment"/>
-      </div>
-    </div>
-  </div>
-
-  <button class="slider-prev" id="slider-prev" aria-label="Previous">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>
-  <button class="slider-next" id="slider-next" aria-label="Next">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>
-  <div class="slider-dots" id="slider-dots">
-    <button class="dot active" data-i="0"></button>
-    <button class="dot" data-i="1"></button>
-    <button class="dot" data-i="2"></button>
-    <button class="dot" data-i="3"></button>
-  </div>
-</div>
+</section>
 
 <!-- ═══ TICKER ═══ -->
 <div class="ticker-band" aria-hidden="true">
@@ -955,22 +949,6 @@
   /* Header compact on scroll */
   var hdr = document.getElementById('site-header');
   window.addEventListener('scroll', function(){ hdr.classList.toggle('compact', scrollY > 50); }, {passive:true});
-
-  /* Hero Slider */
-  var slides = document.querySelectorAll('.slide');
-  var dots   = document.querySelectorAll('.dot');
-  var idx = 0, timer;
-  function goTo(n){
-    slides[idx].classList.remove('active'); dots[idx].classList.remove('active');
-    idx = (n + slides.length) % slides.length;
-    slides[idx].classList.add('active'); dots[idx].classList.add('active');
-  }
-  function next(){ goTo(idx + 1); }
-  function reset(){ clearInterval(timer); timer = setInterval(next, 5000); }
-  document.getElementById('slider-next').addEventListener('click', function(){ next(); reset(); });
-  document.getElementById('slider-prev').addEventListener('click', function(){ goTo(idx - 1); reset(); });
-  dots.forEach(function(d){ d.addEventListener('click', function(){ goTo(+d.dataset.i); reset(); }); });
-  reset();
 
   /* Scroll reveal */
   var ro = new IntersectionObserver(function(entries){
