@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Page Not Found — JR-Tech Solution Sdn Bhd</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .error-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(112deg, #050A12 0%, #0C1828 40%, #172840 100%);
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .error-inner { max-width: 500px; }
+    .error-code {
+      font-size: clamp(5rem, 18vw, 9rem);
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
+      opacity: .12;
+      letter-spacing: -4px;
+      margin-bottom: -20px;
+    }
+    .error-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .error-desc {
+      font-size: .95rem;
+      color: rgba(255,255,255,.6);
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+    .error-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-home {
+      display: inline-block;
+      background: #1E8CFF;
+      color: #fff;
+      font-weight: 600;
+      font-size: .9rem;
+      padding: 13px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-home:hover { background: #0070E0; }
+    .btn-contact {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,.3);
+      color: rgba(255,255,255,.8);
+      font-weight: 600;
+      font-size: .9rem;
+      padding: 13px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-contact:hover { border-color: #fff; color: #fff; }
+  </style>
+</head>
+<body style="margin:0;background:#050A12;">
+
+<div class="error-page">
+  <div class="error-inner">
+    <div class="error-code">404</div>
+    <h1 class="error-title">Page Not Found</h1>
+    <p class="error-desc">
+      The page you're looking for doesn't exist or has been moved.<br>
+      Let's get you back on track.
+    </p>
+    <div class="error-actions">
+      <a href="index.html" class="btn-home">Go to Homepage</a>
+      <a href="contact.html" class="btn-contact">Contact Us</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

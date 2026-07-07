@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://technextsg.github.io/jrtech-website/sitemap.xml
