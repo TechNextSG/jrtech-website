@@ -516,12 +516,16 @@ ul, ol { list-style: none; padding: 0; }
   background: #050A12;
   border-bottom: 1px solid rgba(144,180,210,0.2);
 }
-/* taller hero on pages that carry a background video/image, so the
-   subject of the footage is properly visible; content is centred */
+/* 16:9 hero on pages that carry a background video/image, so the footage
+   keeps its cinematic ratio; content sits vertically centred, left-aligned */
 .page-banner:has(.page-banner-bg) {
-  min-height: 74vh;
+  aspect-ratio: 16 / 9;
+  min-height: 520px;
   display: flex;
   align-items: center;
+}
+@media(max-width:768px){
+  .page-banner:has(.page-banner-bg) { aspect-ratio: auto; min-height: 84vh; }
 }
 /* full-bleed background video or image */
 .page-banner-bg {
