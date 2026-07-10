@@ -144,14 +144,22 @@ ul, ol { list-style: none; padding: 0; }
 
 /* === HEADER === */
 #site-header {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: 0; left: 0; right: 0;
   z-index: 200;
-  background: #0D1117;
-  transition: padding 0.25s;
-  border-bottom: 1px solid rgba(122,143,160,0.15);
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
-#site-header.compact .hdr-inner { height: 58px; }
+/* solid dark bar once scrolled past the dark hero onto light content */
+#site-header.solid {
+  background-color: #0D1117;
+  background-image: radial-gradient(rgba(144,186,210,0.035) 1px, transparent 1px);
+  background-size: 18px 18px;
+  border-bottom: 1px solid rgba(122,143,160,0.15);
+  box-shadow: 0 2px 18px rgba(0,0,0,0.35);
+}
+/* header stays a fixed 70px height — no shrink-on-scroll */
 .hdr-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -1419,10 +1427,6 @@ tbody td:first-child { font-weight: 600; color: #1a1a2e; }
 .stats-band {
   background-image: radial-gradient(rgba(144,186,210,0.05) 1px, transparent 1px);
   background-size: 20px 20px;
-}
-#site-header {
-  background-image: radial-gradient(rgba(144,186,210,0.035) 1px, transparent 1px);
-  background-size: 18px 18px;
 }
 
 /* Contact info card metallic hover */

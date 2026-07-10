@@ -163,4 +163,20 @@
     })();
   })();
 
+  /* ── Header: transparent over the dark hero, solid over light content ── */
+  (function(){
+    var header = document.getElementById('site-header');
+    if (!header) return;
+    var hero = document.querySelector('.hero-v2, .page-banner');
+    function update(){
+      var trigger = hero
+        ? (hero.offsetTop + hero.offsetHeight - header.offsetHeight)
+        : 40;
+      header.classList.toggle('solid', window.scrollY >= trigger);
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+  })();
+
 })();
