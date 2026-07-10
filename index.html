@@ -27,19 +27,51 @@
     .hero-v2 {
       position: relative; min-height: 100vh; display: flex; align-items: center;
       padding: 100px 0 60px; overflow: hidden; isolation: isolate;
-      background: linear-gradient(112deg,
-        #050A12 0%, #0C1828 15%, #172840 30%,
-        #1A2E44 50%, #132030 70%, #0A1622 85%, #050A12 100%
+      background: #050A12;
+    }
+    .hero-v2-bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: -2; pointer-events: none;
+    }
+    .hero-v2-overlay {
+      position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background: linear-gradient(
+        100deg,
+        rgba(5,10,18,0.82) 0%,
+        rgba(10,20,32,0.68) 45%,
+        rgba(5,10,18,0.42) 100%
       );
     }
     .hero-v2::before {
       content: ''; position: absolute; inset: 0;
       background: repeating-linear-gradient(112deg,
         transparent 0px, transparent 50px,
-        rgba(144,189,215,.03) 50px, rgba(144,189,215,.03) 52px, transparent 52px
+        rgba(144,189,215,.025) 50px, rgba(144,189,215,.025) 52px, transparent 52px
       );
       z-index: -1; pointer-events: none;
     }
+    .hero-v2-media {
+      position: relative; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 28px 72px rgba(0,0,0,.55), 0 0 0 1px rgba(144,186,210,.12);
+      aspect-ratio: 4/3;
+    }
+    .hero-v2-media img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .hero-v2-media-badge {
+      position: absolute; bottom: 16px; left: 16px;
+      background: rgba(5,10,18,.72); backdrop-filter: blur(8px);
+      border: 1px solid rgba(144,186,210,.2); border-radius: 8px;
+      padding: 8px 14px; color: rgba(255,255,255,.85); font-size: .68rem;
+      font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hero-v2-media-badge::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: #5DB77A; box-shadow: 0 0 0 2px rgba(93,183,122,.25);
+      flex-shrink: 0;
+    }
+    @media(max-width:900px){ .hero-v2-media { display: none; } }
     .hero-v2-grid {
       max-width: 1200px; margin: 0 auto; padding: 0 40px; width: 100%;
       display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center;
@@ -484,6 +516,11 @@
 
 <!-- ═══ HERO ═══ -->
 <section class="hero-v2">
+  <video class="hero-v2-bg" autoplay muted loop playsinline poster="img/hero-bg.png">
+    <source src="img/hero-bg.mp4" type="video/mp4"/>
+  </video>
+  <div class="hero-v2-overlay"></div>
+
   <div class="hero-v2-grid">
 
     <!-- ── Text ── -->
@@ -503,6 +540,11 @@
       </div>
     </div>
 
+    <!-- ── Media ── -->
+    <div class="hero-v2-media reveal">
+      <img src="img/hero-bg.png" alt="Commercial kitchen — steaming pot on professional stainless steel range"/>
+      <div class="hero-v2-media-badge">Live Operations · Penang, Malaysia</div>
+    </div>
 
   </div>
 </section>
