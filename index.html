@@ -19,96 +19,187 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    /* ── HERO VIDEO TEMPLATE ── */
+    /* ── HERO ANIMATIONS ── */
+    @keyframes heroSlideUp {
+      from { opacity: 0; transform: translateY(36px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes floatOrb {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%     { transform: translate(24px,-38px) scale(1.06); }
+      66%     { transform: translate(-18px,22px) scale(0.95); }
+    }
+    @keyframes glowPulse {
+      0%,100% { opacity: .18; transform: scale(1); }
+      50%     { opacity: .32; transform: scale(1.08); }
+    }
+    @keyframes shimmerLine {
+      0%   { transform: translateX(-100%) skewX(-20deg); }
+      100% { transform: translateX(400%) skewX(-20deg); }
+    }
+    @keyframes statCountUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     @keyframes playPulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,.28); }
       60%       { box-shadow: 0 0 0 20px rgba(255,255,255,.0); }
     }
+
+    /* ── HERO SECTION ── */
     .hero-v2 {
-      position: relative; min-height: 100vh; display: flex; align-items: center;
-      padding: 100px 0 60px; overflow: hidden; isolation: isolate;
+      position: relative; height: 100vh; min-height: 600px;
+      display: flex; align-items: center;
+      padding: 0; overflow: hidden; isolation: isolate;
       background: #050A12;
     }
     .hero-v2-bg {
       position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: cover; z-index: -2; pointer-events: none;
+      transform-origin: center center;
+      transition: transform .1s linear;
     }
     .hero-v2-overlay {
       position: absolute; inset: 0; z-index: -1; pointer-events: none;
       background: linear-gradient(
         100deg,
-        rgba(5,10,18,0.82) 0%,
-        rgba(10,20,32,0.68) 45%,
-        rgba(5,10,18,0.42) 100%
+        rgba(3,7,14,0.88) 0%,
+        rgba(8,16,28,0.72) 42%,
+        rgba(3,7,14,0.50) 100%
       );
     }
     .hero-v2::before {
       content: ''; position: absolute; inset: 0;
       background: repeating-linear-gradient(112deg,
-        transparent 0px, transparent 50px,
-        rgba(144,189,215,.025) 50px, rgba(144,189,215,.025) 52px, transparent 52px
+        transparent 0px, transparent 60px,
+        rgba(144,189,215,.018) 60px, rgba(144,189,215,.018) 62px, transparent 62px
       );
       z-index: -1; pointer-events: none;
     }
-    .hero-v2-media {
-      position: relative; border-radius: 14px; overflow: hidden;
-      box-shadow: 0 28px 72px rgba(0,0,0,.55), 0 0 0 1px rgba(144,186,210,.12);
-      aspect-ratio: 4/3;
+
+    /* ── Floating orbs ── */
+    .hero-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(72px); pointer-events: none; z-index: -1;
+      animation: floatOrb ease-in-out infinite;
     }
-    .hero-v2-media img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
+    .hero-orb-1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(155,189,207,.11) 0%, transparent 68%);
+      top: -8%; right: 18%; animation-duration: 14s;
     }
-    .hero-v2-media-badge {
-      position: absolute; bottom: 16px; left: 16px;
-      background: rgba(5,10,18,.72); backdrop-filter: blur(8px);
-      border: 1px solid rgba(144,186,210,.2); border-radius: 8px;
-      padding: 8px 14px; color: rgba(255,255,255,.85); font-size: .68rem;
-      font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-      display: flex; align-items: center; gap: 8px;
+    .hero-orb-2 {
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(94,134,184,.09) 0%, transparent 68%);
+      bottom: 12%; left: 8%; animation-duration: 11s; animation-delay: -5s;
     }
-    .hero-v2-media-badge::before {
-      content: ''; width: 7px; height: 7px; border-radius: 50%;
-      background: #5DB77A; box-shadow: 0 0 0 2px rgba(93,183,122,.25);
-      flex-shrink: 0;
+    .hero-orb-3 {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(144,186,210,.12) 0%, transparent 68%);
+      top: 55%; right: 40%; animation-duration: 8s; animation-delay: -3s;
     }
-    @media(max-width:900px){ .hero-v2-media { display: none; } }
+
+    /* ── Glow behind title ── */
+    .hero-glow {
+      position: absolute; top: 50%; left: 8%;
+      width: 480px; height: 340px;
+      transform: translate(0,-50%);
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(120,170,210,.12) 0%, transparent 70%);
+      filter: blur(40px);
+      pointer-events: none; z-index: 0;
+      animation: glowPulse 5s ease-in-out infinite;
+    }
+
+    /* ── Grid ── */
     .hero-v2-grid {
-      max-width: 1200px; margin: 0 auto; padding: 0 40px; width: 100%;
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto; padding: 0 64px; width: 100%;
       display: grid; grid-template-columns: 1fr 1fr; align-items: center;
     }
-    @media(max-width:900px){ .hero-v2-grid { grid-template-columns: 1fr; padding: 0 24px; } }
+    @media(max-width:900px){ .hero-v2-grid { grid-template-columns: 1fr; padding: 0 28px; } }
+
+    /* ── Text block ── */
     .hero-v2-text { color: #fff; }
+
+    /* Entrance animations — staggered */
     .hero-v2-eyebrow {
-      display: inline-block; font-size: .68rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .14em; color: #B8CDD8;
-      background: rgba(144,186,210,.12); border: 1px solid rgba(184,205,216,.3);
-      padding: 5px 14px; border-radius: 20px; margin-bottom: 20px;
+      display: inline-block; font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .15em; color: #C4D8E4;
+      background: rgba(144,186,210,.13); border: 1px solid rgba(184,205,216,.32);
+      padding: 6px 16px; border-radius: 20px; margin-bottom: 22px;
+      animation: heroSlideUp .65s cubic-bezier(.2,.6,.35,1) both;
+      animation-delay: .15s;
     }
-    .hero-v2-title { font-size: clamp(1.9rem,3.8vw,2.9rem); font-weight: 800; line-height: 1.16; margin-bottom: 14px; }
-    .hero-v2-title span { color: #9BBDCF; }
-    .hero-v2-desc { font-size: .92rem; color: rgba(255,255,255,.7); line-height: 1.78; margin-bottom: 28px; max-width: 440px; }
-    .hero-v2-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
-    .slide-btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: linear-gradient(180deg,#8FAEC0 0%,#7A8FA0 40%,#607A8E 60%,#7A8FA0 100%); color: #fff; font-size: .875rem; font-weight: 600; border-radius: 4px; border: 1px solid rgba(160,200,220,.35); position: relative; overflow: hidden; transition: box-shadow .28s, transform .2s; box-shadow: 0 2px 6px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.15); }
-    .slide-btn::after { content:''; position:absolute; top:-25%; left:-80%; width:55%; height:150%; background:linear-gradient(to right,transparent,rgba(255,255,255,.3),transparent); transform:skewX(-20deg); pointer-events:none; }
-    .slide-btn:hover { background: linear-gradient(180deg,#9DC0D4 0%,#8FAEC0 40%,#7A9AB0 60%,#8FAEC0 100%); box-shadow: 0 6px 18px rgba(122,143,160,.45); transform: translateY(-1px); }
-    .slide-btn:hover::after { animation: metalSheen .48s ease forwards; }
+    .hero-v2-title {
+      font-size: clamp(2.8rem, 5.2vw, 5rem);
+      font-weight: 800; line-height: 1.1; margin-bottom: 18px;
+      animation: heroSlideUp .8s cubic-bezier(.15,.6,.35,1) both;
+      animation-delay: .32s;
+    }
+    .hero-v2-title span {
+      color: #9BBDCF;
+      position: relative; display: inline-block;
+    }
+    .hero-v2-title span::after {
+      content: ''; position: absolute; left: 0; bottom: -4px;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, #9BBDCF 0%, rgba(155,189,207,0) 100%);
+      border-radius: 2px;
+    }
+    .hero-v2-desc {
+      font-size: 1rem; color: rgba(255,255,255,.72); line-height: 1.8;
+      margin-bottom: 32px; max-width: 460px;
+      animation: heroSlideUp .7s ease both; animation-delay: .52s;
+    }
+    .hero-v2-btns {
+      display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 38px;
+      animation: heroSlideUp .7s ease both; animation-delay: .68s;
+    }
     .hero-v2-stats {
       display: flex; gap: 0; flex-wrap: wrap;
-      border-top: 1px solid rgba(144,186,210,.12); padding-top: 22px;
+      border-top: 1px solid rgba(144,186,210,.14); padding-top: 24px;
+      animation: heroSlideUp .7s ease both; animation-delay: .82s;
     }
+
+    /* Button polish */
+    .slide-btn {
+      display: inline-flex; align-items: center; gap: 7px; padding: 13px 30px;
+      background: linear-gradient(180deg,#8FAEC0 0%,#7A8FA0 40%,#607A8E 60%,#7A8FA0 100%);
+      color: #fff; font-size: .9rem; font-weight: 600; border-radius: 5px;
+      border: 1px solid rgba(160,200,220,.35); position: relative; overflow: hidden;
+      transition: box-shadow .28s, transform .22s;
+      box-shadow: 0 2px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.15);
+    }
+    .slide-btn::after {
+      content:''; position:absolute; top:-25%; left:-80%; width:55%; height:150%;
+      background:linear-gradient(to right,transparent,rgba(255,255,255,.35),transparent);
+      transform:skewX(-20deg); pointer-events:none;
+    }
+    .slide-btn:hover {
+      background: linear-gradient(180deg,#9DC0D4 0%,#8FAEC0 40%,#7A9AB0 60%,#8FAEC0 100%);
+      box-shadow: 0 8px 24px rgba(122,143,160,.5); transform: translateY(-2px);
+    }
+    .slide-btn:hover::after { animation: shimmerLine .5s ease forwards; }
+
+    /* Stats */
     .hero-v2-stat {
       flex: 1; min-width: 64px; text-align: center;
-      border-right: 1px solid rgba(144,186,210,.1); padding: 0 14px;
+      border-right: 1px solid rgba(144,186,210,.1); padding: 0 16px;
     }
     .hero-v2-stat:first-child { padding-left: 0; text-align: left; }
     .hero-v2-stat:last-child { border-right: none; }
     .hero-v2-num {
-      display: block; font-size: 1.4rem; font-weight: 800;
+      display: block; font-size: 1.55rem; font-weight: 800;
       background: linear-gradient(180deg,#fff 0%,#B8CDD8 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; line-height: 1.1; margin-bottom: 4px;
+      background-clip: text; line-height: 1.1; margin-bottom: 5px;
     }
-    .hero-v2-lbl { font-size: .6rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: rgba(184,205,216,.5); }
+    .hero-v2-lbl { font-size: .62rem; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; color: rgba(184,205,216,.5); }
     /* ── Video placeholder frame ── */
     .hero-v2-video-frame {
       position: relative; aspect-ratio: 16/9;
@@ -515,11 +606,15 @@
 </header>
 
 <!-- ═══ HERO ═══ -->
-<section class="hero-v2">
-  <video class="hero-v2-bg" autoplay muted loop playsinline poster="img/hero-bg.png">
+<section class="hero-v2" id="hero-v2">
+  <video class="hero-v2-bg" id="hero-bg-vid" autoplay muted loop playsinline poster="img/hero-bg.png">
     <source src="img/hero-bg.mp4" type="video/mp4"/>
   </video>
   <div class="hero-v2-overlay"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-glow"></div>
 
   <div class="hero-v2-grid">
 
@@ -533,9 +628,9 @@
         <a href="products.html" class="btn-outline-w">Browse Products</a>
       </div>
       <div class="hero-v2-stats">
-        <div class="hero-v2-stat"><span class="hero-v2-num">16+</span><span class="hero-v2-lbl">Years Experience</span></div>
-        <div class="hero-v2-stat"><span class="hero-v2-num">157+</span><span class="hero-v2-lbl">Products</span></div>
-        <div class="hero-v2-stat"><span class="hero-v2-num">50+</span><span class="hero-v2-lbl">Enterprise Clients</span></div>
+        <div class="hero-v2-stat"><span class="hero-v2-num" data-target="16" data-suffix="+">16+</span><span class="hero-v2-lbl">Years Experience</span></div>
+        <div class="hero-v2-stat"><span class="hero-v2-num" data-target="157" data-suffix="+">157+</span><span class="hero-v2-lbl">Products</span></div>
+        <div class="hero-v2-stat"><span class="hero-v2-num" data-target="50" data-suffix="+">50+</span><span class="hero-v2-lbl">Enterprise Clients</span></div>
         <div class="hero-v2-stat"><span class="hero-v2-num">HACCP</span><span class="hero-v2-lbl">Certified</span></div>
       </div>
     </div>
@@ -934,5 +1029,46 @@
 </script>
 <script src="interactions.js"></script>
 <script src="chatbot.js"></script>
+<script>
+/* ── Hero: mouse parallax on background video ── */
+(function(){
+  var hero = document.getElementById('hero-v2');
+  var vid  = document.getElementById('hero-bg-vid');
+  if (!hero || !vid) return;
+  var rx = 0, ry = 0, cx = 0, cy = 0;
+  hero.addEventListener('mousemove', function(e){
+    var r = hero.getBoundingClientRect();
+    rx = (e.clientX - r.left) / r.width  - 0.5;
+    ry = (e.clientY - r.top)  / r.height - 0.5;
+  });
+  hero.addEventListener('mouseleave', function(){ rx = 0; ry = 0; });
+  (function loop(){
+    cx += (rx - cx) * 0.04;
+    cy += (ry - cy) * 0.04;
+    vid.style.transform = 'scale(1.06) translate(' + (cx * -14) + 'px,' + (cy * -10) + 'px)';
+    requestAnimationFrame(loop);
+  })();
+
+  /* ── Stat counter animation ── */
+  var nums = document.querySelectorAll('.hero-v2-num[data-target]');
+  if (!nums.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      var el = en.target, target = +el.dataset.target, suffix = el.dataset.suffix || '';
+      var start = 0, dur = 1400, t0 = null;
+      requestAnimationFrame(function step(ts){
+        if (!t0) t0 = ts;
+        var pct = Math.min((ts - t0) / dur, 1);
+        var ease = 1 - Math.pow(1 - pct, 3);
+        el.textContent = Math.round(start + (target - start) * ease) + suffix;
+        if (pct < 1) requestAnimationFrame(step);
+      });
+    });
+  }, { threshold: 0.5 });
+  nums.forEach(function(n){ io.observe(n); });
+})();
+</script>
 </body>
 </html>

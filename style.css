@@ -479,12 +479,25 @@ ul, ol { list-style: none; padding: 0; }
 }
 
 /* === PAGE BANNER (inner pages) === */
+@keyframes bannerSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bannerFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes bannerLineExpand {
+  from { width: 0; opacity: 0; }
+  to   { width: 48px; opacity: 1; }
+}
 .page-banner {
   background: #0D1117;
   color: #ffffff;
-  padding: 70px 0 56px;
+  padding: 90px 0 72px;
   position: relative;
   border-bottom: 1px solid rgba(144,180,210,0.2);
+  overflow: hidden;
 }
 .page-banner::before {
   content: '';
@@ -493,15 +506,36 @@ ul, ol { list-style: none; padding: 0; }
   height: 2px;
   background: linear-gradient(90deg, transparent 0%, #607D8E 20%, #B8CDD8 50%, #607D8E 80%, transparent 100%);
 }
+/* subtle diagonal grid overlay */
+.page-banner::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    112deg,
+    transparent 0px, transparent 55px,
+    rgba(144,186,210,.02) 55px, rgba(144,186,210,.02) 57px, transparent 57px
+  );
+  pointer-events: none; z-index: 0;
+}
+.page-banner .container { position: relative; z-index: 1; }
 .page-banner h1 {
-  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight: 800;
+  margin-bottom: 10px;
   text-wrap: balance;
+  line-height: 1.12;
+  animation: bannerSlideUp .7s cubic-bezier(.2,.6,.35,1) both;
+  animation-delay: .1s;
 }
 .page-banner p {
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.6);
+  font-size: 1rem;
+  color: rgba(255,255,255,0.62);
+  animation: bannerSlideUp .65s ease both;
+  animation-delay: .28s;
+}
+.page-banner .breadcrumb {
+  animation: bannerFadeIn .5s ease both;
+  animation-delay: 0s;
 }
 .breadcrumb {
   display: flex;
