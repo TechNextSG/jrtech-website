@@ -517,6 +517,56 @@
     /* Stagger so sections don't sweep simultaneously */
     .glance-grid::after { animation-delay: -3.1s; }
     .cta-band::after    { animation-delay: -6.4s; }
+
+    /* ── Pillar photos (from jrtech.com.my At-a-Glance) ── */
+    .glance-photo { border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; margin-bottom: 20px; }
+    .glance-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .45s ease; }
+    .glance-card:hover .glance-photo img { transform: scale(1.05); }
+
+    /* ── Mission/Vision photos ── */
+    .mv-card-img { border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; margin-bottom: 18px; }
+    .mv-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .45s ease; }
+    .mv-card:hover .mv-card-img img { transform: scale(1.05); }
+
+    /* ── We Specialized In ── */
+    .spec-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    @media(max-width:900px){ .spec-grid { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:600px){ .spec-grid { grid-template-columns: 1fr; } }
+    .spec-item {
+      background: #fff; border: 1px solid rgba(90,120,140,.12); border-radius: 8px;
+      padding: 26px 22px; display: flex; gap: 16px; align-items: flex-start;
+      transition: box-shadow .3s ease, border-color .3s ease, transform .2s ease;
+    }
+    .spec-item:hover { border-color: #8FAEC0; box-shadow: 0 8px 24px rgba(90,122,144,.14); transform: translateY(-2px); }
+    .spec-num {
+      font-size: 1.6rem; font-weight: 800; line-height: 1; flex-shrink: 0;
+      background: linear-gradient(180deg, #D4E4EE 0%, #9BBDCF 50%, #607D8E 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .spec-name { font-size: .92rem; font-weight: 700; color: #1a1a2e; line-height: 1.45; padding-top: 4px; }
+
+    /* ── Scope of Work ── */
+    .scope-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 44px; align-items: center; }
+    @media(max-width:900px){ .scope-grid { grid-template-columns: 1fr; } }
+    .scope-img { border-radius: 10px; overflow: hidden; box-shadow: 0 18px 48px rgba(13,17,23,.18); }
+    .scope-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .scope-desc { font-size: .92rem; color: #5a6378; line-height: 1.75; margin-bottom: 22px; }
+    .scope-list { list-style: none; padding: 0; display: grid; gap: 10px; }
+    .scope-list li {
+      display: flex; align-items: center; gap: 12px;
+      font-size: .9rem; font-weight: 600; color: #1a1a2e;
+      background: #fff; border: 1px solid rgba(90,120,140,.12); border-radius: 6px;
+      padding: 12px 16px; transition: border-color .25s, box-shadow .25s;
+    }
+    .scope-list li:hover { border-color: #8FAEC0; box-shadow: 0 4px 14px rgba(90,122,144,.12); }
+    .scope-list li::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #C8D8E4 0%, #7A8FA0 100%);
+      box-shadow: 0 0 8px rgba(144,186,210,.5);
+    }
+
+    /* ── Client logos ── */
+    .cli img { max-height: 46px; max-width: 78%; object-fit: contain; }
   </style>
 </head>
 <body>
@@ -598,11 +648,22 @@
   </div>
 </div>
 
+<!-- ═══ AT A GLANCE INTRO ═══ -->
+<section class="section" style="padding-bottom:44px;">
+  <div class="container text-center reveal">
+    <p class="eyebrow">At a Glance</p>
+    <h2 class="section-title">JR-Tech &mdash; Established in 2009</h2>
+    <div class="divider" style="margin:14px auto 24px;"></div>
+    <p class="section-sub" style="margin:0 auto;">Since 2009, JR-Tech has delivered cost-effective approaches in commercial kitchen design and build &mdash; supplying kitchen equipment and providing training on operation and maintenance, while adhering to strict standards that ensure quality, safety and efficiency in every project.</p>
+  </div>
+</section>
+
 <!-- ═══ PILLARS ═══ -->
 <div class="glance-grid">
 
   <div class="glance-card">
     <span class="glance-wm">01</span>
+    <div class="glance-photo"><img src="img/Cost-Effective.jpg" alt="Cost effective kitchen solutions" loading="lazy" decoding="async"/></div>
     <div class="glance-icon-box">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -621,6 +682,7 @@
 
   <div class="glance-card">
     <span class="glance-wm">02</span>
+    <div class="glance-photo"><img src="img/Strict-Standard.jpg" alt="Strict quality standards" loading="lazy" decoding="async"/></div>
     <div class="glance-icon-box">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
@@ -639,6 +701,7 @@
 
   <div class="glance-card">
     <span class="glance-wm">03</span>
+    <div class="glance-photo"><img src="img/b3.jpg" alt="Best value kitchen equipment" loading="lazy" decoding="async"/></div>
     <div class="glance-icon-box">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
@@ -713,23 +776,25 @@
 
       <div class="mv-card">
         <div class="mv-card-num">01</div>
+        <div class="mv-card-img"><img src="img/front-view-professional-kitchen-1-scaled.jpg" alt="Professional commercial kitchen" loading="lazy" decoding="async"/></div>
         <div class="mv-card-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
         </div>
         <div class="mv-card-label">Our Mission</div>
         <h3 class="mv-card-title">Delivering Kitchen Excellence</h3>
-        <p class="mv-card-text">To become Malaysia's leading premier provider in Kitchen Facility Services, delivering quality products and technical excellence that exceeds client expectations at every engagement.</p>
+        <p class="mv-card-text">Our mission is to become one of the leading premier providers in the Kitchen Facility Services industry nationwide &mdash; delivering quality products and technical excellence that exceed client expectations.</p>
         <div class="mv-card-bar"></div>
       </div>
 
       <div class="mv-card">
         <div class="mv-card-num">02</div>
+        <div class="mv-card-img"><img src="img/beautiful-light-lamp-decoration-scaled.jpg" alt="Restaurant interior lighting" loading="lazy" decoding="async"/></div>
         <div class="mv-card-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </div>
         <div class="mv-card-label">Our Vision</div>
         <h3 class="mv-card-title">Leading the Industry</h3>
-        <p class="mv-card-text">To be the premier kitchen solution provider and the leading commercial kitchen engineering platform in Malaysia — recognised for innovation, reliability and service excellence.</p>
+        <p class="mv-card-text">The vision of JR-Tech Solution is to become the premier solution provider and the leading commercial kitchen platform nationwide &mdash; recognised for innovation, reliability and service excellence.</p>
         <div class="mv-card-bar"></div>
       </div>
 
@@ -853,6 +918,52 @@
   </div>
 </section>
 
+<!-- ═══ WE SPECIALIZED IN ═══ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="eyebrow">Work With The Experts</p>
+      <h2 class="section-title">We Specialized In</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Six core disciplines covering every phase of your commercial kitchen project.</p>
+    </div>
+    <div class="spec-grid stagger" style="margin-top:32px;">
+      <div class="spec-item"><span class="spec-num">01</span><span class="spec-name">Commercial Kitchen Space Planning &amp; Design</span></div>
+      <div class="spec-item"><span class="spec-num">02</span><span class="spec-name">Customize / Fabricate, Equipment Supply and Build</span></div>
+      <div class="spec-item"><span class="spec-num">03</span><span class="spec-name">Design LP Gas System and Submission</span></div>
+      <div class="spec-item"><span class="spec-num">04</span><span class="spec-name">Food Menu Engineering &amp; Training</span></div>
+      <div class="spec-item"><span class="spec-num">05</span><span class="spec-name">Maintenance Service</span></div>
+      <div class="spec-item"><span class="spec-num">06</span><span class="spec-name">Solutions Supply</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCOPE OF WORK ═══ -->
+<section class="section">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="eyebrow">Scope of Work</p>
+      <h2 class="section-title">We Provide Total F&amp;B Solutions</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="scope-grid reveal" style="margin-top:36px;">
+      <div class="scope-img"><img src="img/s4.jpg" alt="Commercial kitchen project planning" loading="lazy" decoding="async"/></div>
+      <div class="scope-body">
+        <p class="scope-desc">We put major emphasis on the planning phase and treat it as one of the most important parts of any project. Our experienced engineers help you avoid possible obstacles and provide detailed solutions on the technologies to be used, materials and the important decisions in different situations.</p>
+        <ul class="scope-list stagger">
+          <li>Logistic and Flow Diagram</li>
+          <li>Equipment and Capacity Calculations</li>
+          <li>Kitchen Layout Plans with Equipment Listing and Catalogue</li>
+          <li>Kitchen Technical Drawing</li>
+          <li>Tender Drawing</li>
+          <li>Tender Specifications</li>
+          <li>Tender Bills of Quantities</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ CLIENTS ═══ -->
 <section class="section section-alt">
   <div class="container">
@@ -862,20 +973,20 @@
       <div class="divider"></div>
     </div>
     <div class="clients-grid stagger" style="margin-top:32px;">
-      <div class="cli">First Solar</div>
-      <div class="cli">Intel</div>
-      <div class="cli">Infineon</div>
-      <div class="cli">B.Braun</div>
-      <div class="cli">Micron</div>
-      <div class="cli">Osram</div>
-      <div class="cli">Inari Technology</div>
-      <div class="cli">Gleneagles Hospital</div>
-      <div class="cli">Adventist Hospital</div>
-      <div class="cli">Tealive</div>
-      <div class="cli">Bask Bear Coffee</div>
-      <div class="cli">Sushi Tei</div>
-      <div class="cli">James Foo</div>
-      <div class="cli">CapitaLand</div>
+      <div class="cli"><img src="img/clients/First-Solar.png" alt="First Solar" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Intel-2.png" alt="Intel" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Infineon.png" alt="Infineon" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/B-Braun.png" alt="B.Braun" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Micron.png" alt="Micron" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Osram.png" alt="Osram" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Inari-Technology.png" alt="Inari Technology" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Gleneagles.png" alt="Gleneagles Hospital" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Adventist-Hospital.png" alt="Adventist Hospital" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Tealive.png" alt="Tealive" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Bask-Bear-Coffee.png" alt="Bask Bear Coffee" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Sushi-Tei.png" alt="Sushi Tei" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/James-Foo.png" alt="James Foo" loading="lazy" decoding="async"/></div>
+      <div class="cli"><img src="img/clients/Capitaland.png" alt="CapitaLand" loading="lazy" decoding="async"/></div>
       <div class="cli">50+ More</div>
     </div>
   </div>
