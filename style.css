@@ -497,15 +497,31 @@ ul, ol { list-style: none; padding: 0; }
   33%     { transform: translate(24px,-38px) scale(1.06); }
   66%     { transform: translate(-18px,22px) scale(0.95); }
 }
+/* metallic reflective sheen sweeping across hero titles */
+@keyframes metalShine {
+  0%   { background-position: 200% center; }
+  100% { background-position: -60% center; }
+}
+@keyframes ctaSheen {
+  0%   { transform: translateX(0) skewX(-20deg); }
+  100% { transform: translateX(420%) skewX(-20deg); }
+}
 /* ── UNIFIED PAGE-BANNER HERO (full-bleed video/image background) ── */
 .page-banner {
   position: relative;
-  padding: 132px 0 88px;
+  padding: 96px 0 72px;
   color: #ffffff;
   overflow: hidden;
   isolation: isolate;
   background: #050A12;
   border-bottom: 1px solid rgba(144,180,210,0.2);
+}
+/* taller hero on pages that carry a background video/image, so the
+   subject of the footage is properly visible; content is centred */
+.page-banner:has(.page-banner-bg) {
+  min-height: 74vh;
+  display: flex;
+  align-items: center;
 }
 /* full-bleed background video or image */
 .page-banner-bg {
@@ -517,9 +533,9 @@ ul, ol { list-style: none; padding: 0; }
 .page-banner-overlay {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(100deg,
-    rgba(3,7,14,0.86) 0%,
-    rgba(8,16,28,0.70) 46%,
-    rgba(3,7,14,0.52) 100%
+    rgba(3,7,14,0.80) 0%,
+    rgba(8,16,28,0.60) 46%,
+    rgba(3,7,14,0.42) 100%
   );
 }
 .page-banner-overlay::before,
@@ -538,39 +554,53 @@ ul, ol { list-style: none; padding: 0; }
   background: radial-gradient(circle, rgba(94,134,184,.10) 0%, transparent 68%);
   animation-duration: 11s; animation-delay: -4s;
 }
-/* top accent line + subtle diagonal grid texture */
-.page-banner::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 0;
-  background: linear-gradient(90deg, transparent 0%, #607D8E 20%, #B8CDD8 50%, #607D8E 80%, transparent 100%);
-}
-.page-banner::after {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: repeating-linear-gradient(112deg,
-    transparent 0px, transparent 60px,
-    rgba(144,189,215,.02) 60px, rgba(144,189,215,.02) 62px, transparent 62px
-  );
-}
 .page-banner .container { position: relative; z-index: 1; }
+/* metallic reflective title — left aligned, consistent size across pages */
 .page-banner h1 {
   font-size: clamp(2.4rem, 5vw, 4.4rem);
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   text-wrap: balance;
   line-height: 1.1;
-  animation: bannerSlideUp .7s cubic-bezier(.2,.6,.35,1) both;
-  animation-delay: .12s;
+  background: linear-gradient(110deg,
+    #7f95a8 0%, #ffffff 16%, #cfe0ec 30%, #9BBDCF 42%,
+    #ffffff 54%, #b9cdda 66%, #ffffff 80%, #8397a8 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: bannerSlideUp .7s cubic-bezier(.2,.6,.35,1) both,
+             metalShine 6.5s linear infinite;
+  animation-delay: .12s, .12s;
 }
 .page-banner p {
   font-size: 1.05rem;
-  color: rgba(255,255,255,0.72);
+  color: rgba(255,255,255,0.80);
   max-width: 560px;
   animation: bannerSlideUp .65s ease both;
   animation-delay: .3s;
 }
-.page-banner .breadcrumb {
-  animation: bannerFadeIn .5s ease both;
-  animation-delay: 0s;
+/* hero CTA button (metallic, sits below the title) */
+.page-banner-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 28px; padding: 14px 34px;
+  font-size: .95rem; font-weight: 600; color: #fff; border-radius: 5px;
+  background: linear-gradient(180deg,#8FAEC0 0%,#7A8FA0 40%,#607A8E 60%,#7A8FA0 100%);
+  border: 1px solid rgba(160,200,220,.35);
+  box-shadow: 0 2px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.15);
+  position: relative; overflow: hidden;
+  transition: box-shadow .28s, transform .22s;
+  animation: bannerSlideUp .65s ease both; animation-delay: .46s;
 }
+.page-banner-cta::after {
+  content:''; position:absolute; top:-25%; left:-80%; width:55%; height:150%;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.35),transparent);
+  transform:skewX(-20deg); pointer-events:none;
+}
+.page-banner-cta:hover {
+  background: linear-gradient(180deg,#9DC0D4 0%,#8FAEC0 40%,#7A9AB0 60%,#8FAEC0 100%);
+  box-shadow: 0 8px 24px rgba(122,143,160,.5); transform: translateY(-2px);
+}
+.page-banner-cta:hover::after { animation: ctaSheen .5s ease forwards; }
 .breadcrumb {
   display: flex;
   align-items: center;

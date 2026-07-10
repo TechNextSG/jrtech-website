@@ -72,14 +72,6 @@
         rgba(3,7,14,0.50) 100%
       );
     }
-    .hero-v2::before {
-      content: ''; position: absolute; inset: 0;
-      background: repeating-linear-gradient(112deg,
-        transparent 0px, transparent 60px,
-        rgba(144,189,215,.018) 60px, rgba(144,189,215,.018) 62px, transparent 62px
-      );
-      z-index: -1; pointer-events: none;
-    }
 
     /* ── Floating orbs ── */
     .hero-orb {
@@ -136,13 +128,19 @@
       animation-delay: .15s;
     }
     .hero-v2-title {
-      font-size: clamp(2.8rem, 5.2vw, 5rem);
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
       font-weight: 800; line-height: 1.1; margin-bottom: 18px;
-      animation: heroSlideUp .8s cubic-bezier(.15,.6,.35,1) both;
-      animation-delay: .32s;
+      background: linear-gradient(110deg,
+        #7f95a8 0%, #ffffff 16%, #cfe0ec 30%, #9BBDCF 42%,
+        #ffffff 54%, #b9cdda 66%, #ffffff 80%, #8397a8 100%);
+      background-size: 220% auto;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      animation: heroSlideUp .8s cubic-bezier(.15,.6,.35,1) both,
+                 metalShine 6.5s linear infinite;
+      animation-delay: .32s, .32s;
     }
     .hero-v2-title span {
-      color: #9BBDCF;
       position: relative; display: inline-block;
     }
     .hero-v2-title span::after {
