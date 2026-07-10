@@ -537,6 +537,30 @@ ul, ol { list-style: none; padding: 0; }
   animation: bannerFadeIn .5s ease both;
   animation-delay: 0s;
 }
+
+/* ── page-banner split layout (text left, video/image right) ── */
+.page-banner-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 52px;
+  align-items: center;
+}
+@media(max-width:900px){ .page-banner-inner { grid-template-columns: 1fr; } }
+
+.page-banner-media {
+  position: relative; border-radius: 14px; overflow: hidden;
+  aspect-ratio: 16/10;
+  box-shadow: 0 22px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(144,186,210,.16);
+  animation: bannerSlideUp .75s cubic-bezier(.2,.6,.35,1) both;
+  animation-delay: .35s;
+}
+.page-banner-media video,
+.page-banner-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.page-banner-media::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(135deg, rgba(5,10,18,.16) 0%, transparent 55%, rgba(5,10,18,.2) 100%);
+}
+@media(max-width:900px){ .page-banner-media { display: none; } }
 .breadcrumb {
   display: flex;
   align-items: center;
