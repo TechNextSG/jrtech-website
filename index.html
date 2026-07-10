@@ -63,8 +63,6 @@
     .hero-v2-bg {
       position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: cover; z-index: -2; pointer-events: none;
-      transform-origin: center center;
-      transition: transform .1s linear;
     }
     .hero-v2-overlay {
       position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -980,25 +978,9 @@
 <script src="interactions.js"></script>
 <script src="chatbot.js"></script>
 <script>
-/* ── Hero: mouse parallax on background video ── */
+/* Note: no transform/parallax on the hero bg video — it is native 16:9 in a
+   16:9 box, so any scale would crop/stretch the footage. */
 (function(){
-  var hero = document.getElementById('hero-v2');
-  var vid  = document.getElementById('hero-bg-vid');
-  if (!hero || !vid) return;
-  var rx = 0, ry = 0, cx = 0, cy = 0;
-  hero.addEventListener('mousemove', function(e){
-    var r = hero.getBoundingClientRect();
-    rx = (e.clientX - r.left) / r.width  - 0.5;
-    ry = (e.clientY - r.top)  / r.height - 0.5;
-  });
-  hero.addEventListener('mouseleave', function(){ rx = 0; ry = 0; });
-  (function loop(){
-    cx += (rx - cx) * 0.04;
-    cy += (ry - cy) * 0.04;
-    vid.style.transform = 'scale(1.06) translate(' + (cx * -14) + 'px,' + (cy * -10) + 'px)';
-    requestAnimationFrame(loop);
-  })();
-
   /* ── Stat counter animation ── */
   var nums = document.querySelectorAll('.hero-v2-num[data-target]');
   if (!nums.length) return;
