@@ -143,4 +143,24 @@
     });
   });
 
+  /* ── Inner-page hero: mouse parallax on background video/image ── */
+  (function(){
+    var banner = document.querySelector('.page-banner');
+    var bg = banner && banner.querySelector('.page-banner-bg');
+    if (!banner || !bg) return;
+    var rx = 0, ry = 0, px = 0, py = 0;
+    banner.addEventListener('mousemove', function(e){
+      var r = banner.getBoundingClientRect();
+      rx = (e.clientX - r.left) / r.width  - 0.5;
+      ry = (e.clientY - r.top)  / r.height - 0.5;
+    });
+    banner.addEventListener('mouseleave', function(){ rx = 0; ry = 0; });
+    (function loopBanner(){
+      px += (rx - px) * 0.05;
+      py += (ry - py) * 0.05;
+      bg.style.transform = 'scale(1.08) translate(' + (px * -14) + 'px,' + (py * -10) + 'px)';
+      requestAnimationFrame(loopBanner);
+    })();
+  })();
+
 })();

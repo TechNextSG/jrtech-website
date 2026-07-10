@@ -491,67 +491,86 @@ ul, ol { list-style: none; padding: 0; }
   from { width: 0; opacity: 0; }
   to   { width: 48px; opacity: 1; }
 }
-.page-banner {
-  background: #0D1117;
-  color: #ffffff;
-  padding: 90px 0 72px;
-  position: relative;
-  border-bottom: 1px solid rgba(144,180,210,0.2);
-  overflow: hidden;
+/* floating ambient orb drift (shared with home hero) */
+@keyframes floatOrb {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%     { transform: translate(24px,-38px) scale(1.06); }
+  66%     { transform: translate(-18px,22px) scale(0.95); }
 }
+/* ── UNIFIED PAGE-BANNER HERO (full-bleed video/image background) ── */
+.page-banner {
+  position: relative;
+  padding: 132px 0 88px;
+  color: #ffffff;
+  overflow: hidden;
+  isolation: isolate;
+  background: #050A12;
+  border-bottom: 1px solid rgba(144,180,210,0.2);
+}
+/* full-bleed background video or image */
+.page-banner-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: -2; pointer-events: none;
+  transform-origin: center center;
+}
+/* darkening overlay + ambient orbs */
+.page-banner-overlay {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(100deg,
+    rgba(3,7,14,0.86) 0%,
+    rgba(8,16,28,0.70) 46%,
+    rgba(3,7,14,0.52) 100%
+  );
+}
+.page-banner-overlay::before,
+.page-banner-overlay::after {
+  content: ''; position: absolute; border-radius: 50%;
+  filter: blur(72px); pointer-events: none;
+  animation: floatOrb ease-in-out infinite;
+}
+.page-banner-overlay::before {
+  width: 440px; height: 440px; top: -14%; right: 12%;
+  background: radial-gradient(circle, rgba(155,189,207,.12) 0%, transparent 68%);
+  animation-duration: 13s;
+}
+.page-banner-overlay::after {
+  width: 300px; height: 300px; bottom: 2%; left: 6%;
+  background: radial-gradient(circle, rgba(94,134,184,.10) 0%, transparent 68%);
+  animation-duration: 11s; animation-delay: -4s;
+}
+/* top accent line + subtle diagonal grid texture */
 .page-banner::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 0;
   background: linear-gradient(90deg, transparent 0%, #607D8E 20%, #B8CDD8 50%, #607D8E 80%, transparent 100%);
 }
-/* subtle diagonal grid overlay */
 .page-banner::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    112deg,
-    transparent 0px, transparent 55px,
-    rgba(144,186,210,.02) 55px, rgba(144,186,210,.02) 57px, transparent 57px
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: repeating-linear-gradient(112deg,
+    transparent 0px, transparent 60px,
+    rgba(144,189,215,.02) 60px, rgba(144,189,215,.02) 62px, transparent 62px
   );
-  pointer-events: none; z-index: 0;
 }
 .page-banner .container { position: relative; z-index: 1; }
 .page-banner h1 {
-  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
   font-weight: 800;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   text-wrap: balance;
-  line-height: 1.12;
+  line-height: 1.1;
   animation: bannerSlideUp .7s cubic-bezier(.2,.6,.35,1) both;
-  animation-delay: .1s;
+  animation-delay: .12s;
 }
 .page-banner p {
-  font-size: 1rem;
-  color: rgba(255,255,255,0.62);
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.72);
+  max-width: 560px;
   animation: bannerSlideUp .65s ease both;
-  animation-delay: .28s;
+  animation-delay: .3s;
 }
 .page-banner .breadcrumb {
   animation: bannerFadeIn .5s ease both;
   animation-delay: 0s;
 }
-
-/* ── page-banner full-bleed background video ── */
-.page-banner-bg {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; z-index: 0; pointer-events: none;
-}
-.page-banner-overlay {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(100deg,
-    rgba(3,7,14,0.82) 0%,
-    rgba(8,16,28,0.70) 50%,
-    rgba(3,7,14,0.60) 100%
-  );
-}
-.page-banner .container { position: relative; z-index: 2; }
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -1526,31 +1545,9 @@ input:focus, select:focus, textarea:focus {
   100% { transform: skewX(-18deg) translateX(420%); }
 }
 
-/* --- PAGE BANNER: dark animated metallic background -------------------- */
-.page-banner {
-  background: linear-gradient(112deg,
-    #040810 0%, #0C1828 10%, #172840 19%, #1F3550 27%,
-    #152840 36%, #0A1822 46%, #142435 54%, #1D3248 63%,
-    #172840 72%, #0C1828 82%, #040810 100%
-  ) !important;
-  isolation: isolate;
-  overflow: hidden;
-  position: relative;
-}
-.page-banner::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right,
-    transparent 0%, rgba(184,214,238,.05) 20%,
-    rgba(255,255,255,.08) 50%,
-    rgba(184,214,238,.05) 80%, transparent 100%
-  );
-  animation: metalBgSweep 10s linear infinite;
-  z-index: 0;
-  pointer-events: none;
-}
-.page-banner > * { position: relative; z-index: 1; }
+/* --- PAGE BANNER: now a unified full-bleed video hero (see UNIFIED PAGE-BANNER
+       HERO block above). The old metallic gradient / sweep / z-index rules were
+       removed — the video background + overlay handle the visual now. --- */
 
 /* --- CTA BANNER (services.html): dark animated metallic ----------------- */
 .cta-banner {
