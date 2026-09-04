@@ -4,36 +4,95 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quotation Builder &mdash; JR-Tech Solution Sdn Bhd</title>
-  <meta name="description" content="Build, preview and print itemised commercial kitchen quotations in the JR-Tech document format: equipment schedule, fabrication, services, SST, payment milestones and acceptance."/>
+  <meta name="description" content="Standalone quotation builder for JR-Tech Solution: build, preview and print itemised commercial kitchen quotations with product images, SST, payment milestones and acceptance."/>
   <meta name="robots" content="noindex, nofollow"/>
-  <link rel="canonical" href="https://technextsg.github.io/jrtech-website/quotation-builder.html"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css"/>
   <style>
     /* ═══════════════════════════════════════════════════════════════════
-       QUOTATION BUILDER — page-specific styles
-       Builder panel = site metallic form language (contact-form-wrap)
-       Document preview = "paper sheet" language from the Kitchen Blueprint Pack,
-       re-coloured to the JR-Tech steel palette (#0D1117 / #7A8FA0 / #B8CDD8)
+       JR-TECH QUOTATION BUILDER — standalone, self-contained
+       Design tokens from the JR-Tech website (Open Sans, steel palette):
+         steel #7A8FA0 · deep #0D1117 · body #F4F6F9 · text #1a1a2e · muted #5a6378
+       Document preview = "paper sheet" language from the Kitchen Blueprint Pack.
+       Only external dependencies: Google Fonts, the JR-Tech logo and the
+       product catalogue (products-data.js) loaded from the live JR-Tech site.
        ═══════════════════════════════════════════════════════════════════ */
-    .qb-layout {
-      display: grid;
-      grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.25fr);
-      gap: 28px;
-      align-items: start;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; }
+    body { font-family: 'Open Sans', system-ui, -apple-system, sans-serif; background: #F4F6F9; color: #1a1a2e; line-height: 1.6; }
+    img { max-width: 100%; display: block; }
+    button, input, select, textarea { font-family: inherit; }
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+    .eyebrow { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #7A8FA0; }
+    [hidden] { display: none !important; }
+
+    /* ── Buttons (site metallic style) ───────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: .8rem; font-weight: 600; padding: 9px 16px; border-radius: 4px; cursor: pointer;
+      text-decoration: none; position: relative; overflow: hidden; line-height: 1.4; letter-spacing: .01em;
+      transition: box-shadow .3s ease, transform .2s ease; border: 1px solid transparent; white-space: nowrap;
     }
-    @media (max-width: 1040px) { .qb-layout { grid-template-columns: 1fr; } }
+    .btn::after {
+      content: ''; position: absolute; top: -25%; left: -80%; width: 55%; height: 150%;
+      background: linear-gradient(to right, transparent 0%, rgba(255,255,255,.30) 50%, transparent 100%);
+      transform: skewX(-20deg); pointer-events: none;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:hover::after { animation: metalSheen .48s ease forwards; }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    @keyframes metalSheen { from { left: -80%; } to { left: 130%; } }
+    .btn-primary {
+      background: linear-gradient(180deg, #5A7A90 0%, #3D5060 40%, #2C3E50 60%, #3D5060 100%);
+      color: #fff; border-color: rgba(144,186,210,.32);
+      box-shadow: 0 2px 6px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.13); text-shadow: 0 1px 2px rgba(0,0,0,.22);
+    }
+    .btn-primary:hover { background: linear-gradient(180deg, #6E90A8 0%, #4A6478 40%, #374F62 60%, #4A6478 100%); box-shadow: 0 6px 22px rgba(90,122,144,.45), inset 0 1px 0 rgba(255,255,255,.18); }
+    .btn-outline { background: transparent; color: #3D5060; border: 1.5px solid #8FAEC0; }
+    .btn-outline::after { background: linear-gradient(to right, transparent, rgba(90,122,144,.18), transparent); }
+    .btn-outline:hover { background: linear-gradient(180deg, #5A7A90 0%, #3D5060 100%); color: #fff; border-color: #7A9AB0; box-shadow: 0 6px 22px rgba(90,122,144,.35); }
+    .btn-sm { padding: 7px 12px; font-size: .74rem; }
+
+    /* ── Forms (site style) ──────────────────────────────────────────── */
+    label { display: block; font-size: .72rem; font-weight: 600; color: #3a4460; margin-bottom: 5px; }
+    input, select, textarea {
+      width: 100%; padding: 8px 11px; border: 1px solid #C8D0DC; border-radius: 4px; font-size: .83rem;
+      color: #1a1a2e; background: #fff; transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #7A8FA0; box-shadow: 0 0 0 3px rgba(122,143,160,.15); }
+    textarea { min-height: 76px; resize: vertical; line-height: 1.5; }
+    input[type="checkbox"] { width: auto; }
+    .form-group { margin-bottom: 12px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } }
+    .form-check { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: #3a4460; font-weight: 500; margin-bottom: 0; }
+    .qb-hint { font-size: .72rem; color: #9aa5b8; margin-top: 4px; line-height: 1.5; }
+    .qb-hint b { color: #5a6378; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    /* ── Top bar (no navigation — standalone tool) ───────────────────── */
+    .topbar {
+      background: #0D1117;
+      background-image: radial-gradient(rgba(144,186,210,.035) 1px, transparent 1px); background-size: 18px 18px;
+      border-bottom: 1px solid rgba(144,186,210,.2); color: #fff;
+    }
+    .topbar-inner { max-width: 1240px; margin: 0 auto; padding: 0 24px; height: 66px; display: flex; align-items: center; gap: 18px; }
+    .topbar img { height: 32px; object-fit: contain; }
+    .topbar .wm { font-weight: 800; letter-spacing: .26em; font-size: .95rem; }
+    .topbar .sep { width: 1px; height: 28px; background: rgba(144,186,210,.3); }
+    .topbar .ttl { font-size: .95rem; font-weight: 700; letter-spacing: .01em; }
+    .topbar .sub { font-size: .66rem; text-transform: uppercase; letter-spacing: .12em; color: rgba(184,205,216,.7); }
+    .topbar .right { margin-left: auto; font-size: .7rem; color: rgba(255,255,255,.5); text-align: right; line-height: 1.5; }
+    @media (max-width: 640px) { .topbar .right { display: none; } .topbar-inner { gap: 12px; } }
 
     /* ── Toolbar ─────────────────────────────────────────────────────── */
     .qb-toolbar {
-      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-      padding: 14px 16px; margin-bottom: 20px;
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px 16px; margin: 24px 0 22px;
       background: linear-gradient(135deg, #0E1B2A 0%, #162535 40%, #1A2D40 60%, #112030 100%);
-      border: 1px solid rgba(144,186,210,.2);
-      border-left: 3px solid #8FAEC0;
-      border-radius: 0 6px 6px 0;
+      border: 1px solid rgba(144,186,210,.2); border-left: 3px solid #8FAEC0; border-radius: 0 6px 6px 0;
     }
     .qb-toolbar .eyebrow { color: #B8CDD8; margin: 0 auto 0 0; }
     .qb-toolbar .btn { padding: 8px 14px; font-size: .78rem; }
@@ -41,156 +100,157 @@
     .qb-toolbar .btn-outline:hover { color: #fff; }
     .qb-toolbar label.btn { display: inline-flex; margin: 0; color: #DCE6EE; line-height: 1.4; }
     .qb-file { display: none; }
+    .qb-status { font-size: .7rem; color: rgba(184,205,216,.7); margin-left: 4px; white-space: nowrap; }
 
-    /* ── Builder panels ──────────────────────────────────────────────── */
-    .qb-panel { margin-bottom: 18px; padding: 22px 22px 18px !important; }
-    .qb-panel-head {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      margin-bottom: 14px; cursor: pointer; user-select: none;
+    .qb-layout { display: grid; grid-template-columns: minmax(360px, .95fr) minmax(0, 1.25fr); gap: 28px; align-items: start; padding-bottom: 56px; }
+    @media (max-width: 1040px) { .qb-layout { grid-template-columns: 1fr; } }
+
+    /* ── Builder panels (metallic form wrap) ────────────────────────── */
+    .qb-panel {
+      background: linear-gradient(135deg, #F8FAFB 0%, #EBF1F6 25%, #F4F7FA 50%, #E8EEF3 75%, #F5F8FA 100%);
+      border: 1px solid rgba(144,186,210,.25); border-radius: 6px; padding: 20px 20px 16px; position: relative; overflow: hidden; margin-bottom: 16px;
     }
-    .qb-panel-head h2 { font-size: 1rem; font-weight: 700; color: #1a1a2e; }
-    .qb-panel-head .qb-step {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 26px; height: 26px; border-radius: 50%; margin-right: 10px;
-      background: linear-gradient(180deg,#8FAEC0,#5A7A90); color: #fff;
-      font-size: .72rem; font-weight: 700; vertical-align: middle;
+    .qb-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #8FAEC0 30%, #B8CDD8 50%, #8FAEC0 70%, transparent); }
+    .qb-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; cursor: pointer; user-select: none; background: none; border: 0; width: 100%; text-align: left; }
+    .qb-panel-head h2 { font-size: 1rem; font-weight: 700; color: #1a1a2e; display: flex; align-items: center; }
+    .qb-step {
+      display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; margin-right: 10px;
+      background: linear-gradient(180deg,#8FAEC0,#5A7A90); color: #fff; font-size: .72rem; font-weight: 700;
     }
-    .qb-panel-head .qb-chev { transition: transform .25s; color: #7A8FA0; }
+    .qb-chev { transition: transform .25s; color: #7A8FA0; flex-shrink: 0; }
     .qb-panel.collapsed .qb-chev { transform: rotate(-90deg); }
     .qb-panel.collapsed .qb-panel-body { display: none; }
     .qb-panel.collapsed .qb-panel-head { margin-bottom: 0; }
+    .qb-rule { height: 1px; background: #C8D0DC; border: 0; margin: 6px 0 14px; }
 
-    .qb-panel label { font-size: .72rem; }
-    .qb-panel input, .qb-panel select, .qb-panel textarea {
-      padding: 8px 11px; font-size: .83rem;
-    }
-    .qb-panel textarea { min-height: 76px; }
-    .qb-panel .form-group { margin-bottom: 12px; }
-    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    @media (max-width: 600px) { .form-row-3 { grid-template-columns: 1fr; } }
-    .qb-hint { font-size: .72rem; color: #9aa5b8; margin-top: 4px; line-height: 1.5; }
-
-    /* section header inside line-items panel */
-    .qb-sec {
-      border: 1px solid rgba(144,186,210,.3); border-radius: 6px;
-      background: rgba(255,255,255,.55); padding: 12px 12px 10px; margin-bottom: 14px;
-    }
+    /* sections */
+    .qb-sec { border: 1px solid rgba(144,186,210,.3); border-radius: 6px; background: rgba(255,255,255,.55); padding: 12px 12px 10px; margin-bottom: 14px; }
     .qb-sec-head { display: grid; grid-template-columns: 34px 1fr auto; gap: 8px; align-items: center; margin-bottom: 10px; }
     .qb-sec-key {
       width: 34px; height: 34px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(180deg,#5A7A90 0%,#3D5060 50%,#2C3E50 100%);
-      color: #fff; font-weight: 800; font-size: .9rem;
+      background: linear-gradient(180deg,#5A7A90 0%,#3D5060 50%,#2C3E50 100%); color: #fff; font-weight: 800; font-size: .9rem;
       box-shadow: 0 2px 6px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.13);
     }
-    .qb-sec-head input.qb-sec-title { font-weight: 700; color: #1a1a2e; background: transparent; border-color: transparent; padding: 6px 8px; }
-    .qb-sec-head input.qb-sec-title:hover, .qb-sec-head input.qb-sec-title:focus { background: #fff; border-color: #C8D0DC; }
-    .qb-sec-tax { display: flex; align-items: center; gap: 6px; font-size: .72rem; color: #3a4460; white-space: nowrap; }
-    .qb-sec-tax input { width: auto; }
+    .qb-sec-title { font-weight: 700; color: #1a1a2e; background: transparent; border-color: transparent; padding: 6px 8px; }
+    .qb-sec-title:hover, .qb-sec-title:focus { background: #fff; border-color: #C8D0DC; }
+    .qb-sec-tax { display: flex; align-items: center; gap: 6px; font-size: .72rem; color: #3a4460; white-space: nowrap; margin: 0; }
 
     .qb-rows { display: flex; flex-direction: column; gap: 6px; }
-    .qb-row {
-      display: grid;
-      grid-template-columns: 1fr 108px 54px 96px 92px 26px;
-      gap: 6px; align-items: center;
-    }
+    .qb-row { display: grid; grid-template-columns: 38px 1fr 104px 52px 94px 90px 26px; gap: 6px; align-items: center; }
     .qb-row-h { font-size: .64rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #7A8FA0; }
-    .qb-row-h span:nth-child(3), .qb-row-h span:nth-child(4), .qb-row-h span:nth-child(5) { text-align: right; }
+    .qb-row-h span:nth-child(4), .qb-row-h span:nth-child(5), .qb-row-h span:nth-child(6) { text-align: right; }
     .qb-row input { padding: 7px 9px; font-size: .8rem; }
     .qb-row input.num { text-align: right; font-variant-numeric: tabular-nums; }
     .qb-row .amt { text-align: right; font-size: .8rem; font-weight: 600; color: #1a1a2e; font-variant-numeric: tabular-nums; padding-right: 2px; }
     .qb-row .amt.tbc { color: #b7791f; font-weight: 700; font-size: .68rem; letter-spacing: .05em; }
+    .qb-thumb {
+      width: 38px; height: 38px; border-radius: 4px; border: 1px dashed #B8C4D0; background: #fff; cursor: pointer; padding: 0;
+      display: flex; align-items: center; justify-content: center; color: #9aa5b8; overflow: hidden; transition: border-color .15s, box-shadow .15s;
+    }
+    .qb-thumb:hover { border-color: #7A8FA0; box-shadow: 0 0 0 3px rgba(122,143,160,.15); }
+    .qb-thumb.has { border-style: solid; border-color: #D0D8E4; }
+    .qb-thumb img { width: 100%; height: 100%; object-fit: contain; }
     .qb-x {
-      width: 26px; height: 26px; border-radius: 4px; border: 1px solid #C8D0DC; background: #fff;
-      color: #9aa5b8; cursor: pointer; font-size: 1rem; line-height: 1; display: flex; align-items: center; justify-content: center;
-      transition: all .15s;
+      width: 26px; height: 26px; border-radius: 4px; border: 1px solid #C8D0DC; background: #fff; color: #9aa5b8; cursor: pointer;
+      font-size: 1rem; line-height: 1; display: flex; align-items: center; justify-content: center; transition: all .15s;
     }
     .qb-x:hover { color: #b91c1c; border-color: #e8b4b4; background: #fff2f2; }
     @media (max-width: 640px) {
-      .qb-row { grid-template-columns: 1fr 1fr; }
+      .qb-row { grid-template-columns: 38px 1fr 26px; }
       .qb-row-h { display: none; }
-      .qb-row input:first-child { grid-column: 1 / -1; }
+      .qb-row input[data-f="desc"] { grid-column: 2; }
+      .qb-row .qb-x { grid-column: 3; }
+      .qb-row input[data-f="supplier"] { grid-column: 1 / 3; }
+      .qb-row input[data-f="qty"] { grid-column: 1; }
+      .qb-row input[data-f="price"] { grid-column: 2; }
+      .qb-row .amt { grid-column: 1 / -1; }
     }
     .qb-sec-foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
-    .qb-sec-foot .btn { padding: 7px 12px; font-size: .74rem; }
     .qb-sec-sub { margin-left: auto; font-size: .78rem; color: #5a6378; }
     .qb-sec-sub b { color: #1a1a2e; font-variant-numeric: tabular-nums; }
+    .qb-empty { font-size: .76rem; color: #9aa5b8; padding: 6px 2px; }
 
     /* catalogue picker */
     .qb-pick { display: grid; grid-template-columns: 120px 1fr auto; gap: 6px; align-items: center; margin-bottom: 8px; }
     .qb-pick select { padding: 7px 9px; font-size: .78rem; }
-    .qb-pick .btn { padding: 7px 12px; font-size: .74rem; }
     @media (max-width: 640px) { .qb-pick { grid-template-columns: 1fr; } }
-    .qb-pick-prev { display: flex; gap: 10px; align-items: center; font-size: .74rem; color: #5a6378; margin: 2px 0 10px; min-height: 44px; }
-    .qb-pick-prev img { width: 44px; height: 44px; object-fit: contain; border-radius: 4px; border: 1px solid #D0D8E4; background: #fff; }
+    .qb-pick-prev { display: flex; gap: 10px; align-items: center; font-size: .74rem; color: #5a6378; margin: 2px 0 10px; min-height: 52px; }
+    .qb-pick-prev img { width: 52px; height: 52px; object-fit: contain; border-radius: 4px; border: 1px solid #D0D8E4; background: #fff; flex-shrink: 0; }
     .qb-pick-prev b { display: block; color: #1a1a2e; font-size: .78rem; }
+    .qb-cat-note { font-size: .74rem; color: #b7791f; background: #fdf6ec; border: 1px solid #f3d9a4; border-radius: 4px; padding: 8px 10px; margin-bottom: 10px; }
+
+    /* image popover */
+    .qb-pop {
+      position: fixed; z-index: 500; width: 300px; background: #fff; border: 1px solid #C8D0DC; border-radius: 6px;
+      box-shadow: 0 12px 34px rgba(13,17,23,.18); padding: 14px;
+    }
+    .qb-pop-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #7A8FA0; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .qb-pop-prev { width: 100%; height: 120px; border: 1px solid #E5EAF1; border-radius: 4px; background: #F7F9FB; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; color: #9aa5b8; font-size: .74rem; overflow: hidden; }
+    .qb-pop-prev img { max-height: 100%; width: auto; object-fit: contain; }
+    .qb-pop input, .qb-pop select { font-size: .78rem; padding: 7px 9px; }
+    .qb-pop .form-group { margin-bottom: 8px; }
+    .qb-pop-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+    .qb-pop-actions .btn { flex: 1; }
+    .qb-pop-actions label.btn { margin: 0; color: #3D5060; }
 
     /* milestones */
     .qb-ms { display: grid; grid-template-columns: 1fr 1.3fr 64px 26px; gap: 6px; align-items: center; margin-bottom: 6px; }
     .qb-ms input { padding: 7px 9px; font-size: .8rem; }
-    .qb-ms-total { font-size: .76rem; color: #5a6378; margin-top: 6px; }
+    .qb-ms-h span:nth-child(3) { text-align: right; }
+    .qb-ms-total { font-size: .76rem; color: #5a6378; }
     .qb-ms-total.bad { color: #b91c1c; font-weight: 600; }
-
-    /* terms */
-    .qb-terms textarea { min-height: 150px; font-size: .8rem; line-height: 1.55; }
-
-    /* totals mini-summary */
+    .qb-terms textarea { min-height: 150px; font-size: .8rem; }
     .qb-sum { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; font-size: .82rem; color: #3a4460; }
     .qb-sum .r { text-align: right; font-variant-numeric: tabular-nums; }
     .qb-sum .tot { font-weight: 800; color: #1a1a2e; font-size: .95rem; padding-top: 6px; border-top: 1px solid #C8D0DC; }
+    .qb-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+    @media (max-width: 600px) { .qb-checks { grid-template-columns: 1fr; } }
+
+    /* validation list */
+    .qb-issues { list-style: none; font-size: .76rem; color: #8a6410; background: #fdf6ec; border: 1px solid #f3d9a4; border-radius: 4px; padding: 8px 12px; margin-top: 12px; }
+    .qb-issues li { padding: 2px 0; }
+    .qb-issues li::before { content: '\25B8'; margin-right: 6px; color: #d9a13b; }
+    .qb-issues.ok { color: #065f46; background: #ecfdf5; border-color: #a7f3d0; }
+    .qb-issues.ok li::before { content: '\2713'; color: #0c7a56; }
 
     /* ── Preview column ──────────────────────────────────────────────── */
-    .qb-preview-wrap { position: sticky; top: 86px; }
+    .qb-preview-wrap { position: sticky; top: 16px; }
     @media (max-width: 1040px) { .qb-preview-wrap { position: static; } }
-    .qb-preview-bar {
-      display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #7A8FA0;
-      margin-bottom: 10px;
-    }
-    .qb-preview-scroll { max-height: calc(100vh - 130px); overflow: auto; padding: 4px 4px 24px; border-radius: 8px; }
+    .qb-preview-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #7A8FA0; margin-bottom: 10px; }
+    .qb-preview-scroll { max-height: calc(100vh - 60px); overflow: auto; padding: 4px 4px 24px; border-radius: 8px; }
     @media (max-width: 1040px) { .qb-preview-scroll { max-height: none; overflow: visible; } }
 
     /* ── Paper sheet (Blueprint Pack language, JR-Tech palette) ──────── */
     .sheet {
-      position: relative; background: #fff; max-width: 860px; margin: 0 auto;
-      border-radius: 8px; border: 1px solid #D0D8E4;
-      box-shadow: 0 2px 6px rgba(13,17,23,.08), 0 14px 34px rgba(13,17,23,.10);
-      padding: 0 52px 0; overflow: hidden;
-      font-size: .9rem; color: #33415a;
+      position: relative; background: #fff; max-width: 860px; margin: 0 auto; border-radius: 8px; border: 1px solid #D0D8E4;
+      box-shadow: 0 2px 6px rgba(13,17,23,.08), 0 14px 34px rgba(13,17,23,.10); padding: 0 52px; font-size: .9rem; color: #33415a;
     }
     .sheet-body { padding: 0 0 20px; }
     .wordmark {
-      display: flex; align-items: center; gap: 14px;
-      background: #0D1117;
-      background-image: radial-gradient(rgba(144,186,210,.06) 1px, transparent 1px);
-      background-size: 14px 14px;
-      color: #fff; margin: 0 -52px 30px; padding: 18px 52px;
-      border-bottom: 1px solid rgba(144,186,210,.25);
+      display: flex; align-items: center; gap: 14px; background: #0D1117;
+      background-image: radial-gradient(rgba(144,186,210,.06) 1px, transparent 1px); background-size: 14px 14px;
+      color: #fff; margin: 0 -52px 30px; padding: 18px 52px; border-bottom: 1px solid rgba(144,186,210,.25); border-radius: 8px 8px 0 0;
     }
     .wordmark img { height: 30px; object-fit: contain; }
     .wordmark .wm { font-weight: 800; letter-spacing: .28em; font-size: .95rem; }
     .wordmark .div { opacity: .45; font-weight: 300; }
-    .wordmark .tag { font-size: .74rem; color: rgba(255,255,255,.72); letter-spacing: .02em; }
+    .wordmark .tag { font-size: .74rem; color: rgba(255,255,255,.72); }
+    .ribbon-wrap { position: absolute; top: 0; right: 0; width: 170px; height: 170px; overflow: hidden; pointer-events: none; z-index: 5; border-radius: 0 8px 0 0; }
     .ribbon {
-      position: absolute; top: 24px; right: -46px; transform: rotate(38deg);
-      color: #fff; font-weight: 800; font-size: .74rem; letter-spacing: .3em; padding: 7px 60px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.18); z-index: 5; text-transform: uppercase;
+      position: absolute; top: 34px; right: -52px; transform: rotate(38deg); color: #fff; font-weight: 800; font-size: .72rem;
+      letter-spacing: .3em; padding: 7px 64px; box-shadow: 0 2px 8px rgba(0,0,0,.18); text-transform: uppercase; white-space: nowrap;
     }
-    .ribbon.draft    { background: #b7791f; }
-    .ribbon.issued   { background: linear-gradient(180deg,#5A7A90,#2C3E50); }
-    .ribbon.revised  { background: #4a5568; }
-    .ribbon.accepted { background: #0c7a56; }
-    .ribbon.sample   { background: #c0392b; }
-    .doctitle { font-size: 1.9rem; font-weight: 800; color: #0D1117; line-height: 1.2; margin: 4px 0 4px; letter-spacing: -.01em; }
+    .ribbon.draft { background: #b7791f; } .ribbon.issued { background: linear-gradient(180deg,#5A7A90,#2C3E50); }
+    .ribbon.revised { background: #4a5568; } .ribbon.accepted { background: #0c7a56; } .ribbon.sample { background: #c0392b; }
+    .doctitle { font-size: 1.9rem; font-weight: 800; color: #0D1117; line-height: 1.2; margin: 4px 0; letter-spacing: -.01em; }
     .docsub { color: #5a6378; font-size: .95rem; margin-bottom: 22px; max-width: 620px; }
-    .metagrid {
-      display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #D0D8E4; border-radius: 6px;
-      overflow: hidden; margin: 18px 0;
-    }
+    .ph { color: #9aa5b8; }
+    .metagrid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #D0D8E4; border-radius: 6px; overflow: hidden; margin: 18px 0; }
     .metagrid div { padding: 10px 14px; border-bottom: 1px solid #E5EAF1; font-size: .84rem; color: #0D1117; }
     .metagrid div:nth-child(odd) { border-right: 1px solid #E5EAF1; }
     .metagrid div:nth-last-child(-n+2) { border-bottom: 0; }
     .metagrid b { display: block; font-size: .64rem; text-transform: uppercase; letter-spacing: .1em; color: #7A8FA0; margin-bottom: 2px; }
-    .sheet h2.docsec { font-size: 1.1rem; font-weight: 800; color: #0D1117; margin: 24px 0 4px; letter-spacing: .01em; }
+    .sheet h2.docsec { font-size: 1.1rem; font-weight: 800; color: #0D1117; margin: 24px 0 4px; }
     .sheet h2.docsec small { font-weight: 700; color: #7A8FA0; margin-right: 10px; font-size: .95rem; }
     .docrule { height: 2px; background: linear-gradient(90deg,#0D1117 0%,#3D5060 70%,#8FAEC0 100%); margin: 6px 0 14px; border: 0; }
     .sheet h3 { color: #0D1117; font-size: .92rem; margin: 16px 0 6px; font-weight: 700; }
@@ -200,29 +260,28 @@
     .party b.lbl { display: block; font-size: .64rem; text-transform: uppercase; letter-spacing: .1em; color: #7A8FA0; margin-bottom: 4px; }
     .party .nm { font-weight: 700; color: #0D1117; }
     table.doct { width: 100%; border-collapse: collapse; font-size: .8rem; margin: 8px 0 4px; }
-    table.doct th {
-      background: #0D1117; color: #fff; text-align: left; padding: 8px 10px;
-      font-size: .66rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700;
-    }
+    table.doct th { background: #0D1117; color: #fff; text-align: left; padding: 8px 10px; font-size: .66rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
     table.doct td { padding: 7px 10px; border-bottom: 1px solid #E5EAF1; color: #33415a; vertical-align: top; }
     table.doct tr:nth-child(even) td { background: #F7F9FB; }
     table.doct tr.sub td { background: #EEF2F5; font-weight: 700; color: #0D1117; }
     table.doct tr.total td { background: #E6EDF2; font-weight: 800; color: #0D1117; border-top: 2px solid #0D1117; font-size: .88rem; }
     table.doct td.r, table.doct th.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
     table.doct td.id { color: #7A8FA0; font-weight: 700; white-space: nowrap; }
+    table.doct td.im { width: 52px; padding: 5px 6px 5px 10px; }
+    table.doct td.im img { width: 40px; height: 40px; object-fit: contain; border: 1px solid #E5EAF1; border-radius: 4px; background: #fff; }
     table.doct td .sup { display: block; font-size: .7rem; color: #7b8aa3; }
     .tbc { color: #b7791f; font-weight: 700; }
     .tblscroll { overflow-x: auto; }
-    .notebox {
-      background: #F0F4F7; border-left: 4px solid #7A8FA0; border-radius: 0 6px 6px 0;
-      padding: 12px 16px; font-size: .82rem; color: #33415a; margin: 14px 0;
-    }
+    .notebox { background: #F0F4F7; border-left: 4px solid #7A8FA0; border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: .82rem; color: #33415a; margin: 14px 0; }
     .notebox.warn { background: #fdf6ec; border-left-color: #d9a13b; }
+    .gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 10px 0 4px; }
+    .gallery .g { border: 1px solid #E2E9F3; border-radius: 6px; background: #fff; padding: 8px 8px 6px; text-align: center; }
+    .gallery .g img { width: 100%; height: 78px; object-fit: contain; }
+    .gallery .g .gid { font-size: .7rem; font-weight: 800; color: #0D1117; margin-top: 6px; }
+    .gallery .g .gnm { font-size: .66rem; color: #5a6378; line-height: 1.35; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    @media (max-width: 720px) { .gallery { grid-template-columns: repeat(3, 1fr); } }
     .loadcard { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 14px 0 4px; }
-    .loadcard .cell {
-      background: linear-gradient(135deg,#0E1B2A 0%,#162535 40%,#1A2D40 60%,#112030 100%);
-      color: #fff; border-radius: 6px; padding: 14px 16px; text-align: center; border: 1px solid rgba(144,186,210,.2);
-    }
+    .loadcard .cell { background: linear-gradient(135deg,#0E1B2A 0%,#162535 40%,#1A2D40 60%,#112030 100%); color: #fff; border-radius: 6px; padding: 14px 16px; text-align: center; border: 1px solid rgba(144,186,210,.2); }
     .loadcard .cell .v { font-size: 1.25rem; font-weight: 800; color: #B8CDD8; font-variant-numeric: tabular-nums; }
     .loadcard .cell .l { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; opacity: .8; margin-top: 3px; }
     .sheet ol.terms { list-style: decimal; padding-left: 20px; }
@@ -233,9 +292,8 @@
     .sig .line { margin-top: 30px; border-bottom: 1px solid #9fb0c8; height: 1px; }
     .sig .lbl { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; color: #7b8aa3; margin-top: 4px; }
     .sheetfoot {
-      margin: 28px -52px 0; padding: 10px 52px; display: flex; justify-content: space-between; gap: 10px;
-      font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: #7b8aa3;
-      border-top: 1px solid #E5EAF1; background: #FBFCFD;
+      margin: 28px -52px 0; padding: 10px 52px; display: flex; justify-content: space-between; gap: 10px; font-size: .64rem; letter-spacing: .08em;
+      text-transform: uppercase; color: #7b8aa3; border-top: 1px solid #E5EAF1; background: #FBFCFD; border-radius: 0 0 8px 8px;
     }
     @media (max-width: 720px) {
       .sheet { padding: 0 20px; }
@@ -245,304 +303,216 @@
       .metagrid div:nth-child(odd) { border-right: 0; }
     }
 
+    .foot { text-align: center; font-size: .72rem; color: #9aa5b8; padding: 18px 24px 28px; border-top: 1px solid #E5EAF1; }
+
     /* ── Print: only the document ────────────────────────────────────── */
     @page { size: A4; margin: 12mm 12mm 14mm; }
     @media print {
-      #site-header, .page-banner, .ticker-band, #site-footer, .wa-float, .qb-toolbar, .qb-builder,
-      .qb-preview-bar, #scroll-prog, #cursor-glow, #jrt-cb-wrap, #jrt-cb-btn, #jrt-cb-panel { display: none !important; }
+      .topbar, .qb-toolbar, .qb-builder, .qb-preview-bar, .qb-pop, .foot { display: none !important; }
       html { font-size: 12.5px; }
       body { background: #fff; }
-      .section { padding: 0; }
       .container { max-width: none; padding: 0; }
-      .qb-layout { display: block; }
+      .qb-layout { display: block; padding: 0; }
       .qb-preview-wrap { position: static; }
       .qb-preview-scroll { max-height: none; overflow: visible; padding: 0; }
-      .sheet { box-shadow: none; border: 0; border-radius: 0; max-width: none; padding: 0; }
-      .wordmark { margin: 0 0 22px; padding: 14px 18px; border-radius: 4px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .sheet { box-shadow: none; border: 0; border-radius: 0; max-width: none; padding: 0; overflow: visible; }
+      .wordmark { margin: 0 0 22px; padding: 14px 18px; border-radius: 4px; }
       .sheetfoot { margin: 22px 0 0; padding: 10px 0; }
-      .ribbon { right: -40px; top: 18px; }
-      table.doct th, .loadcard .cell, .ribbon, .notebox, table.doct tr.total td, table.doct tr.sub td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      table.doct tr, .party > div, .sig, .notebox { page-break-inside: avoid; }
-      h2.docsec { page-break-after: avoid; }
+      .ribbon-wrap { top: 0; right: 0; }
+      .wordmark, table.doct th, .loadcard .cell, .ribbon, .notebox, table.doct tr.total td, table.doct tr.sub td, .qb-step { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      table.doct tr, .party > div, .sig, .notebox, .gallery .g, .loadcard { page-break-inside: avoid; break-inside: avoid; }
+      h2.docsec, h3 { page-break-after: avoid; break-after: avoid; }
+      .gallery { grid-template-columns: repeat(5, 1fr) !important; }
     }
   </style>
 </head>
 <body>
 
-<header id="site-header">
-  <div class="hdr-inner">
-    <a href="index.html" class="logo">
-      <img src="img/JR-Tech-Logo_Final-white.png" alt="JR-Tech Solution" style="height:36px;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-      <span style="display:none;flex-direction:column;">
-        <span class="logo-main">JR-Tech Solution</span>
-        <span class="logo-tag">Sdn. Bhd.</span>
-      </span>
-    </a>
-    <nav id="main-nav">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="about.html" class="nav-link">About Us</a>
-      <a href="services.html" class="nav-link">Services</a>
-      <a href="products.html" class="nav-link">Products</a>
-      <a href="contact.html" class="nav-link">Contact Us</a>
-    </nav>
-    <div class="hdr-right">
-      <a href="quote.html" class="btn-quote-nav">Get a Quote</a>
-      <button class="burger" id="burger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-  <div id="mobile-nav" class="mobile-nav hidden">
-    <a href="index.html">Home</a>
-    <a href="about.html">About Us</a>
-    <a href="services.html">Services</a>
-    <a href="products.html">Products</a>
-    <a href="contact.html">Contact Us</a>
-    <a href="quote.html" class="mob-cta">Get a Quote</a>
+<!-- ═══ TOP BAR (standalone — no site navigation) ═══ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <img src="https://technextsg.github.io/jrtech-website/img/JR-Tech-Logo_Final-white.png" alt="JR-Tech Solution" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
+    <span class="wm" style="display:none">JR-TECH</span>
+    <span class="sep"></span>
+    <div><div class="ttl">Quotation Builder</div><div class="sub">Internal sales tool &middot; JR-Tech Solution Sdn Bhd</div></div>
+    <div class="right">Autosaves in this browser<br>Print / Save PDF outputs the document only</div>
   </div>
 </header>
 
-<!-- PAGE BANNER -->
-<section class="page-banner">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><a href="quote.html">Quote</a><span>/</span>Quotation Builder</div>
-    <h1>Quotation Builder</h1>
-    <p>Build an itemised commercial kitchen quotation in the JR-Tech document format &mdash; equipment schedule, fabrication, services, SST, payment milestones and acceptance &mdash; then print or save it as a PDF.</p>
-  </div>
-</section>
+<main class="container">
 
-<!-- ═══ TICKER ═══ -->
-<div class="ticker-band" aria-hidden="true">
-  <div class="ticker-track">
-    <div class="ticker-set">
-      <span>COMMERCIAL KITCHEN SOLUTIONS</span><b class="tsep">·</b><span>PENANG, MALAYSIA</span><b class="tstar">★</b><span>HACCP CERTIFIED</span><b class="tsep">·</b><span>16+ YEARS OF EXPERIENCE</span><b class="tstar">★</b><span>KITCHEN DESIGN &amp; BUILD</span><b class="tsep">·</b><span>EQUIPMENT SUPPLY</span><b class="tsep">·</b><span>MAINTENANCE SERVICE</span><b class="tstar">★</b><span>GREASE TRAP SERVICE</span><b class="tsep">·</b><span>CHEMICALS &amp; CLEANING</span><b class="tstar">★</b><span>MEGCOOK ROBOT CHEF</span><b class="tsep">·</b><span>J-NOX INDUCTION SERIES</span><b class="tsep">·</b><span>JR-CHEM DISHWASHERS</span><b class="tsep">·</b><span>TAMAGO SERVING EQUIPMENT</span><b class="tstar">★</b><span>157+ PRODUCTS</span><b class="tsep">·</b><span>50+ ENTERPRISE CLIENTS</span><b class="tstar">★</b><span>24/7 BREAKDOWN SUPPORT</span><b class="tsep">·</b><span>AI KITCHEN TECHNOLOGY</span><b class="tstar">★</b><span>STAINLESS STEEL FABRICATION</span><b class="tsep">·</b><span>CERTIFIED TECHNICIANS</span><b class="tstar">★</b><span>ENERGY EFFICIENT SOLUTIONS</span><b class="tsep">·</b><span>ESTABLISHED 2009</span><b class="tstar">★</b><span>END-TO-END SERVICE</span><b class="tsep">·</b><span>INTEL · GLENEAGLES · TEALIVE</span><b class="tstar">★</b><span>GREEN KITCHEN CERTIFIED</span><b class="tsep">·</b><span>840+ PLATES PER HOUR</span><b class="tstar">★</b><span>FULL SPARE PARTS SUPPORT</span><b class="tsep">·</b><span>24HR RESPONSE TIME</span><b class="tsep">·</b><span>TOTAL KITCHEN SOLUTION</span><b class="tstar">★</b>
+  <!-- Toolbar -->
+  <div class="qb-toolbar">
+    <div class="eyebrow">Quotation Builder</div>
+    <button type="button" class="btn btn-outline" id="act-sample" title="Load the AGL Kitchen Blueprint Pack sample (19 line items)">Load Sample</button>
+    <button type="button" class="btn btn-outline" id="act-export" title="Download this quotation as a JSON file">Export JSON</button>
+    <label class="btn btn-outline" for="act-import" title="Load a previously exported JSON file">Import JSON<input type="file" id="act-import" class="qb-file" accept="application/json,.json"/></label>
+    <button type="button" class="btn btn-outline" id="act-revise" title="Duplicate as the next revision (R+1)">New Revision</button>
+    <button type="button" class="btn btn-outline" id="act-reset" title="Clear everything and start a blank quotation">Reset</button>
+    <button type="button" class="btn btn-primary" id="act-print">Print / Save PDF</button>
+  </div>
+
+  <div class="qb-layout">
+
+    <!-- ───────────── LEFT: BUILDER ───────────── -->
+    <div class="qb-builder">
+
+      <!-- 1. Quotation details -->
+      <section class="qb-panel" data-panel="meta">
+        <button type="button" class="qb-panel-head" aria-expanded="true"><h2><span class="qb-step">1</span>Quotation Details</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="qb-panel-body">
+          <div class="form-row-3">
+            <div class="form-group"><label for="f-no">Quotation No.</label><input id="f-no" data-b="meta.no" placeholder="QTN-JRT-2026-001"/></div>
+            <div class="form-group"><label for="f-ref">Project Ref</label><input id="f-ref" data-b="meta.ref" placeholder="JRT-2026-XXX-01"/></div>
+            <div class="form-group"><label for="f-rev">Revision</label><input id="f-rev" data-b="meta.rev" placeholder="R1"/></div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group"><label for="f-date">Date</label><input id="f-date" type="date" data-b="meta.date"/></div>
+            <div class="form-group"><label for="f-valid">Validity (days)</label><input id="f-valid" type="number" min="0" step="1" data-b="meta.validDays"/></div>
+            <div class="form-group"><label for="f-status">Status</label>
+              <select id="f-status" data-b="meta.status">
+                <option value="draft">Draft</option><option value="issued">Issued</option><option value="revised">Revised</option><option value="accepted">Accepted</option><option value="sample">Sample</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="f-prep">Prepared by</label><input id="f-prep" data-b="meta.preparedBy" placeholder="Sales consultant"/></div>
+            <div class="form-group"><label for="f-prep2">Title / department</label><input id="f-prep2" data-b="meta.preparedTitle" placeholder="Sales &amp; Projects"/></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Client -->
+      <section class="qb-panel" data-panel="client">
+        <button type="button" class="qb-panel-head" aria-expanded="true"><h2><span class="qb-step">2</span>Client &amp; Project</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="qb-panel-body">
+          <div class="form-group"><label for="f-company">Company / Client name</label><input id="f-company" data-b="client.company" placeholder="e.g. Restoran Maju Sdn Bhd"/></div>
+          <div class="form-row">
+            <div class="form-group"><label for="f-contact">Attention (contact person)</label><input id="f-contact" data-b="client.contact" placeholder="Name, position"/></div>
+            <div class="form-group"><label for="f-reg">Company Reg. No.</label><input id="f-reg" data-b="client.reg" placeholder="SSM / ROC no."/></div>
+          </div>
+          <div class="form-group"><label for="f-addr">Address</label><textarea id="f-addr" rows="2" data-b="client.address" placeholder="Street address, city"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label for="f-state">State</label>
+              <select id="f-state" data-b="client.state">
+                <option value="">Select state&hellip;</option>
+                <option>Johor</option><option>Kedah</option><option>Kelantan</option><option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option><option>Perak</option><option>Perlis</option><option>Pulau Pinang</option><option>Sabah</option><option>Sarawak</option><option>Selangor</option><option>Terengganu</option><option>Wilayah Persekutuan</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="f-postcode">Postcode</label><input id="f-postcode" data-b="client.postcode" inputmode="numeric" maxlength="5" placeholder="11700"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="f-email">Email</label><input id="f-email" type="email" data-b="client.email" placeholder="you@company.com"/></div>
+            <div class="form-group"><label for="f-phone">Phone</label><input id="f-phone" data-b="client.phone" placeholder="+60 12 345 6789"/></div>
+          </div>
+          <hr class="qb-rule"/>
+          <div class="form-group"><label for="f-title">Project title</label><input id="f-title" data-b="project.title" placeholder="e.g. Central kitchen fit-out, Bayan Lepas"/></div>
+          <div class="form-group"><label for="f-site">Site / delivery address</label><input id="f-site" data-b="project.site" placeholder="If different from billing address"/></div>
+          <div class="form-group"><label for="f-scope">Scope summary</label><textarea id="f-scope" rows="4" data-b="project.scope" placeholder="Describe what this quotation covers: kitchen size, covers/day, menu type, zones, what is included and excluded&hellip;"></textarea></div>
+        </div>
+      </section>
+
+      <!-- 3. Line items -->
+      <section class="qb-panel" data-panel="items">
+        <button type="button" class="qb-panel-head" aria-expanded="true"><h2><span class="qb-step">3</span>Line Items &amp; Product Images</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="qb-panel-body">
+          <p class="qb-hint" style="margin:-6px 0 12px;">Section A pulls items and their photos straight from the JR-Tech product catalogue. Click any line's thumbnail to set an image by URL, upload a photo, or pick one from the catalogue. Leave a unit price at 0 to mark it <b>TBC</b> on the document.</p>
+          <div id="cat-note" class="qb-cat-note" hidden>Product catalogue could not be loaded (offline?). You can still add custom lines and upload images.</div>
+          <div id="sections"></div>
+        </div>
+      </section>
+
+      <!-- 4. Pricing -->
+      <section class="qb-panel" data-panel="pricing">
+        <button type="button" class="qb-panel-head" aria-expanded="true"><h2><span class="qb-step">4</span>Pricing, Tax &amp; Payment</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="qb-panel-body">
+          <div class="form-row-3">
+            <div class="form-group"><label for="f-disc">Discount (%)</label><input id="f-disc" type="number" min="0" max="100" step="0.5" data-b="pricing.discountPct"/></div>
+            <div class="form-group"><label for="f-sst">SST rate (%)</label><input id="f-sst" type="number" min="0" max="100" step="0.5" data-b="pricing.sstRate"/></div>
+            <div class="form-group"><label for="f-round">Rounding</label>
+              <select id="f-round" data-b="pricing.rounding">
+                <option value="0">None</option><option value="1">Nearest RM 1</option><option value="10">Nearest RM 10</option><option value="100">Nearest RM 100</option>
+              </select>
+            </div>
+          </div>
+          <p class="qb-hint" style="margin:-4px 0 12px;">SST is applied only to sections ticked <b>SST taxable</b> in Line Items (default: services). Confirm final tax treatment before issuing.</p>
+
+          <label>Payment milestones</label>
+          <div class="qb-ms qb-row-h qb-ms-h" style="margin-bottom:2px;"><span>Milestone</span><span>Trigger</span><span>%</span><span></span></div>
+          <div id="milestones"></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+            <button type="button" class="btn btn-outline btn-sm" id="ms-add">+ Add milestone</button>
+            <div class="qb-ms-total" id="ms-total"></div>
+          </div>
+
+          <hr class="qb-rule" style="margin:18px 0 14px;"/>
+          <div class="qb-sum" id="mini-sum"></div>
+        </div>
+      </section>
+
+      <!-- 5. Terms -->
+      <section class="qb-panel qb-terms" data-panel="terms">
+        <button type="button" class="qb-panel-head" aria-expanded="true"><h2><span class="qb-step">5</span>Terms, Notes &amp; Document Options</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="qb-panel-body">
+          <div class="form-group"><label for="f-terms">Terms &amp; conditions <span style="color:#9aa5b8;font-weight:400;">(one per line; a leading word plus full stop becomes the bold heading)</span></label><textarea id="f-terms" data-b="terms"></textarea></div>
+          <div class="form-group"><label for="f-notes">Note to client <span style="color:#9aa5b8;font-weight:400;">(optional, shown in a highlighted box)</span></label><textarea id="f-notes" rows="3" data-b="notes"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label for="f-sig1">Signatory &mdash; JR-Tech</label><input id="f-sig1" data-b="sig.jrtech" placeholder="Name, position"/></div>
+            <div class="form-group"><label for="f-sig2">Signatory &mdash; Client</label><input id="f-sig2" data-b="sig.client" placeholder="Name, position"/></div>
+          </div>
+          <label>Document options</label>
+          <div class="qb-checks">
+            <label class="form-check"><input type="checkbox" data-b="opts.thumbs"/> Product thumbnails in item tables</label>
+            <label class="form-check"><input type="checkbox" data-b="opts.gallery"/> Equipment illustration gallery</label>
+            <label class="form-check"><input type="checkbox" data-b="opts.stats"/> Summary stat cards</label>
+            <label class="form-check"><input type="checkbox" data-b="showSig"/> Acceptance &amp; signature block</label>
+          </div>
+          <ul class="qb-issues" id="issues"></ul>
+        </div>
+      </section>
+
     </div>
-    <div class="ticker-set" aria-hidden="true">
-      <span>COMMERCIAL KITCHEN SOLUTIONS</span><b class="tsep">·</b><span>PENANG, MALAYSIA</span><b class="tstar">★</b><span>HACCP CERTIFIED</span><b class="tsep">·</b><span>16+ YEARS OF EXPERIENCE</span><b class="tstar">★</b><span>KITCHEN DESIGN &amp; BUILD</span><b class="tsep">·</b><span>EQUIPMENT SUPPLY</span><b class="tsep">·</b><span>MAINTENANCE SERVICE</span><b class="tstar">★</b><span>GREASE TRAP SERVICE</span><b class="tsep">·</b><span>CHEMICALS &amp; CLEANING</span><b class="tstar">★</b><span>MEGCOOK ROBOT CHEF</span><b class="tsep">·</b><span>J-NOX INDUCTION SERIES</span><b class="tsep">·</b><span>JR-CHEM DISHWASHERS</span><b class="tsep">·</b><span>TAMAGO SERVING EQUIPMENT</span><b class="tstar">★</b><span>157+ PRODUCTS</span><b class="tsep">·</b><span>50+ ENTERPRISE CLIENTS</span><b class="tstar">★</b><span>24/7 BREAKDOWN SUPPORT</span><b class="tsep">·</b><span>AI KITCHEN TECHNOLOGY</span><b class="tstar">★</b><span>STAINLESS STEEL FABRICATION</span><b class="tsep">·</b><span>CERTIFIED TECHNICIANS</span><b class="tstar">★</b><span>ENERGY EFFICIENT SOLUTIONS</span><b class="tsep">·</b><span>ESTABLISHED 2009</span><b class="tstar">★</b><span>END-TO-END SERVICE</span><b class="tsep">·</b><span>INTEL · GLENEAGLES · TEALIVE</span><b class="tstar">★</b><span>GREEN KITCHEN CERTIFIED</span><b class="tsep">·</b><span>840+ PLATES PER HOUR</span><b class="tstar">★</b><span>FULL SPARE PARTS SUPPORT</span><b class="tsep">·</b><span>24HR RESPONSE TIME</span><b class="tsep">·</b><span>TOTAL KITCHEN SOLUTION</span><b class="tstar">★</b>
+
+    <!-- ───────────── RIGHT: LIVE PREVIEW ───────────── -->
+    <div class="qb-preview-wrap">
+      <div class="qb-preview-bar"><span>Live document preview</span><span id="prev-meta"></span></div>
+      <div class="qb-preview-scroll">
+        <div class="sheet" id="sheet"></div>
+      </div>
     </div>
+
+  </div>
+</main>
+
+<div class="foot">JR-Tech Solution Sdn Bhd (856691-H) &middot; 556-Y, Mukim 13, Batu Uban, Jalan Sultan Azlan Shah, 11700 Gelugor, Penang &middot; Internal quotation tool &mdash; data stays in this browser until exported.</div>
+
+<!-- Image popover -->
+<div class="qb-pop" id="imgpop" hidden role="dialog" aria-label="Line item image">
+  <div class="qb-pop-title"><span>Line image</span><button type="button" class="qb-x" id="pop-close" aria-label="Close">&times;</button></div>
+  <div class="qb-pop-prev" id="pop-prev">No image</div>
+  <div class="form-group"><label for="pop-url">Image URL</label><input id="pop-url" placeholder="https://&hellip;"/></div>
+  <div class="form-group"><label for="pop-cat">Or pick from catalogue</label><select id="pop-cat"><option value="">&mdash; select product &mdash;</option></select></div>
+  <div class="qb-pop-actions">
+    <label class="btn btn-outline btn-sm" for="pop-file">Upload<input type="file" id="pop-file" class="qb-file" accept="image/*"/></label>
+    <button type="button" class="btn btn-outline btn-sm" id="pop-remove">Remove</button>
+    <button type="button" class="btn btn-primary btn-sm" id="pop-apply">Apply</button>
   </div>
 </div>
 
-<!-- ═══ BUILDER ═══ -->
-<section class="section" style="padding-top:44px;">
-  <div class="container">
-
-    <!-- Toolbar -->
-    <div class="qb-toolbar">
-      <div class="eyebrow">Quotation Builder &middot; Internal Sales Tool</div>
-      <button type="button" class="btn btn-outline" id="act-sample" title="Load the AGL Kitchen Blueprint Pack sample (18 line items)">Load Sample</button>
-      <button type="button" class="btn btn-outline" id="act-export" title="Download this quotation as a JSON file">Export JSON</button>
-      <label class="btn btn-outline" for="act-import" title="Load a previously exported JSON file">Import JSON<input type="file" id="act-import" class="qb-file" accept="application/json,.json"/></label>
-      <button type="button" class="btn btn-outline" id="act-revise" title="Duplicate as the next revision (R+1)">New Revision</button>
-      <button type="button" class="btn btn-outline" id="act-reset" title="Clear everything and start a blank quotation">Reset</button>
-      <button type="button" class="btn btn-primary" id="act-print">Print / Save PDF</button>
-    </div>
-
-    <div class="qb-layout">
-
-      <!-- ───────────── LEFT: BUILDER ───────────── -->
-      <div class="qb-builder">
-
-        <!-- 1. Quotation details -->
-        <div class="contact-form-wrap qb-panel" data-panel="meta">
-          <div class="qb-panel-head"><h2><span class="qb-step">1</span>Quotation Details</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="qb-panel-body">
-            <div class="form-row-3">
-              <div class="form-group"><label for="f-no">Quotation No.</label><input id="f-no" data-b="meta.no" placeholder="QTN-JRT-2026-001"/></div>
-              <div class="form-group"><label for="f-ref">Project Ref</label><input id="f-ref" data-b="meta.ref" placeholder="JRT-2026-XXX-01"/></div>
-              <div class="form-group"><label for="f-rev">Revision</label><input id="f-rev" data-b="meta.rev" placeholder="R1"/></div>
-            </div>
-            <div class="form-row-3">
-              <div class="form-group"><label for="f-date">Date</label><input id="f-date" type="date" data-b="meta.date"/></div>
-              <div class="form-group"><label for="f-valid">Validity (days)</label><input id="f-valid" type="number" min="1" data-b="meta.validDays"/></div>
-              <div class="form-group"><label for="f-status">Status</label>
-                <select id="f-status" data-b="meta.status">
-                  <option value="draft">Draft</option>
-                  <option value="issued">Issued</option>
-                  <option value="revised">Revised</option>
-                  <option value="accepted">Accepted</option>
-                  <option value="sample">Sample</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label for="f-prep">Prepared by</label><input id="f-prep" data-b="meta.preparedBy" placeholder="Sales consultant"/></div>
-              <div class="form-group"><label for="f-prep2">Title / department</label><input id="f-prep2" data-b="meta.preparedTitle" placeholder="Sales &amp; Projects"/></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Client -->
-        <div class="contact-form-wrap qb-panel" data-panel="client">
-          <div class="qb-panel-head"><h2><span class="qb-step">2</span>Client &amp; Project</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="qb-panel-body">
-            <div class="form-group"><label for="f-company">Company / Client name</label><input id="f-company" data-b="client.company" placeholder="e.g. Restoran Maju Sdn Bhd"/></div>
-            <div class="form-row">
-              <div class="form-group"><label for="f-contact">Attention (contact person)</label><input id="f-contact" data-b="client.contact" placeholder="Name, position"/></div>
-              <div class="form-group"><label for="f-reg">Company Reg. No.</label><input id="f-reg" data-b="client.reg" placeholder="SSM / ROC no."/></div>
-            </div>
-            <div class="form-group"><label for="f-addr">Address</label><textarea id="f-addr" rows="2" data-b="client.address" placeholder="Street address, city"></textarea></div>
-            <div class="form-row">
-              <div class="form-group"><label for="f-state">State</label>
-                <select id="f-state" data-b="client.state">
-                  <option value="">Select state&hellip;</option>
-                  <option>Johor</option><option>Kedah</option><option>Kelantan</option><option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option><option>Perak</option><option>Perlis</option><option>Pulau Pinang</option><option>Sabah</option><option>Sarawak</option><option>Selangor</option><option>Terengganu</option><option>Wilayah Persekutuan</option>
-                </select>
-              </div>
-              <div class="form-group"><label for="f-postcode">Postcode</label><input id="f-postcode" data-b="client.postcode" inputmode="numeric" maxlength="5" placeholder="11700"/></div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label for="f-email">Email</label><input id="f-email" type="email" data-b="client.email" placeholder="you@company.com"/></div>
-              <div class="form-group"><label for="f-phone">Phone</label><input id="f-phone" data-b="client.phone" placeholder="+60 12 345 6789"/></div>
-            </div>
-            <hr class="docrule thin" style="height:1px;background:#C8D0DC;margin:6px 0 14px;border:0;"/>
-            <div class="form-group"><label for="f-title">Project title</label><input id="f-title" data-b="project.title" placeholder="e.g. Central kitchen fit-out, Bayan Lepas"/></div>
-            <div class="form-group"><label for="f-site">Site / delivery address</label><input id="f-site" data-b="project.site" placeholder="If different from billing address"/></div>
-            <div class="form-group"><label for="f-scope">Scope summary</label><textarea id="f-scope" rows="4" data-b="project.scope" placeholder="Describe what this quotation covers: kitchen size, covers/day, menu type, zones, what is included and excluded&hellip;"></textarea></div>
-          </div>
-        </div>
-
-        <!-- 3. Line items -->
-        <div class="contact-form-wrap qb-panel" data-panel="items">
-          <div class="qb-panel-head"><h2><span class="qb-step">3</span>Line Items</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="qb-panel-body">
-            <p class="qb-hint" style="margin:-6px 0 12px;">Section A can pull items straight from the JR-Tech product catalogue. Leave a unit price at 0 to mark it <b>TBC</b> on the document.</p>
-            <div id="sections"></div>
-          </div>
-        </div>
-
-        <!-- 4. Pricing -->
-        <div class="contact-form-wrap qb-panel" data-panel="pricing">
-          <div class="qb-panel-head"><h2><span class="qb-step">4</span>Pricing, Tax &amp; Payment</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="qb-panel-body">
-            <div class="form-row-3">
-              <div class="form-group"><label for="f-disc">Discount (%)</label><input id="f-disc" type="number" min="0" max="100" step="0.5" data-b="pricing.discountPct"/></div>
-              <div class="form-group"><label for="f-sst">SST rate (%)</label><input id="f-sst" type="number" min="0" max="100" step="0.5" data-b="pricing.sstRate"/></div>
-              <div class="form-group"><label for="f-round">Rounding</label>
-                <select id="f-round" data-b="pricing.rounding">
-                  <option value="0">None</option>
-                  <option value="1">Nearest RM 1</option>
-                  <option value="10">Nearest RM 10</option>
-                  <option value="100">Nearest RM 100</option>
-                </select>
-              </div>
-            </div>
-            <p class="qb-hint" style="margin:-4px 0 12px;">SST is applied only to sections ticked <b>taxable</b> in Line Items (default: services). Confirm final tax treatment before issuing.</p>
-
-            <label style="margin-bottom:8px;">Payment milestones</label>
-            <div class="qb-ms qb-row-h" style="margin-bottom:2px;"><span>Milestone</span><span>Trigger</span><span style="text-align:right;">%</span><span></span></div>
-            <div id="milestones"></div>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
-              <button type="button" class="btn btn-outline" id="ms-add" style="padding:7px 12px;font-size:.74rem;">+ Add milestone</button>
-              <div class="qb-ms-total" id="ms-total"></div>
-            </div>
-
-            <hr style="height:1px;background:#C8D0DC;margin:18px 0 14px;border:0;"/>
-            <div class="qb-sum" id="mini-sum"></div>
-          </div>
-        </div>
-
-        <!-- 5. Terms -->
-        <div class="contact-form-wrap qb-panel qb-terms" data-panel="terms">
-          <div class="qb-panel-head"><h2><span class="qb-step">5</span>Terms, Notes &amp; Acceptance</h2><svg class="qb-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="qb-panel-body">
-            <div class="form-group"><label for="f-terms">Terms &amp; conditions <span style="color:#9aa5b8;font-weight:400;">(one per line)</span></label><textarea id="f-terms" data-b="terms"></textarea></div>
-            <div class="form-group"><label for="f-notes">Note to client <span style="color:#9aa5b8;font-weight:400;">(optional, shown in a highlighted box)</span></label><textarea id="f-notes" rows="3" data-b="notes"></textarea></div>
-            <div class="form-row">
-              <div class="form-group"><label for="f-sig1">Signatory &mdash; JR-Tech</label><input id="f-sig1" data-b="sig.jrtech" placeholder="Name, position"/></div>
-              <div class="form-group"><label for="f-sig2">Signatory &mdash; Client</label><input id="f-sig2" data-b="sig.client" placeholder="Name, position"/></div>
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-check" style="margin-top:4px;"><input type="checkbox" data-b="showSig"/> Include acceptance &amp; signature block</label>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ───────────── RIGHT: LIVE PREVIEW ───────────── -->
-      <div class="qb-preview-wrap">
-        <div class="qb-preview-bar"><span>Live document preview</span><span id="prev-meta"></span></div>
-        <div class="qb-preview-scroll">
-          <div class="sheet" id="sheet"></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<footer id="site-footer">
-  <div class="ftr-inner">
-    <div class="ftr-brand">
-      <div class="ftr-logo">JR-Tech Solution Sdn. Bhd.</div>
-      <p>Malaysia's trusted commercial kitchen solution provider. Established 2009, Penang.</p>
-      <a href="https://www.facebook.com/jrtech09" target="_blank" class="ftr-fb" aria-label="Facebook">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-      </a>
-    </div>
-    <div class="ftr-col">
-      <h4>Quick Links</h4>
-      <a href="index.html">Home</a>
-      <a href="about.html">About Us</a>
-      <a href="services.html">Services</a>
-      <a href="products.html">Products</a>
-      <a href="contact.html">Contact Us</a>
-      <a href="quote.html">Get a Quote</a>
-    </div>
-    <div class="ftr-col">
-      <h4>Services</h4>
-      <a href="services.html#design">Kitchen Design &amp; Build</a>
-      <a href="services.html#equipment">Equipment Supply</a>
-      <a href="services.html#chemicals">Chemicals &amp; Cleaning</a>
-      <a href="services.html#maintenance">Maintenance Service</a>
-      <a href="services.html#grease">Grease Trap Service</a>
-    </div>
-    <div class="ftr-col">
-      <h4>Contact Us</h4>
-      <p>556-Y, Mukim 13, Batu Uban,<br>Jalan Sultan Azlan Shah,<br>11700 Gelugor, Penang</p>
-      <p><a href="tel:+6046572916">+604-657 2916</a><br><a href="tel:+6046575916">+604-657 5916</a></p>
-      <p><a href="mailto:info@jrtech.com.my">info@jrtech.com.my</a></p>
-      <p>Mon&ndash;Fri: 8:30 AM &ndash; 5:45 PM</p>
-    </div>
-  </div>
-  <div class="ftr-bottom">
-    <p>&copy; 2026 JR-Tech Solution Sdn Bhd (856691-H). All rights reserved.</p>
-    <p>Penang, Malaysia</p>
-    <p>Powered by <a href="https://technext.asia" target="_blank" style="color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:3px;">TechNext</a></p>
-  </div>
-</footer>
-
-<a href="https://wa.me/6046572916" class="wa-float" target="_blank" aria-label="WhatsApp">
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</a>
-
-<script src="products-data.js"></script>
+<script src="https://technextsg.github.io/jrtech-website/products-data.js" onerror="window.__catFailed=true"></script>
 <script>
 (function(){
   'use strict';
 
-  /* ── Site chrome (same as every other page) ─────────────────────── */
-  var cur = location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-link, #mobile-nav a').forEach(function(a){
-    if(a.getAttribute('href') === cur) a.classList.add('active');
-  });
-  var b = document.getElementById('burger');
-  var m = document.getElementById('mobile-nav');
-  if(b && m) b.addEventListener('click', function(){ m.classList.toggle('hidden'); });
-  var hdr = document.getElementById('site-header');
-  window.addEventListener('scroll', function(){ hdr.classList.toggle('compact', scrollY > 50); }, {passive:true});
-
   /* ═══════════════════════════════════════════════════════════════════
-     STATE
+     CONSTANTS & STATE
      ═══════════════════════════════════════════════════════════════════ */
-  var STORE_KEY = 'jrt-quotation-builder-v1';
+  var STORE_KEY = 'jrt-quotation-builder-v2';
+  var LOGO = 'https://technextsg.github.io/jrtech-website/img/JR-Tech-Logo_Final-white.png';
   var COMPANY = {
-    name: 'JR-Tech Solution Sdn Bhd',
-    reg: '856691-H',
+    name: 'JR-Tech Solution Sdn Bhd', reg: '856691-H',
     address: '556-Y, Mukim 13, Batu Uban, Jalan Sultan Azlan Shah, 11700 Gelugor, Penang',
-    phone: '+604-657 2916 / +604-657 5916',
-    email: 'info@jrtech.com.my'
+    phone: '+604-657 2916 / +604-657 5916', email: 'info@jrtech.com.my'
   };
   var DEFAULT_TERMS = [
     'Validity. This quotation is valid for the period stated above. Prices are in Malaysian Ringgit (RM).',
@@ -556,22 +526,17 @@
     'Acceptance. This quotation is accepted by signature below or by a purchase order referencing the quotation number.'
   ];
   var SECTION_DEFS = [
-    { key:'A', title:'Equipment Supply',                     taxable:false, catalogue:true  },
-    { key:'B', title:'Stainless Fabrication & Installation', taxable:false, catalogue:false },
-    { key:'C', title:'Services & Maintenance',               taxable:true,  catalogue:false }
+    { key:'A', title:'Equipment Supply',                     taxable:false, catalogue:true,  defaultSupplier:'' },
+    { key:'B', title:'Stainless Fabrication & Installation', taxable:false, catalogue:false, defaultSupplier:'JR-Tech fabrication' },
+    { key:'C', title:'Services & Maintenance',               taxable:true,  catalogue:false, defaultSupplier:'JR-Tech service' }
   ];
+  var STATUS_LABEL = { draft:'Draft', issued:'Issued', revised:'Revised', accepted:'Accepted', sample:'Sample' };
 
-  function today(){ var d=new Date(); return d.toISOString().slice(0,10); }
+  function today(){ var d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10); }
   function pad3(n){ return ('000'+n).slice(-3); }
-  function nextQuoteNo(){
-    var y = new Date().getFullYear();
-    var n = 1;
-    try { n = (parseInt(localStorage.getItem(STORE_KEY+':seq')||'0',10) || 0) + 1; } catch(e){}
-    return 'QTN-JRT-'+y+'-'+pad3(n);
-  }
-  function bumpSeq(){
-    try { localStorage.setItem(STORE_KEY+':seq', String((parseInt(localStorage.getItem(STORE_KEY+':seq')||'0',10)||0)+1)); } catch(e){}
-  }
+  function seq(){ try { return parseInt(localStorage.getItem(STORE_KEY+':seq')||'0',10) || 0; } catch(e){ return 0; } }
+  function nextQuoteNo(){ return 'QTN-JRT-'+new Date().getFullYear()+'-'+pad3(seq()+1); }
+  function bumpSeq(){ try { localStorage.setItem(STORE_KEY+':seq', String(seq()+1)); } catch(e){} }
 
   function blankState(){
     return {
@@ -581,86 +546,115 @@
       sections: SECTION_DEFS.map(function(s){ return { key:s.key, title:s.title, taxable:s.taxable, items:[] }; }),
       pricing: { discountPct: 0, sstRate: 8, rounding: '0' },
       milestones: [
-        { name:'M1 - Deposit',     trigger:'On confirmation / signed quotation', pct:50 },
-        { name:'M2 - Delivery',    trigger:'On delivery of equipment to site',   pct:40 },
-        { name:'M3 - Handover',    trigger:'On commissioning & client sign-off', pct:10 }
+        { name:'M1 - Deposit',  trigger:'On confirmation / signed quotation', pct:50 },
+        { name:'M2 - Delivery', trigger:'On delivery of equipment to site',   pct:40 },
+        { name:'M3 - Handover', trigger:'On commissioning & client sign-off', pct:10 }
       ],
       terms: DEFAULT_TERMS.join('\n'),
       notes: '',
       sig: { jrtech:'', client:'' },
-      showSig: true
+      showSig: true,
+      opts: { thumbs: true, gallery: true, stats: true }
     };
   }
 
-  /* Sample: the AGL Kitchen Blueprint Pack equipment schedule (18 items, RM 185,000) */
+  /* Sample: the AGL Kitchen Blueprint Pack equipment schedule (RM 185,000 for A + B) */
   function sampleState(){
     var s = blankState();
-    s.meta.no = 'QTN-JRT-2026-AGL-01'; s.meta.ref = 'JRT-2026-AGL-01'; s.meta.rev = 'R1';
-    s.meta.date = '2026-07-04'; s.meta.validDays = 30; s.meta.status = 'sample';
-    s.meta.preparedBy = 'JR-Tech design office'; s.meta.preparedTitle = 'Projects & Consulting';
-    s.client = { company:"Auntie Gaik Lean's Old School Eatery", contact:'The Owner', reg:'',
-      address:'Bishop Street, George Town', state:'Pulau Pinang', postcode:'10200', email:'', phone:'' };
+    var U22 = 'https://jrtech.com.my/wp-content/uploads/2022/08/';
+    s.meta = { no:'QTN-JRT-2026-AGL-01', ref:'JRT-2026-AGL-01', rev:'R1', date:'2026-07-04', validDays:30, status:'sample', preparedBy:'JR-Tech design office', preparedTitle:'Projects & Consulting' };
+    s.client = { company:"Auntie Gaik Lean's Old School Eatery", contact:'The Owner', reg:'', address:'Bishop Street, George Town', state:'Pulau Pinang', postcode:'10200', email:'', phone:'' };
     s.project.title = 'Kitchen fit-out - heritage shophouse conversion, Bishop Street, George Town';
     s.project.site = 'Rear kitchen (~55 m2), Bishop Street shophouse - exhaust and deliveries to back lane';
-    s.project.scope = 'Equipment schedule for a 48-seat Nyonya restaurant trading lunch and dinner at roughly 130 covers a day. Eighteen line items sized to the menu and the 1.1 m rear door. Brand equipment supplied and installed by JR-Tech; all worktables, sinks, shelving, dishwash tabling and the grease trap fabricated in-house in 304 stainless steel. Electrical, drainage and ventilation point schedules per the Kitchen Blueprint Pack.';
+    s.project.scope = 'Equipment schedule for a 48-seat Nyonya restaurant trading lunch and dinner at roughly 130 covers a day. Line items sized to the menu and the 1.1 m rear door. Brand equipment supplied and installed by JR-Tech; all worktables, sinks, shelving, dishwash tabling and the grease trap fabricated in-house in 304 stainless steel. Electrical, drainage and ventilation point schedules per the Kitchen Blueprint Pack.';
     s.sections[0].items = [
-      { desc:'Double-wok range, duplex burners, water-cooled top', supplier:'Berjaya', qty:1, price:26500 },
-      { desc:'Smokeless hood with ESP filter + fan, 3.2 m run', supplier:'Dong Po', qty:1, price:32000 },
-      { desc:'Induction simmer range, 2-zone (curries, gulai)', supplier:'Fabar', qty:1, price:9500 },
-      { desc:'3-tier gas steamer cabinet (otak-otak, chap chye)', supplier:'Berjaya', qty:1, price:11000 },
-      { desc:'RN stock-pot burner, low pedestal (stock, perut ikan)', supplier:'Waldorf RN', qty:1, price:3800 },
-      { desc:'Undercounter chiller, 2-door GN (wok line mise)', supplier:'Turbo Air', qty:1, price:6500 },
-      { desc:'Undercounter chiller, 2-door GN (cold prep)', supplier:'Turbo Air', qty:1, price:6500 },
-      { desc:'Upright freezer, 2-door, knock-down delivery', supplier:'Turbo Air', qty:1, price:8200 },
-      { desc:'Cold-prep counter with refrigerated salad top (kerabu)', supplier:'Turbo Air', qty:1, price:9800 },
-      { desc:'Rice/dessert station counter with warmer + gantry', supplier:'JR-Tech fab + Buffalo', qty:1, price:7200 },
-      { desc:'Hood-type dishwasher with heat-recovery condenser', supplier:'Winterhalter PT-M', qty:1, price:24000 },
-      { desc:'Water filtration + softener train (dishwasher, steamer, drinks)', supplier:'3M / BWT', qty:1, price:5300 },
-      { desc:'Dessert display chiller (cendol toppings, gula melaka)', supplier:'Berjaya', qty:1, price:4100 }
+      { desc:'Double-wok range, duplex burners, water-cooled top', supplier:'Berjaya', qty:1, price:26500, img: U22+'7-Freestanding-Induction-Double-Larger-Wok-Cooker-600x600.jpg' },
+      { desc:'Smokeless hood with ESP filter + fan, 3.2 m run', supplier:'Dong Po', qty:1, price:32000, img:'' },
+      { desc:'Induction simmer range, 2-zone (curries, gulai)', supplier:'Fabar', qty:1, price:9500, img: U22+'7-Freestanding-Induction-Four-Burners-600x600.jpg' },
+      { desc:'3-tier gas steamer cabinet (otak-otak, chap chye)', supplier:'Berjaya', qty:1, price:11000, img:'' },
+      { desc:'RN stock-pot burner, low pedestal (stock, perut ikan)', supplier:'Waldorf RN', qty:1, price:3800, img:'' },
+      { desc:'Undercounter chiller, 2-door GN (wok line mise)', supplier:'Turbo Air', qty:1, price:6500, img: U22+'Drawer-Counter-Chiller-600x599.jpg' },
+      { desc:'Undercounter chiller, 2-door GN (cold prep)', supplier:'Turbo Air', qty:1, price:6500, img: U22+'Drawer-Counter-Chiller-600x599.jpg' },
+      { desc:'Upright freezer, 2-door, knock-down delivery', supplier:'Turbo Air', qty:1, price:8200, img: U22+'4-Door-Upright-600x599.jpg' },
+      { desc:'Cold-prep counter with refrigerated salad top (kerabu)', supplier:'Turbo Air', qty:1, price:9800, img:'' },
+      { desc:'Rice/dessert station counter with warmer + gantry', supplier:'JR-Tech fab + Buffalo', qty:1, price:7200, img:'' },
+      { desc:'Hood-type dishwasher with heat-recovery condenser', supplier:'Winterhalter PT-M', qty:1, price:24000, img: U22+'VT-1-Door-Type-with-work-station-600x599.jpg' },
+      { desc:'Water filtration + softener train (dishwasher, steamer, drinks)', supplier:'3M / BWT', qty:1, price:5300, img:'' },
+      { desc:'Dessert display chiller (cendol toppings, gula melaka)', supplier:'Berjaya', qty:1, price:4100, img:'' }
     ];
     s.sections[1].items = [
-      { desc:'SS worktables, 1.2 mm 304, undershelf', supplier:'JR-Tech fabrication', qty:4, price:2200 },
-      { desc:'SS wall shelving + 4-tier storage racks, site-assembled (set)', supplier:'JR-Tech fabrication', qty:1, price:5400 },
-      { desc:'Double-bowl prep sink + 3 hand-wash basins, knee-operated (set)', supplier:'JR-Tech fabrication', qty:1, price:6900 },
-      { desc:'Grease trap, 100 L SS undermount, lane-side access', supplier:'JR-Tech fabrication', qty:1, price:4600 },
-      { desc:'Dishwash inlet/outlet tables + pre-rinse spray unit (set)', supplier:'JR-Tech fabrication', qty:1, price:4900 }
+      { desc:'SS worktables, 1.2 mm 304, undershelf', supplier:'JR-Tech fabrication', qty:4, price:2200, img:'' },
+      { desc:'SS wall shelving + 4-tier storage racks, site-assembled (set)', supplier:'JR-Tech fabrication', qty:1, price:5400, img:'' },
+      { desc:'Double-bowl prep sink + 3 hand-wash basins, knee-operated (set)', supplier:'JR-Tech fabrication', qty:1, price:6900, img:'' },
+      { desc:'Grease trap, 100 L SS undermount, lane-side access', supplier:'JR-Tech fabrication', qty:1, price:4600, img:'' },
+      { desc:'Dishwash inlet/outlet tables + pre-rinse spray unit (set)', supplier:'JR-Tech fabrication', qty:1, price:4900, img:'' }
     ];
     s.sections[2].items = [
-      { desc:'Planned maintenance + warewash chemicals - JR-Tech service agreement (per month, first 12 months)', supplier:'JR-Tech service', qty:12, price:2980 }
+      { desc:'Planned maintenance + warewash chemicals - JR-Tech service agreement (per month, first 12 months)', supplier:'JR-Tech service', qty:12, price:2980, img:'' }
     ];
-    s.notes = 'Indicative pricing (+/- 8%, pre-SST) carried over from the Kitchen Blueprint Pack Sheet 4. Every powered item above 1 kW carries a dedicated point reference; spare way P-12 is reserved at the DB for future cold-room or induction capacity.';
+    s.notes = 'Indicative pricing (+/- 8%, pre-SST) carried over from the Kitchen Blueprint Pack Sheet 4. Every powered item above 1 kW carries a dedicated point reference; spare way P-12 is reserved at the DB for future cold-room or induction capacity. Illustrations are indicative JR-Tech supply references; final make/model per confirmed order.';
     s.sig.jrtech = 'Project Director, JRT-2026-AGL-01';
     s.sig.client = "Owner, Auntie Gaik Lean's Old School Eatery";
     return s;
   }
 
-  var S = load() || blankState();
+  /* Merge any loaded/imported object onto a fresh blank state so new fields always exist */
+  function normalise(o){
+    var base = blankState();
+    if(!o || typeof o !== 'object') return base;
+    var s = Object.assign({}, base, o);
+    s.meta = Object.assign({}, base.meta, o.meta||{});
+    s.client = Object.assign({}, base.client, o.client||{});
+    s.project = Object.assign({}, base.project, o.project||{});
+    s.pricing = Object.assign({}, base.pricing, o.pricing||{});
+    s.sig = Object.assign({}, base.sig, o.sig||{});
+    s.opts = Object.assign({}, base.opts, o.opts||{});
+    s.milestones = Array.isArray(o.milestones) ? o.milestones.map(function(m){ return { name:String(m.name||''), trigger:String(m.trigger||''), pct:num(m.pct) }; }) : base.milestones;
+    s.sections = base.sections.map(function(bs, i){
+      var os = (Array.isArray(o.sections) && o.sections[i]) || {};
+      return { key: bs.key, title: os.title || bs.title, taxable: typeof os.taxable === 'boolean' ? os.taxable : bs.taxable,
+        items: (Array.isArray(os.items) ? os.items : []).map(function(it){
+          return { desc:String(it.desc||''), supplier:String(it.supplier||''), qty:num(it.qty), price:num(it.price), img:String(it.img||''), sku:String(it.sku||'') };
+        }) };
+    });
+    s.terms = typeof o.terms === 'string' ? o.terms : base.terms;
+    s.notes = String(o.notes||'');
+    s.showSig = o.showSig !== false;
+    return s;
+  }
+
+  var S = normalise(load());
 
   function load(){
-    try { var raw = localStorage.getItem(STORE_KEY); if(!raw) return null; var o = JSON.parse(raw); return (o && o.meta && o.sections) ? o : null; } catch(e){ return null; }
+    try { var raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; }
   }
-  var saveT;
+  var saveT, statusEl;
   function save(){
     clearTimeout(saveT);
-    saveT = setTimeout(function(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch(e){} }, 150);
+    saveT = setTimeout(function(){
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+      catch(e){ alert('Could not autosave in this browser (storage full or blocked). Export JSON to keep your work.'); }
+    }, 150);
   }
 
   /* ═══════════════════════════════════════════════════════════════════
      HELPERS
      ═══════════════════════════════════════════════════════════════════ */
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function escOr(s, fallback){ var t = String(s == null ? '' : s).trim(); return t ? esc(t) : fallback; }
   function nl2br(s){ return esc(s).replace(/\n/g,'<br>'); }
   function num(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; }
   function fmt(n){ return num(n).toLocaleString('en-MY', {minimumFractionDigits:2, maximumFractionDigits:2}); }
   function fmt0(n){ return num(n).toLocaleString('en-MY', {maximumFractionDigits:0}); }
   function fmtDate(iso){
-    if(!iso) return '-';
+    if(!iso) return '&mdash;';
     var d = new Date(iso+'T00:00:00'); if(isNaN(d)) return esc(iso);
     return d.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
   }
   function addDays(iso, days){
-    var d = new Date(iso+'T00:00:00'); if(isNaN(d)) return '';
-    d.setDate(d.getDate() + (parseInt(days,10)||0)); return d.toISOString().slice(0,10);
+    var d = new Date(iso+'T00:00:00'); var n = parseInt(days,10);
+    if(isNaN(d) || !(n > 0)) return '';
+    d.setDate(d.getDate() + n); return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
   }
   function getPath(obj, path){ return path.split('.').reduce(function(o,k){ return o == null ? undefined : o[k]; }, obj); }
   function setPath(obj, path, val){
@@ -668,9 +662,11 @@
     for(var i=0;i<ks.length-1;i++){ if(o[ks[i]] == null) o[ks[i]] = {}; o = o[ks[i]]; }
     o[ks[ks.length-1]] = val;
   }
+  function safeUrl(u){ u = String(u||'').trim(); return (/^(https?:\/\/|data:image\/)/i).test(u) ? u : ''; }
   function lineAmt(it){ return num(it.qty) * num(it.price); }
   function secSub(sec){ return sec.items.reduce(function(a,it){ return a + lineAmt(it); }, 0); }
   function itemId(sec, i){ var p = sec.key === 'A' ? 'E' : sec.key === 'B' ? 'F' : 'S'; return p + '-' + ('0'+(i+1)).slice(-2); }
+  var IMG_PH = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
 
   function totals(){
     var subs = S.sections.map(secSub);
@@ -679,14 +675,13 @@
     var disc = gross * discPct / 100;
     var net = gross - disc;
     var taxBase = S.sections.reduce(function(a,sec,i){ return a + (sec.taxable ? subs[i] * (1 - discPct/100) : 0); }, 0);
-    var sst = taxBase * num(S.pricing.sstRate) / 100;
+    var sst = taxBase * Math.max(0, num(S.pricing.sstRate)) / 100;
     var total = net + sst;
     var r = parseInt(S.pricing.rounding,10) || 0;
     var rounded = r ? Math.round(total / r) * r : total;
-    var adj = rounded - total;
-    var tbc = S.sections.reduce(function(a,sec){ return a + sec.items.filter(function(it){ return num(it.price) <= 0; }).length; }, 0);
-    var count = S.sections.reduce(function(a,sec){ return a + sec.items.length; }, 0);
-    return { subs:subs, gross:gross, discPct:discPct, disc:disc, net:net, taxBase:taxBase, sst:sst, total:rounded, adj:adj, tbc:tbc, count:count };
+    var tbc = 0, count = 0, withImg = 0;
+    S.sections.forEach(function(sec){ sec.items.forEach(function(it){ count++; if(num(it.price) <= 0) tbc++; if(safeUrl(it.img)) withImg++; }); });
+    return { subs:subs, gross:gross, discPct:discPct, disc:disc, net:net, taxBase:taxBase, sst:sst, total:rounded, adj:rounded-total, tbc:tbc, count:count, withImg:withImg };
   }
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -696,62 +691,58 @@
   function pushToInputs(){
     bound.forEach(function(el){
       var v = getPath(S, el.getAttribute('data-b'));
-      if(el.type === 'checkbox') el.checked = !!v;
-      else el.value = (v == null ? '' : v);
+      if(el.type === 'checkbox') el.checked = !!v; else el.value = (v == null ? '' : v);
     });
   }
-  bound.forEach(function(el){
-    el.addEventListener('input', onBound);
-    el.addEventListener('change', onBound);
-  });
   function onBound(e){
     var el = e.target, path = el.getAttribute('data-b');
     var v = el.type === 'checkbox' ? el.checked : (el.type === 'number' ? (el.value === '' ? '' : num(el.value)) : el.value);
     setPath(S, path, v);
     renderPreview(); save();
   }
+  bound.forEach(function(el){ el.addEventListener('input', onBound); el.addEventListener('change', onBound); });
 
-  /* ── Collapsible panels ─────────────────────────────────────────── */
   document.querySelectorAll('.qb-panel-head').forEach(function(h){
-    h.addEventListener('click', function(){ h.parentElement.classList.toggle('collapsed'); });
+    h.addEventListener('click', function(){
+      var p = h.parentElement; p.classList.toggle('collapsed');
+      h.setAttribute('aria-expanded', p.classList.contains('collapsed') ? 'false' : 'true');
+    });
   });
 
   /* ═══════════════════════════════════════════════════════════════════
-     BUILDER: sections & line items
+     BUILDER: catalogue, sections & line items
      ═══════════════════════════════════════════════════════════════════ */
   var CAT = (typeof JRT_PRODUCTS !== 'undefined' && Array.isArray(JRT_PRODUCTS)) ? JRT_PRODUCTS : [];
   var BRANDS = []; CAT.forEach(function(p){ if(BRANDS.indexOf(p.brand) < 0) BRANDS.push(p.brand); });
+  if(!CAT.length) document.getElementById('cat-note').hidden = false;
+  function catById(id){ for(var i=0;i<CAT.length;i++) if(CAT[i].id === id) return CAT[i]; return null; }
 
   var secRoot = document.getElementById('sections');
 
   function renderSections(){
     secRoot.innerHTML = '';
     S.sections.forEach(function(sec, si){
-      var wrap = document.createElement('div'); wrap.className = 'qb-sec'; wrap.setAttribute('data-si', si);
       var def = SECTION_DEFS[si] || {};
-      var html = ''
-        + '<div class="qb-sec-head">'
-        +   '<div class="qb-sec-key">'+esc(sec.key)+'</div>'
-        +   '<input class="qb-sec-title" data-act="title" value="'+esc(sec.title)+'" aria-label="Section title"/>'
-        +   '<label class="qb-sec-tax"><input type="checkbox" data-act="tax"'+(sec.taxable?' checked':'')+'/> SST taxable</label>'
+      var wrap = document.createElement('div'); wrap.className = 'qb-sec'; wrap.setAttribute('data-si', si);
+      var html = '<div class="qb-sec-head">'
+        + '<div class="qb-sec-key" aria-hidden="true">'+esc(sec.key)+'</div>'
+        + '<input class="qb-sec-title" data-act="title" value="'+esc(sec.title)+'" aria-label="Section '+esc(sec.key)+' title"/>'
+        + '<label class="qb-sec-tax"><input type="checkbox" data-act="tax"'+(sec.taxable?' checked':'')+'/> SST taxable</label>'
         + '</div>';
       if(def.catalogue && CAT.length){
         html += '<div class="qb-pick">'
-          + '<select data-act="brand" aria-label="Brand filter"><option value="">All brands</option>'
-          + BRANDS.map(function(b){ return '<option>'+esc(b)+'</option>'; }).join('')
-          + '</select>'
+          + '<select data-act="brand" aria-label="Brand filter"><option value="">All brands</option>'+BRANDS.map(function(b){ return '<option>'+esc(b)+'</option>'; }).join('')+'</select>'
           + '<select data-act="prod" aria-label="Catalogue product"></select>'
-          + '<button type="button" class="btn btn-primary" data-act="addcat">+ Add from catalogue</button>'
-          + '</div>'
-          + '<div class="qb-pick-prev" data-role="pickprev"></div>';
+          + '<button type="button" class="btn btn-primary btn-sm" data-act="addcat">+ Add from catalogue</button>'
+          + '</div><div class="qb-pick-prev" data-role="pickprev"></div>';
       }
       html += '<div class="qb-rows">'
-        + '<div class="qb-row qb-row-h"><span>Item / description</span><span>Supplied by</span><span>Qty</span><span>Unit RM</span><span>Amount</span><span></span></div>'
-        + sec.items.map(function(it, ii){ return rowHtml(sec, it, ii); }).join('')
+        + '<div class="qb-row qb-row-h" aria-hidden="true"><span></span><span>Item / description</span><span>Supplied by</span><span>Qty</span><span>Unit RM</span><span>Amount</span><span></span></div>'
+        + (sec.items.length ? sec.items.map(function(it, ii){ return rowHtml(sec, it, ii); }).join('') : '<div class="qb-empty">No lines in this section yet.</div>')
         + '</div>'
         + '<div class="qb-sec-foot">'
-        +   '<button type="button" class="btn btn-outline" data-act="add">+ Add line</button>'
-        +   (sec.items.length ? '<button type="button" class="btn btn-outline" data-act="clear">Clear section</button>' : '')
+        +   '<button type="button" class="btn btn-outline btn-sm" data-act="add">+ Add line</button>'
+        +   (sec.items.length ? '<button type="button" class="btn btn-outline btn-sm" data-act="clear">Clear section</button>' : '')
         +   '<div class="qb-sec-sub">Subtotal '+esc(sec.key)+': <b data-role="subtotal">RM '+fmt(secSub(sec))+'</b></div>'
         + '</div>';
       wrap.innerHTML = html;
@@ -760,78 +751,129 @@
     });
   }
   function rowHtml(sec, it, ii){
-    var amt = lineAmt(it);
+    var id = itemId(sec, ii), img = safeUrl(it.img), p = num(it.price);
     return '<div class="qb-row" data-ii="'+ii+'">'
-      + '<input data-f="desc" value="'+esc(it.desc)+'" placeholder="'+itemId(sec, ii)+' description"/>'
-      + '<input data-f="supplier" value="'+esc(it.supplier)+'" placeholder="Brand / JR-Tech"/>'
-      + '<input data-f="qty" class="num" type="number" min="0" step="1" value="'+esc(it.qty)+'"/>'
-      + '<input data-f="price" class="num" type="number" min="0" step="0.01" value="'+(num(it.price)||'')+'" placeholder="0"/>'
-      + '<div class="amt'+(num(it.price)<=0?' tbc':'')+'" data-role="amt">'+(num(it.price)<=0 ? 'TBC' : fmt(amt))+'</div>'
-      + '<button type="button" class="qb-x" data-act="del" title="Remove line" aria-label="Remove line">&times;</button>'
+      + '<button type="button" class="qb-thumb'+(img?' has':'')+'" data-act="img" title="Set product image" aria-label="Image for '+id+'">'+(img ? '<img src="'+esc(img)+'" alt="" loading="lazy" onerror="this.parentNode.classList.remove(\'has\');this.remove()"/>' : IMG_PH)+'</button>'
+      + '<input data-f="desc" value="'+esc(it.desc)+'" placeholder="'+id+' description" aria-label="'+id+' description"/>'
+      + '<input data-f="supplier" value="'+esc(it.supplier)+'" placeholder="Brand / JR-Tech" aria-label="'+id+' supplied by"/>'
+      + '<input data-f="qty" class="num" type="number" min="0" step="any" value="'+esc(it.qty)+'" aria-label="'+id+' quantity"/>'
+      + '<input data-f="price" class="num" type="number" min="0" step="0.01" value="'+(p>0?p:'')+'" placeholder="0" aria-label="'+id+' unit price"/>'
+      + '<div class="amt'+(p<=0?' tbc':'')+'" data-role="amt">'+(p<=0 ? 'TBC' : fmt(lineAmt(it)))+'</div>'
+      + '<button type="button" class="qb-x" data-act="del" title="Remove line" aria-label="Remove '+id+'">&times;</button>'
       + '</div>';
   }
   function fillProducts(wrap){
-    var brandSel = wrap.querySelector('[data-act="brand"]');
-    var prodSel  = wrap.querySelector('[data-act="prod"]');
-    var brand = brandSel.value;
-    var list = CAT.filter(function(p){ return !brand || p.brand === brand; });
-    prodSel.innerHTML = list.map(function(p){
+    var brand = wrap.querySelector('[data-act="brand"]').value;
+    var prodSel = wrap.querySelector('[data-act="prod"]');
+    prodSel.innerHTML = CAT.filter(function(p){ return !brand || p.brand === brand; }).map(function(p){
       return '<option value="'+esc(p.id)+'">'+esc(p.brand)+' '+esc(p.name)+' - '+esc(p.cat)+'</option>';
     }).join('');
     showPick(wrap);
   }
   function showPick(wrap){
-    var prodSel = wrap.querySelector('[data-act="prod"]');
+    var p = catById(wrap.querySelector('[data-act="prod"]').value);
     var prev = wrap.querySelector('[data-role="pickprev"]');
-    var p = CAT.filter(function(x){ return x.id === prodSel.value; })[0];
     if(!p){ prev.innerHTML = ''; return; }
-    prev.innerHTML = (p.img ? '<img src="'+esc(p.img)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"/>' : '')
+    prev.innerHTML = (safeUrl(p.img) ? '<img src="'+esc(p.img)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"/>' : '')
       + '<div><b>'+esc(p.brand)+' '+esc(p.name)+(p.tag ? ' &middot; '+esc(p.tag) : '')+'</b>'+esc(p.cat)+(p.tagline ? ' &mdash; '+esc(p.tagline) : '')+'</div>';
   }
+  function sectionOf(el){ var w = el.closest('.qb-sec'); return w ? { wrap:w, sec:S.sections[+w.getAttribute('data-si')] } : null; }
 
   secRoot.addEventListener('input', function(e){
-    var el = e.target, wrap = el.closest('.qb-sec'); if(!wrap) return;
-    var sec = S.sections[+wrap.getAttribute('data-si')];
-    if(el.getAttribute('data-act') === 'title'){ sec.title = el.value; renderPreview(); save(); return; }
+    var el = e.target, ctx = sectionOf(el); if(!ctx) return;
+    if(el.getAttribute('data-act') === 'title'){ ctx.sec.title = el.value; renderPreview(); save(); return; }
     var row = el.closest('.qb-row[data-ii]'); if(!row) return;
-    var it = sec.items[+row.getAttribute('data-ii')], f = el.getAttribute('data-f');
-    if(!it || !f) return;
-    it[f] = (f === 'qty' || f === 'price') ? num(el.value) : el.value;
+    var it = ctx.sec.items[+row.getAttribute('data-ii')], f = el.getAttribute('data-f'); if(!it || !f) return;
+    it[f] = (f === 'qty' || f === 'price') ? Math.max(0, num(el.value)) : el.value;
     var amtEl = row.querySelector('[data-role="amt"]');
-    if(num(it.price) <= 0){ amtEl.textContent = 'TBC'; amtEl.classList.add('tbc'); }
-    else { amtEl.textContent = fmt(lineAmt(it)); amtEl.classList.remove('tbc'); }
-    wrap.querySelector('[data-role="subtotal"]').textContent = 'RM ' + fmt(secSub(sec));
+    if(num(it.price) <= 0){ amtEl.textContent = 'TBC'; amtEl.classList.add('tbc'); } else { amtEl.textContent = fmt(lineAmt(it)); amtEl.classList.remove('tbc'); }
+    ctx.wrap.querySelector('[data-role="subtotal"]').textContent = 'RM ' + fmt(secSub(ctx.sec));
     renderPreview(); save();
   });
   secRoot.addEventListener('change', function(e){
-    var el = e.target, wrap = el.closest('.qb-sec'); if(!wrap) return;
-    var sec = S.sections[+wrap.getAttribute('data-si')];
+    var el = e.target, ctx = sectionOf(el); if(!ctx) return;
     var act = el.getAttribute('data-act');
-    if(act === 'tax'){ sec.taxable = el.checked; renderPreview(); save(); }
-    else if(act === 'brand'){ fillProducts(wrap); }
-    else if(act === 'prod'){ showPick(wrap); }
+    if(act === 'tax'){ ctx.sec.taxable = el.checked; renderPreview(); save(); }
+    else if(act === 'brand'){ fillProducts(ctx.wrap); }
+    else if(act === 'prod'){ showPick(ctx.wrap); }
   });
   secRoot.addEventListener('click', function(e){
     var btn = e.target.closest('[data-act]'); if(!btn) return;
-    var wrap = btn.closest('.qb-sec'); var sec = S.sections[+wrap.getAttribute('data-si')];
-    var act = btn.getAttribute('data-act');
-    if(act === 'add'){ sec.items.push({desc:'', supplier: sec.key==='A' ? '' : (sec.key==='B' ? 'JR-Tech fabrication' : 'JR-Tech service'), qty:1, price:0}); renderSections(); focusLast(wrap, 'desc'); }
+    var ctx = sectionOf(btn); if(!ctx) return;
+    var sec = ctx.sec, act = btn.getAttribute('data-act'), si = +ctx.wrap.getAttribute('data-si');
+    if(act === 'add'){ sec.items.push({desc:'', supplier:SECTION_DEFS[si].defaultSupplier, qty:1, price:0, img:'', sku:''}); renderSections(); focusLast(si, 'desc'); }
     else if(act === 'addcat'){
-      var id = wrap.querySelector('[data-act="prod"]').value;
-      var p = CAT.filter(function(x){ return x.id === id; })[0]; if(!p) return;
-      sec.items.push({ desc: p.brand+' '+p.name+' - '+p.cat, supplier: p.brand, qty:1, price:0, sku:p.id });
-      renderSections(); focusLast(wrap, 'price');
+      var p = catById(ctx.wrap.querySelector('[data-act="prod"]').value); if(!p) return;
+      sec.items.push({ desc: p.brand+' '+p.name+' - '+p.cat, supplier: p.brand, qty:1, price:0, img: safeUrl(p.img), sku: p.id });
+      renderSections(); focusLast(si, 'price');
     }
-    else if(act === 'del'){ var row = btn.closest('.qb-row[data-ii]'); sec.items.splice(+row.getAttribute('data-ii'), 1); renderSections(); }
-    else if(act === 'clear'){ if(!sec.items.length || confirm('Clear all lines in section '+sec.key+'?')){ sec.items = []; renderSections(); } }
+    else if(act === 'del'){ sec.items.splice(+btn.closest('.qb-row[data-ii]').getAttribute('data-ii'), 1); renderSections(); }
+    else if(act === 'clear'){ if(!confirm('Clear all lines in section '+sec.key+'?')) return; sec.items = []; renderSections(); }
+    else if(act === 'img'){ openPop(si, +btn.closest('.qb-row[data-ii]').getAttribute('data-ii'), btn); return; }
     else return;
     renderPreview(); save();
   });
-  function focusLast(wrap, f){
-    var wrap2 = secRoot.querySelector('.qb-sec[data-si="'+wrap.getAttribute('data-si')+'"]');
-    var rows = wrap2.querySelectorAll('.qb-row[data-ii]'); if(!rows.length) return;
+  function focusLast(si, f){
+    var rows = secRoot.querySelectorAll('.qb-sec[data-si="'+si+'"] .qb-row[data-ii]'); if(!rows.length) return;
     var inp = rows[rows.length-1].querySelector('[data-f="'+f+'"]'); if(inp) inp.focus();
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     IMAGE POPOVER (URL / upload / catalogue pick)
+     ═══════════════════════════════════════════════════════════════════ */
+  var pop = document.getElementById('imgpop'), popUrl = document.getElementById('pop-url'), popCat = document.getElementById('pop-cat'),
+      popPrev = document.getElementById('pop-prev'), popFile = document.getElementById('pop-file');
+  var popTarget = null, popDraft = '';
+  popCat.innerHTML += CAT.map(function(p){ return '<option value="'+esc(p.id)+'">'+esc(p.brand)+' '+esc(p.name)+'</option>'; }).join('');
+  if(!CAT.length) popCat.parentElement.hidden = true;
+
+  function openPop(si, ii, anchor){
+    var it = S.sections[si].items[ii]; if(!it) return;
+    popTarget = { si:si, ii:ii }; popDraft = safeUrl(it.img);
+    popUrl.value = /^data:/i.test(popDraft) ? '' : popDraft; popCat.value = it.sku && catById(it.sku) ? it.sku : '';
+    popUrl.placeholder = /^data:/i.test(popDraft) ? '(uploaded image)' : 'https://…';
+    drawPopPrev();
+    pop.hidden = false;
+    var r = anchor.getBoundingClientRect(), w = 300, h = pop.offsetHeight || 330;
+    var left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
+    var top = r.bottom + 8; if(top + h > window.innerHeight - 8) top = r.top - h - 8;
+    top = Math.min(Math.max(8, top), Math.max(8, window.innerHeight - h - 8));
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+    popUrl.focus();
+  }
+  function drawPopPrev(){ popPrev.innerHTML = popDraft ? '<img src="'+esc(popDraft)+'" alt="" onerror="this.parentNode.textContent=\'Image could not be loaded\'"/>' : 'No image'; }
+  function closePop(){ pop.hidden = true; popTarget = null; popFile.value = ''; }
+  function applyPop(){
+    if(!popTarget) return;
+    var it = S.sections[popTarget.si].items[popTarget.ii]; if(it){ it.img = popDraft; }
+    closePop(); renderSections(); renderPreview(); save();
+  }
+  popUrl.addEventListener('input', function(){ popDraft = safeUrl(popUrl.value); if(popUrl.value.trim() && !popDraft) popPrev.textContent = 'Use a full https:// image link'; else drawPopPrev(); });
+  popUrl.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); applyPop(); } });
+  popCat.addEventListener('change', function(){ var p = catById(popCat.value); if(p){ popDraft = safeUrl(p.img); popUrl.value = popDraft; drawPopPrev(); } });
+  popFile.addEventListener('change', function(){
+    var f = popFile.files && popFile.files[0]; if(!f) return;
+    if(!/^image\//.test(f.type)){ alert('Please choose an image file.'); return; }
+    var rd = new FileReader();
+    rd.onload = function(){
+      var im = new Image();
+      im.onload = function(){
+        /* downscale to keep autosave + JSON small (max 360 px, JPEG on white) */
+        var MAX = 360, sc = Math.min(1, MAX / Math.max(im.width, im.height));
+        var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(im.width*sc)); c.height = Math.max(1, Math.round(im.height*sc));
+        var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(im, 0, 0, c.width, c.height);
+        popDraft = c.toDataURL('image/jpeg', 0.85); popUrl.value = ''; popUrl.placeholder = '(uploaded image)'; drawPopPrev();
+      };
+      im.onerror = function(){ alert('That image could not be read.'); };
+      im.src = rd.result;
+    };
+    rd.readAsDataURL(f);
+  });
+  document.getElementById('pop-remove').addEventListener('click', function(){ popDraft = ''; applyPop(); });
+  document.getElementById('pop-apply').addEventListener('click', applyPop);
+  document.getElementById('pop-close').addEventListener('click', closePop);
+  document.addEventListener('click', function(e){ if(!pop.hidden && !pop.contains(e.target) && !e.target.closest('.qb-thumb')) closePop(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !pop.hidden) closePop(); });
 
   /* ═══════════════════════════════════════════════════════════════════
      BUILDER: milestones
@@ -840,19 +882,19 @@
   function renderMilestones(){
     msRoot.innerHTML = S.milestones.map(function(ms, i){
       return '<div class="qb-ms" data-mi="'+i+'">'
-        + '<input data-f="name" value="'+esc(ms.name)+'" placeholder="M'+(i+1)+'"/>'
-        + '<input data-f="trigger" value="'+esc(ms.trigger)+'" placeholder="Trigger"/>'
-        + '<input data-f="pct" type="number" min="0" max="100" step="1" style="text-align:right" value="'+esc(ms.pct)+'"/>'
-        + '<button type="button" class="qb-x" data-act="del" aria-label="Remove milestone">&times;</button>'
+        + '<input data-f="name" value="'+esc(ms.name)+'" placeholder="M'+(i+1)+'" aria-label="Milestone '+(i+1)+' name"/>'
+        + '<input data-f="trigger" value="'+esc(ms.trigger)+'" placeholder="Trigger" aria-label="Milestone '+(i+1)+' trigger"/>'
+        + '<input data-f="pct" type="number" min="0" max="100" step="any" style="text-align:right" value="'+esc(ms.pct)+'" aria-label="Milestone '+(i+1)+' percent"/>'
+        + '<button type="button" class="qb-x" data-act="del" aria-label="Remove milestone '+(i+1)+'">&times;</button>'
         + '</div>';
     }).join('');
     msTotal();
   }
+  function msSum(){ return S.milestones.reduce(function(a,m){ return a + num(m.pct); }, 0); }
   function msTotal(){
-    var sum = S.milestones.reduce(function(a,m){ return a + num(m.pct); }, 0);
-    var el = document.getElementById('ms-total');
-    el.textContent = 'Total ' + sum + '%' + (Math.abs(sum-100) > 0.01 ? ' - should equal 100%' : '');
-    el.classList.toggle('bad', Math.abs(sum-100) > 0.01);
+    var sum = msSum(), el = document.getElementById('ms-total'), bad = S.milestones.length && Math.abs(sum-100) > 0.01;
+    el.textContent = S.milestones.length ? ('Total ' + (Math.round(sum*100)/100) + '%' + (bad ? ' - should equal 100%' : '')) : 'No milestones (payment terms only)';
+    el.classList.toggle('bad', !!bad);
   }
   msRoot.addEventListener('input', function(e){
     var row = e.target.closest('[data-mi]'); if(!row) return;
@@ -875,141 +917,142 @@
      PREVIEW (paper sheet)
      ═══════════════════════════════════════════════════════════════════ */
   var sheet = document.getElementById('sheet');
-  var STATUS_LABEL = { draft:'Draft', issued:'Issued', revised:'Revised', accepted:'Accepted', sample:'Sample' };
+
+  function issues(T){
+    var out = [];
+    if(!S.client.company.trim()) out.push('Client name is empty');
+    if(!S.project.title.trim()) out.push('Project title is empty');
+    if(!T.count) out.push('No line items');
+    if(T.tbc) out.push(T.tbc + ' line' + (T.tbc>1?'s':'') + ' still TBC (unit price 0)');
+    if(S.milestones.length && Math.abs(msSum()-100) > 0.01) out.push('Payment milestones do not total 100%');
+    if(!S.meta.date) out.push('Quotation date is empty');
+    if(!(parseInt(S.meta.validDays,10) > 0)) out.push('Validity period not set');
+    S.sections.forEach(function(sec){ sec.items.forEach(function(it, i){ if(!it.desc.trim()) out.push(itemId(sec, i)+' has no description'); }); });
+    return out;
+  }
 
   function renderPreview(){
     var T = totals();
     var validUntil = addDays(S.meta.date, S.meta.validDays);
-    var st = S.meta.status || 'draft';
-    var noStr = S.meta.no || 'QTN-JRT-____';
-    var clientLine = [S.client.address, [S.client.postcode, S.client.state].filter(Boolean).join(' ')].filter(Boolean).join('\n');
+    var st = STATUS_LABEL[S.meta.status] ? S.meta.status : 'draft';
+    var noStr = S.meta.no.trim() || 'QTN-JRT-____';
+    var clientLine = [S.client.address, [S.client.postcode, S.client.state].filter(Boolean).join(' ')].filter(function(x){ return x && x.trim(); }).join('\n');
+    var contactBits = [S.client.phone, S.client.email].filter(function(x){ return x && x.trim(); }).map(esc).join(' &middot; ');
+    var showThumbs = !!S.opts.thumbs && T.withImg > 0;
 
-    var h = '';
-    h += '<div class="ribbon '+esc(st)+'">'+esc(STATUS_LABEL[st]||st)+'</div>';
-    h += '<div class="wordmark">'
-       +   '<img src="img/JR-Tech-Logo_Final-white.png" alt="JR-Tech" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"/>'
-       +   '<span class="wm" style="display:none">JR-TECH</span>'
-       +   '<span class="div">|</span><span class="tag">Solution Sdn Bhd &middot; Commercial Kitchen Solutions</span>'
-       + '</div>';
+    var h = '<div class="ribbon-wrap"><div class="ribbon '+st+'">'+STATUS_LABEL[st]+'</div></div>';
+    h += '<div class="wordmark"><img src="'+LOGO+'" alt="JR-Tech" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"/><span class="wm" style="display:none">JR-TECH</span>'
+       + '<span class="div">|</span><span class="tag">Solution Sdn Bhd &middot; Commercial Kitchen Solutions</span></div>';
     h += '<div class="sheet-body">';
     h += '<div class="doctitle">Quotation</div>';
-    h += '<div class="docsub">'+(S.project.title ? esc(S.project.title) : '<span style="color:#9aa5b8">Project title &mdash; fill in "Client &amp; Project"</span>')+'</div>';
+    h += '<div class="docsub">'+escOr(S.project.title, '<span class="ph">Project title &mdash; fill in "Client &amp; Project"</span>')+'</div>';
 
     h += '<div class="metagrid">'
        + '<div><b>Quotation No.</b>'+esc(noStr)+'</div>'
-       + '<div><b>Prepared for</b>'+(S.client.company ? esc(S.client.company) : '&mdash;')+'</div>'
-       + '<div><b>Prepared by</b>'+esc(COMPANY.name)+(S.meta.preparedBy ? ' &middot; '+esc(S.meta.preparedBy) : '')+'</div>'
+       + '<div><b>Prepared for</b>'+escOr(S.client.company, '&mdash;')+'</div>'
+       + '<div><b>Prepared by</b>'+esc(COMPANY.name)+(S.meta.preparedBy.trim() ? ' &middot; '+esc(S.meta.preparedBy) : '')+'</div>'
        + '<div><b>Date</b>'+fmtDate(S.meta.date)+'</div>'
-       + '<div><b>Revision</b>'+esc(S.meta.rev||'R1')+(S.meta.ref ? ' &middot; Ref '+esc(S.meta.ref) : '')+'</div>'
-       + '<div><b>Valid until</b>'+(validUntil ? fmtDate(validUntil)+' ('+esc(S.meta.validDays)+' days)' : '&mdash;')+'</div>'
+       + '<div><b>Revision</b>'+escOr(S.meta.rev,'R1')+(S.meta.ref.trim() ? ' &middot; Ref '+esc(S.meta.ref) : '')+'</div>'
+       + '<div><b>Valid until</b>'+(validUntil ? fmtDate(validUntil)+' ('+parseInt(S.meta.validDays,10)+' days)' : '&mdash;')+'</div>'
        + '</div>';
 
     h += '<div class="party">'
        + '<div><b class="lbl">From</b><span class="nm">'+esc(COMPANY.name)+'</span> ('+esc(COMPANY.reg)+')<br>'+esc(COMPANY.address)+'<br>'+esc(COMPANY.phone)+'<br>'+esc(COMPANY.email)+'</div>'
-       + '<div><b class="lbl">To</b><span class="nm">'+(S.client.company ? esc(S.client.company) : '&mdash;')+'</span>'
-       +   (S.client.reg ? ' ('+esc(S.client.reg)+')' : '')
-       +   (clientLine ? '<br>'+nl2br(clientLine) : '')
-       +   (S.client.contact ? '<br>Attn: '+esc(S.client.contact) : '')
-       +   ((S.client.phone||S.client.email) ? '<br>'+esc([S.client.phone, S.client.email].filter(Boolean).join(' &middot; ').replace(/&amp;middot;/g,'&middot;')) : '')
-       + '</div>'
+       + '<div><b class="lbl">To</b><span class="nm">'+escOr(S.client.company,'&mdash;')+'</span>'+(S.client.reg.trim() ? ' ('+esc(S.client.reg)+')' : '')
+       +   (clientLine ? '<br>'+nl2br(clientLine) : '')+(S.client.contact.trim() ? '<br>Attn: '+esc(S.client.contact) : '')+(contactBits ? '<br>'+contactBits : '')+'</div>'
        + '</div>';
 
-    /* 1.0 scope */
     h += '<h2 class="docsec"><small>1.0</small>Scope of this quotation</h2><hr class="docrule">';
-    h += '<p>'+(S.project.scope ? nl2br(S.project.scope) : '<span style="color:#9aa5b8">Describe the scope in "Client &amp; Project" &mdash; kitchen size, covers, zones, what is included and excluded.</span>')+'</p>';
-    if(S.project.site) h += '<p><b>Site / delivery:</b> '+esc(S.project.site)+'</p>';
+    h += '<p>'+(S.project.scope.trim() ? nl2br(S.project.scope) : '<span class="ph">Describe the scope in "Client &amp; Project" &mdash; kitchen size, covers, zones, what is included and excluded.</span>')+'</p>';
+    if(S.project.site.trim()) h += '<p><b>Site / delivery:</b> '+esc(S.project.site)+'</p>';
 
-    /* 2.0 schedules */
     var secNo = 2;
     S.sections.forEach(function(sec, si){
       if(!sec.items.length) return;
-      h += '<h2 class="docsec"><small>'+secNo+'.0</small>'+esc(sec.key)+' &middot; '+esc(sec.title)+'</h2><hr class="docrule">';
-      h += '<div class="tblscroll"><table class="doct">'
-         + '<tr><th>ID</th><th>Item</th><th>Supplied by</th><th class="r">Qty</th><th class="r">Unit (RM)</th><th class="r">Amount (RM)</th></tr>';
+      h += '<h2 class="docsec"><small>'+secNo+'.0</small>'+esc(sec.key)+' &middot; '+escOr(sec.title,'Section')+'</h2><hr class="docrule">';
+      h += '<div class="tblscroll"><table class="doct"><tr>'+(showThumbs?'<th></th>':'')+'<th>ID</th><th>Item</th><th>Supplied by</th><th class="r">Qty</th><th class="r">Unit (RM)</th><th class="r">Amount (RM)</th></tr>';
       sec.items.forEach(function(it, ii){
-        var p = num(it.price);
-        h += '<tr><td class="id">'+itemId(sec, ii)+'</td>'
-           + '<td>'+(it.desc ? esc(it.desc) : '<span style="color:#9aa5b8">(description)</span>')+(it.sku ? '<span class="sup">Cat. ref '+esc(it.sku)+'</span>' : '')+'</td>'
-           + '<td>'+esc(it.supplier||'&mdash;').replace('&amp;mdash;','&mdash;')+'</td>'
-           + '<td class="r">'+esc(it.qty)+'</td>'
+        var p = num(it.price), img = safeUrl(it.img);
+        h += '<tr>'+(showThumbs ? '<td class="im">'+(img ? '<img src="'+esc(img)+'" alt="" onerror="this.remove()"/>' : '')+'</td>' : '')
+           + '<td class="id">'+itemId(sec, ii)+'</td>'
+           + '<td>'+escOr(it.desc, '<span class="ph">(description)</span>')+(it.sku ? '<span class="sup">Cat. ref '+esc(it.sku)+'</span>' : '')+'</td>'
+           + '<td>'+escOr(it.supplier,'&mdash;')+'</td>'
+           + '<td class="r">'+esc(num(it.qty))+'</td>'
            + '<td class="r">'+(p>0 ? fmt(p) : '<span class="tbc">TBC</span>')+'</td>'
            + '<td class="r">'+(p>0 ? fmt(lineAmt(it)) : '<span class="tbc">TBC</span>')+'</td></tr>';
       });
-      h += '<tr class="sub"><td colspan="5">Subtotal '+esc(sec.key)+' &mdash; '+esc(sec.title)+(sec.taxable ? ' <span style="font-weight:600;color:#7A8FA0">(SST applicable)</span>' : '')+'</td><td class="r">'+fmt(T.subs[si])+'</td></tr>';
+      h += '<tr class="sub"><td colspan="'+(showThumbs?6:5)+'">Subtotal '+esc(sec.key)+' &mdash; '+escOr(sec.title,'Section')+(sec.taxable ? ' <span style="font-weight:600;color:#7A8FA0">(SST applicable)</span>' : '')+'</td><td class="r">'+fmt(T.subs[si])+'</td></tr>';
       h += '</table></div>';
+      /* illustration gallery for this section */
+      if(S.opts.gallery){
+        var withImg = sec.items.map(function(it, ii){ return { it:it, id:itemId(sec, ii), img:safeUrl(it.img) }; }).filter(function(x){ return x.img; });
+        if(withImg.length){
+          h += '<h3>'+secNo+'.1 Reference illustrations</h3><div class="gallery">'
+             + withImg.map(function(x){ return '<div class="g"><img src="'+esc(x.img)+'" alt="" onerror="this.closest(\'.g\').remove()"/><div class="gid">'+x.id+'</div><div class="gnm">'+escOr(x.it.desc,'&nbsp;')+'</div></div>'; }).join('')
+             + '</div><p style="font-size:.72rem;color:#7b8aa3;margin-top:4px;">Indicative illustrations &mdash; final make/model per confirmed order.</p>';
+        }
+      }
       secNo++;
     });
-    if(!T.count){
-      h += '<div class="notebox">No line items yet. Add equipment from the catalogue or custom lines under <b>Line Items</b>, or use <b>Load Sample</b> to see a complete quotation.</div>';
-    }
+    if(!T.count) h += '<div class="notebox">No line items yet. Add equipment from the catalogue or custom lines under <b>Line Items</b>, or use <b>Load Sample</b> to see a complete quotation.</div>';
 
-    /* summary */
-    h += '<h2 class="docsec"><small>'+secNo+'.0</small>Summary &amp; totals</h2><hr class="docrule">';
-    h += '<table class="doct">';
-    S.sections.forEach(function(sec, si){ if(sec.items.length) h += '<tr><td>Subtotal '+esc(sec.key)+' &mdash; '+esc(sec.title)+'</td><td class="r">'+fmt(T.subs[si])+'</td></tr>'; });
-    if(T.disc > 0) h += '<tr><td>Discount ('+esc(T.discPct)+'%)</td><td class="r">&minus;'+fmt(T.disc)+'</td></tr>';
+    h += '<h2 class="docsec"><small>'+secNo+'.0</small>Summary &amp; totals</h2><hr class="docrule"><table class="doct">';
+    S.sections.forEach(function(sec, si){ if(sec.items.length) h += '<tr><td>Subtotal '+esc(sec.key)+' &mdash; '+escOr(sec.title,'Section')+'</td><td class="r">'+fmt(T.subs[si])+'</td></tr>'; });
+    if(T.disc > 0) h += '<tr><td>Discount ('+T.discPct+'%)</td><td class="r">&minus;'+fmt(T.disc)+'</td></tr>';
     h += '<tr class="sub"><td>Subtotal (before SST)</td><td class="r">'+fmt(T.net)+'</td></tr>';
-    h += '<tr><td>SST @ '+esc(num(S.pricing.sstRate))+'%'+(T.taxBase>0 ? ' on taxable sections (RM '+fmt(T.taxBase)+')' : ' &mdash; no taxable sections')+'</td><td class="r">'+fmt(T.sst)+'</td></tr>';
+    h += '<tr><td>SST @ '+Math.max(0,num(S.pricing.sstRate))+'%'+(T.taxBase>0 ? ' on taxable sections (RM '+fmt(T.taxBase)+')' : ' &mdash; no taxable sections')+'</td><td class="r">'+fmt(T.sst)+'</td></tr>';
     if(Math.abs(T.adj) >= 0.005) h += '<tr><td>Rounding adjustment</td><td class="r">'+(T.adj<0?'&minus;':'')+fmt(Math.abs(T.adj))+'</td></tr>';
-    h += '<tr class="total"><td>Total payable (incl. SST)</td><td class="r">RM '+fmt(T.total)+'</td></tr>';
-    h += '</table>';
+    h += '<tr class="total"><td>Total payable (incl. SST)</td><td class="r">RM '+fmt(T.total)+'</td></tr></table>';
     if(T.tbc) h += '<div class="notebox warn"><b>'+T.tbc+' line'+(T.tbc>1?'s':'')+' marked TBC</b> &mdash; unit prices to be confirmed; totals exclude these items.</div>';
     secNo++;
 
-    h += '<div class="loadcard">'
-       + '<div class="cell"><div class="v">RM '+fmt0(T.net)+'</div><div class="l">before SST</div></div>'
-       + '<div class="cell"><div class="v">RM '+fmt0(T.total)+'</div><div class="l">total incl. SST</div></div>'
-       + '<div class="cell"><div class="v">'+T.count+'</div><div class="l">line item'+(T.count===1?'':'s')+' across '+S.sections.filter(function(s){return s.items.length;}).length+' section'+(S.sections.filter(function(s){return s.items.length;}).length===1?'':'s')+'</div></div>'
-       + '</div>';
+    if(S.opts.stats){
+      var used = S.sections.filter(function(s){ return s.items.length; }).length;
+      h += '<div class="loadcard"><div class="cell"><div class="v">RM '+fmt0(T.net)+'</div><div class="l">before SST</div></div>'
+         + '<div class="cell"><div class="v">RM '+fmt0(T.total)+'</div><div class="l">total incl. SST</div></div>'
+         + '<div class="cell"><div class="v">'+T.count+'</div><div class="l">line item'+(T.count===1?'':'s')+' across '+used+' section'+(used===1?'':'s')+'</div></div></div>';
+    }
 
-    /* milestones */
     if(S.milestones.length){
       h += '<h2 class="docsec"><small>'+secNo+'.0</small>Payment milestones</h2><hr class="docrule">';
       h += '<table class="doct"><tr><th>Milestone</th><th>Trigger</th><th class="r">%</th><th class="r">Amount incl. SST (RM)</th></tr>';
-      var pctSum = 0;
-      S.milestones.forEach(function(ms){
-        pctSum += num(ms.pct);
-        h += '<tr><td>'+esc(ms.name||'&mdash;').replace('&amp;mdash;','&mdash;')+'</td><td>'+esc(ms.trigger)+'</td><td class="r">'+esc(num(ms.pct))+'%</td><td class="r">'+fmt(T.total * num(ms.pct) / 100)+'</td></tr>';
-      });
-      if(Math.abs(pctSum-100) > 0.01) h += '<tr><td colspan="4" class="tbc" style="font-size:.74rem">Milestones total '+pctSum+'% &mdash; adjust to 100% before issuing.</td></tr>';
+      S.milestones.forEach(function(ms){ h += '<tr><td>'+escOr(ms.name,'&mdash;')+'</td><td>'+esc(ms.trigger)+'</td><td class="r">'+num(ms.pct)+'%</td><td class="r">'+fmt(T.total * num(ms.pct) / 100)+'</td></tr>'; });
+      if(Math.abs(msSum()-100) > 0.01) h += '<tr><td colspan="4" class="tbc" style="font-size:.74rem">Milestones total '+(Math.round(msSum()*100)/100)+'% &mdash; adjust to 100% before issuing.</td></tr>';
       h += '</table>';
       secNo++;
     }
 
-    /* notes */
-    if(S.notes) h += '<div class="notebox">'+nl2br(S.notes)+'</div>';
+    if(S.notes.trim()) h += '<div class="notebox">'+nl2br(S.notes)+'</div>';
 
-    /* terms */
-    var terms = (S.terms||'').split('\n').map(function(t){ return t.trim(); }).filter(Boolean);
+    var terms = S.terms.split('\n').map(function(t){ return t.trim(); }).filter(Boolean);
     if(terms.length){
-      h += '<h2 class="docsec"><small>'+secNo+'.0</small>Terms &amp; conditions</h2><hr class="docrule">';
-      h += '<ol class="terms">'+terms.map(function(t){
-        var mm = t.match(/^([A-Za-z][A-Za-z &\/-]{1,28})\.\s+(.*)$/);
-        return '<li>'+(mm ? '<b>'+esc(mm[1])+'.</b> '+esc(mm[2]) : esc(t))+'</li>';
-      }).join('')+'</ol>';
+      h += '<h2 class="docsec"><small>'+secNo+'.0</small>Terms &amp; conditions</h2><hr class="docrule"><ol class="terms">'
+         + terms.map(function(t){ var mm = t.match(/^([A-Za-z][A-Za-z &\/-]{1,28})\.\s+(.*)$/); return '<li>'+(mm ? '<b>'+esc(mm[1])+'.</b> '+esc(mm[2]) : esc(t))+'</li>'; }).join('')+'</ol>';
       secNo++;
     }
 
-    /* acceptance */
     if(S.showSig){
       h += '<h2 class="docsec"><small>'+secNo+'.0</small>Acceptance</h2><hr class="docrule">';
       h += '<p>Signature below confirms acceptance of the schedules, the total of <b>RM '+fmt(T.total)+'</b> (incl. SST) and the terms above, and authorises '+esc(COMPANY.name)+' to proceed against the payment milestones.</p>';
       h += '<div class="sigrow">'
-         + '<div class="sig"><b>For the Client</b>'+(S.client.company ? esc(S.client.company) : '&nbsp;')+(S.sig.client ? '<br>'+esc(S.sig.client) : '')+'<div class="line"></div><div class="lbl">Name, signature &amp; company stamp</div><div class="line"></div><div class="lbl">Date</div></div>'
-         + '<div class="sig"><b>For '+esc(COMPANY.name)+'</b>'+(S.sig.jrtech ? esc(S.sig.jrtech) : (S.meta.preparedBy ? esc(S.meta.preparedBy) : '&nbsp;'))+'<div class="line"></div><div class="lbl">Name &amp; signature</div><div class="line"></div><div class="lbl">Date</div></div>'
+         + '<div class="sig"><b>For the Client</b>'+escOr(S.client.company,'&nbsp;')+(S.sig.client.trim() ? '<br>'+esc(S.sig.client) : '')+'<div class="line"></div><div class="lbl">Name, signature &amp; company stamp</div><div class="line"></div><div class="lbl">Date</div></div>'
+         + '<div class="sig"><b>For '+esc(COMPANY.name)+'</b>'+escOr(S.sig.jrtech, escOr(S.meta.preparedBy,'&nbsp;'))+'<div class="line"></div><div class="lbl">Name &amp; signature</div><div class="line"></div><div class="lbl">Date</div></div>'
          + '</div>';
     }
-    h += '</div>'; /* sheet-body */
-    h += '<div class="sheetfoot"><span>'+esc(noStr)+' &middot; '+esc(S.meta.rev||'R1')+' &middot; '+esc(COMPANY.name)+'</span><span>'+esc(STATUS_LABEL[st]||st)+' &middot; '+fmtDate(S.meta.date)+'</span></div>';
+    h += '</div>';
+    h += '<div class="sheetfoot"><span>'+esc(noStr)+' &middot; '+escOr(S.meta.rev,'R1')+' &middot; '+esc(COMPANY.name)+'</span><span>'+STATUS_LABEL[st]+' &middot; '+fmtDate(S.meta.date)+'</span></div>';
 
     sheet.innerHTML = h;
     document.getElementById('prev-meta').textContent = noStr + ' · RM ' + fmt(T.total);
     document.getElementById('mini-sum').innerHTML =
         '<div>Subtotal (before SST)</div><div class="r">RM '+fmt(T.net)+'</div>'
-      + '<div>SST '+esc(num(S.pricing.sstRate))+'% on taxable sections</div><div class="r">RM '+fmt(T.sst)+'</div>'
+      + '<div>SST '+Math.max(0,num(S.pricing.sstRate))+'% on taxable sections</div><div class="r">RM '+fmt(T.sst)+'</div>'
       + (Math.abs(T.adj)>=0.005 ? '<div>Rounding</div><div class="r">'+(T.adj<0?'-':'')+'RM '+fmt(Math.abs(T.adj))+'</div>' : '')
       + '<div class="tot">Total payable</div><div class="r tot">RM '+fmt(T.total)+'</div>';
-    document.title = (S.meta.no ? S.meta.no+' ' : '') + 'Quotation — JR-Tech Solution Sdn Bhd';
+    var iss = issues(T), issEl = document.getElementById('issues');
+    issEl.className = 'qb-issues' + (iss.length ? '' : ' ok');
+    issEl.innerHTML = iss.length ? iss.slice(0,8).map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('') + (iss.length>8 ? '<li>and '+(iss.length-8)+' more</li>' : '') : '<li>Ready to issue &mdash; no open checks.</li>';
+    document.title = noStr + ' ' + (S.meta.rev||'R1') + ' — Quotation — JR-Tech Solution Sdn Bhd';
   }
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -1017,18 +1060,17 @@
      ═══════════════════════════════════════════════════════════════════ */
   function renderAll(){ pushToInputs(); renderSections(); renderMilestones(); renderPreview(); }
 
-  document.getElementById('act-print').addEventListener('click', function(){ window.print(); });
+  document.getElementById('act-print').addEventListener('click', function(){ closePop(); window.print(); });
+  window.addEventListener('beforeprint', closePop);
 
   document.getElementById('act-sample').addEventListener('click', function(){
     if(totals().count && !confirm('Replace the current quotation with the AGL Kitchen Blueprint Pack sample?')) return;
     S = sampleState(); renderAll(); save();
   });
-
   document.getElementById('act-reset').addEventListener('click', function(){
-    if(!confirm('Start a blank quotation? The current one will be cleared from this browser.')) return;
+    if(!confirm('Start a blank quotation? The current one will be cleared from this browser (export it first if you need it).')) return;
     bumpSeq(); S = blankState(); renderAll(); save();
   });
-
   document.getElementById('act-revise').addEventListener('click', function(){
     var mm = String(S.meta.rev||'R1').match(/^R?(\d+)$/i);
     S.meta.rev = 'R' + ((mm ? parseInt(mm[1],10) : 1) + 1);
@@ -1036,40 +1078,29 @@
     if(S.meta.status === 'accepted' || S.meta.status === 'issued') S.meta.status = 'revised';
     renderAll(); save();
   });
-
   document.getElementById('act-export').addEventListener('click', function(){
     var blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
     a.download = (S.meta.no || 'quotation').replace(/[^\w.-]+/g,'_') + '_' + (S.meta.rev||'R1') + '.json';
     document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
   });
-
   document.getElementById('act-import').addEventListener('change', function(e){
     var f = e.target.files && e.target.files[0]; if(!f) return;
     var rd = new FileReader();
     rd.onload = function(){
       try {
         var o = JSON.parse(rd.result);
-        if(!o || !o.meta || !Array.isArray(o.sections)) throw new Error('bad');
-        var base = blankState();
-        S = Object.assign(base, o);
-        S.meta = Object.assign(base.meta, o.meta); S.client = Object.assign(base.client, o.client||{});
-        S.project = Object.assign(base.project, o.project||{}); S.pricing = Object.assign(base.pricing, o.pricing||{});
-        S.sig = Object.assign(base.sig, o.sig||{});
-        renderAll(); save();
+        if(!o || typeof o !== 'object' || !o.meta || !Array.isArray(o.sections)) throw new Error('bad');
+        S = normalise(o); renderAll(); save();
       } catch(err){ alert('That file is not a quotation export from this builder.'); }
       e.target.value = '';
     };
     rd.readAsText(f);
   });
 
-  /* keyboard: Ctrl/Cmd+P prints the document only (print CSS handles it) */
   renderAll();
 })();
 </script>
-<script src="interactions.js"></script>
-<script src="chatbot.js"></script>
 </body>
 </html>
