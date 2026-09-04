@@ -53,16 +53,42 @@
     .topbar .right { margin-left: auto; font-size: .7rem; color: rgba(255,255,255,.5); text-align: right; line-height: 1.5; }
     @media (max-width: 640px) { .topbar .right { display: none; } }
 
-    /* ── Toolbar ─────────────────────────────────────────────────────── */
-    .toolbar { position: sticky; top: 0; z-index: 50; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; margin: 18px 0 18px;
+    /* ── Toolbar (sticky): actions row + section jump row ────────────── */
+    .toolbar { position: sticky; top: 0; z-index: 50; margin: 18px 0 18px; padding: 0;
       background: linear-gradient(135deg,#0E1B2A 0%,#162535 40%,#1A2D40 60%,#112030 100%); border: 1px solid rgba(144,186,210,.2); border-left: 3px solid #8FAEC0; border-radius: 0 6px 6px 0; box-shadow: 0 6px 18px rgba(13,17,23,.18); }
+    .tb-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; }
+    .tb-sep { width: 1px; height: 24px; background: rgba(184,205,216,.3); margin: 0 2px; }
     .toolbar .btn { padding: 8px 13px; font-size: .76rem; }
     .toolbar .btn-outline { color: #DCE6EE; border-color: rgba(184,205,216,.45); }
     .toolbar .btn-outline:hover { color: #fff; }
     .toolbar label.btn { margin: 0; color: #DCE6EE; }
     .toolbar .status { margin-left: auto; font-size: .68rem; color: rgba(184,205,216,.75); white-space: nowrap; }
-    @media (max-width: 640px) { .toolbar { position: static; } .toolbar .status { flex-basis: 100%; margin-left: 0; } }
+    .tb-nav { display: flex; flex-wrap: wrap; gap: 2px 4px; align-items: center; padding: 6px 12px 8px; border-top: 1px solid rgba(144,186,210,.18); }
+    .tb-nav .nl { font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; color: rgba(184,205,216,.6); margin-right: 6px; }
+    .more { position: relative; }
+    .more-menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 60; min-width: 220px; background: #fff; border: 1px solid #C8D0DC; border-radius: 6px; box-shadow: 0 12px 34px rgba(13,17,23,.2); padding: 6px; display: flex; flex-direction: column; }
+    .more-menu button, .more-menu label { display: block; width: 100%; text-align: left; background: none; border: 0; border-radius: 4px; padding: 9px 12px; font-size: .8rem; font-weight: 600; color: #1a1a2e; cursor: pointer; margin: 0; }
+    .more-menu button:hover, .more-menu label:hover { background: #F0F4F7; }
+    .more-menu small { display: block; font-weight: 400; color: #7b8aa3; font-size: .7rem; }
+    .more-menu hr { border: 0; height: 1px; background: #E5EAF1; margin: 4px 0; }
+    .tb-nav button { background: none; border: 1px solid transparent; color: rgba(255,255,255,.8); font-size: .72rem; font-weight: 600; padding: 4px 9px; border-radius: 3px; cursor: pointer; }
+    .tb-nav button:hover { background: rgba(144,186,210,.14); color: #fff; }
+    .tb-nav button.on { background: rgba(144,186,210,.22); color: #fff; border-color: rgba(184,205,216,.3); }
+    .tb-nav button b { color: #B8CDD8; margin-right: 4px; }
+    @media (max-width: 640px) { .toolbar { position: static; } .toolbar .status { flex-basis: 100%; margin-left: 0; } .tb-sep { display: none; } .tb-nav { display: none; } }
     .file { display: none; }
+    .jump { scroll-margin-top: 118px; }
+    @media (max-width: 640px) { .jump { scroll-margin-top: 10px; } }
+
+    /* ── Share-link modal ────────────────────────────────────────────── */
+    .modal { position: fixed; inset: 0; z-index: 600; background: rgba(13,17,23,.55); display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .modal-box { background: #fff; border-radius: 8px; width: 100%; max-width: 560px; padding: 22px 24px; box-shadow: 0 20px 60px rgba(13,17,23,.35); border-top: 3px solid #7A8FA0; }
+    .modal-box h3 { font-size: 1.05rem; font-weight: 800; color: #0D1117; margin-bottom: 6px; }
+    .modal-box p { font-size: .82rem; color: #5a6378; margin-bottom: 12px; line-height: 1.55; }
+    .modal-box input { width: 100%; border: 1px solid #C8D0DC; border-radius: 4px; padding: 9px 11px; font-size: .78rem; color: #1a1a2e; background: #F7F9FB; font-family: ui-monospace, Consolas, monospace; }
+    .modal-box .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .modal-box .ok { color: #0c7a56; font-weight: 700; font-size: .78rem; }
+    .modal-box .warn { color: #b7791f; }
 
     /* ── Module card (Sales & Compliant Finance) ─────────────────────── */
     .module-card { position: relative; overflow: hidden; margin: 0 0 22px; border-radius: 6px; border: 1px solid rgba(144,186,210,.22); border-left: 3px solid #8FAEC0;
@@ -137,6 +163,7 @@
     .tblscroll { overflow-x: auto; margin: 6px 0 4px; }
     table.doct { width: 100%; min-width: 720px; border-collapse: collapse; font-size: .8rem; }
     table.doct th { background: #0D1117; color: #fff; text-align: left; padding: 8px 8px; font-size: .64rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; white-space: nowrap; }
+    table.doct th.x, table.ms th.x { background: transparent; }
     table.doct td { padding: 5px 6px; border-bottom: 1px solid #E5EAF1; vertical-align: top; color: #33415a; }
     table.doct tbody tr:nth-child(even) td { background: #F9FAFC; }
     table.doct td.id { color: #7A8FA0; font-weight: 700; white-space: nowrap; width: 52px; padding-top: 9px; font-size: .76rem; }
@@ -184,8 +211,9 @@
     table.tot tr.sub td { background: #EEF2F5; font-weight: 700; color: #0D1117; }
     table.tot tr.grand td { background: #0D1117; color: #fff; font-weight: 800; font-size: .95rem; padding: 11px 10px; border: 0; }
     table.tot tr.grand td.r { color: #fff; }
-    table.tot .ctl { display: inline-flex; align-items: center; gap: 4px; }
+    table.tot .ctl { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
     table.tot .ctl .fld { width: 64px; } table.tot .ctl select.scr { width: auto; }
+    table.tot .subnote { display: block; font-size: .7rem; color: #7b8aa3; margin-top: 2px; }
     table.tot .neg { color: #0c7a56; }
     .notebox { background: #F0F4F7; border-left: 4px solid #7A8FA0; border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: .82rem; color: #33415a; margin: 12px 0; }
     .notebox.warn { background: #fdf6ec; border-left-color: #d9a13b; }
@@ -271,13 +299,35 @@
 <main class="wrap">
 
   <div class="toolbar">
-    <button type="button" class="btn btn-primary" id="act-print">Print / Save PDF</button>
-    <button type="button" class="btn btn-outline" id="act-new" title="Start a blank quotation with the next number">New</button>
-    <button type="button" class="btn btn-outline" id="act-revise" title="Bump the revision (R+1) and re-date">New Revision</button>
-    <button type="button" class="btn btn-outline" id="act-sample" title="Load a complete worked example (AGL kitchen fit-out)">Load Sample</button>
-    <button type="button" class="btn btn-outline" id="act-export" title="Download this quotation as a JSON file">Export JSON</button>
-    <label class="btn btn-outline" for="act-import" title="Load a previously exported JSON file">Import JSON<input type="file" id="act-import" class="file" accept="application/json,.json"/></label>
-    <span class="status" id="save-status">Autosaves in this browser</span>
+    <div class="tb-row">
+      <button type="button" class="btn btn-primary" id="act-share" title="Create a separate, read-only link to this quotation">Get quotation link</button>
+      <button type="button" class="btn btn-outline" id="act-print">Print / Save PDF</button>
+      <span class="tb-sep"></span>
+      <div class="more">
+        <button type="button" class="btn btn-outline" id="more-btn" aria-haspopup="true" aria-expanded="false">More &#9662;</button>
+        <div class="more-menu" id="more-menu" hidden>
+          <button type="button" id="act-new">New quotation<small>Blank sheet with the next number</small></button>
+          <button type="button" id="act-revise">New revision<small>Bump to R+1 and re-date this quotation</small></button>
+          <button type="button" id="act-sample">Load sample<small>Complete worked example (AGL kitchen fit-out)</small></button>
+          <hr/>
+          <button type="button" id="act-export">Export JSON<small>Download a file you can re-import later</small></button>
+          <label for="act-import">Import JSON<small>Load a previously exported file</small><input type="file" id="act-import" class="file" accept="application/json,.json"/></label>
+        </div>
+      </div>
+      <span class="status" id="save-status">Autosaves in this browser</span>
+    </div>
+    <nav class="tb-nav" aria-label="Jump to a part of the quotation">
+      <span class="nl">Jump to</span>
+      <button type="button" data-jump="s-details">Details</button>
+      <button type="button" data-jump="s-client">Client &amp; scope</button>
+      <button type="button" data-jump="s-A"><b>A</b>Equipment</button>
+      <button type="button" data-jump="s-B"><b>B</b>Fabrication</button>
+      <button type="button" data-jump="s-C"><b>C</b>Services</button>
+      <button type="button" data-jump="s-totals">Totals</button>
+      <button type="button" data-jump="s-pay">Payment</button>
+      <button type="button" data-jump="s-terms">Terms</button>
+      <button type="button" data-jump="s-accept">Acceptance</button>
+    </nav>
   </div>
 
   <!-- Module card -->
@@ -337,6 +387,22 @@
     <label class="btn btn-ghost btn-sm" for="pop-file">Upload<input type="file" id="pop-file" class="file" accept="image/*"/></label>
     <button type="button" class="btn btn-ghost btn-sm" id="pop-remove">Remove</button>
     <button type="button" class="btn btn-primary btn-sm" id="pop-apply">Apply</button>
+  </div>
+</div>
+
+<!-- Share-link modal -->
+<div class="modal" id="share" hidden role="dialog" aria-label="Quotation link">
+  <div class="modal-box">
+    <h3>Quotation link</h3>
+    <p>This is a separate, read-only page for this quotation. Anyone with the link can view and print it. The quotation data travels inside the link, so no account or upload is needed.</p>
+    <input id="share-url" readonly aria-label="Quotation link"/>
+    <div class="acts">
+      <button type="button" class="btn btn-primary btn-sm" id="share-copy">Copy link</button>
+      <a class="btn btn-outline btn-sm" id="share-open" href="#" target="_blank" rel="noopener">Open in new tab</a>
+      <button type="button" class="btn btn-ghost btn-sm" id="share-close">Close</button>
+      <span class="ok" id="share-msg" style="align-self:center"></span>
+    </div>
+    <p class="hint" id="share-note" style="margin:10px 0 0"></p>
   </div>
 </div>
 
@@ -524,7 +590,7 @@
     h += '<div class="docsub opt">'+inp('project.title', S.project.title, {ph:'Project title - e.g. Central kitchen fit-out, Bayan Lepas', aria:'Project title'})+'</div>';
 
     /* meta */
-    h += '<div class="meta">'
+    h += '<div class="meta jump" id="s-details">'
       + '<div><span class="lbl">Quotation No.</span>'+inp('meta.no', S.meta.no, {ph:'QTN-JRT-2026-001', aria:'Quotation number'})+'</div>'
       + '<div><span class="lbl">Prepared for</span><span id="prep-for" style="display:block;padding:3px 6px;"></span></div>'
       + '<div><span class="lbl">Prepared by</span><div style="padding:3px 6px 0;">'+esc(CO.name)+'</div>'+inp('meta.preparedBy', S.meta.preparedBy, {ph:'Sales consultant / department', aria:'Prepared by'})+'</div>'
@@ -535,7 +601,7 @@
       + '</div>';
 
     /* parties */
-    h += '<div class="party">'
+    h += '<div class="party jump" id="s-client">'
       + '<div><span class="lbl">From</span><span class="nm">'+esc(CO.name)+'</span> ('+esc(CO.reg)+')<br>'+esc(CO.address)+'<br>'+esc(CO.phone)+'<br>'+esc(CO.email)+'</div>'
       + '<div><span class="lbl">To</span>'
       +   inp('client.company', S.client.company, {ph:'Company / client name', aria:'Client company', cls:'nmf'})
@@ -554,7 +620,7 @@
     var n = 2;
     S.sections.forEach(function(sec, si){
       var def = SECS[si], thumbs = !!S.opts.thumbs;
-      h += '<h2 class="docsec" data-si="'+si+'"><small>'+n+'.0</small><span class="key">'+sec.key+'</span>'+inp('sections.'+si+'.title', sec.title, {ph:'Section title', aria:'Section '+sec.key+' title'})
+      h += '<h2 class="docsec jump" id="s-'+sec.key+'" data-si="'+si+'"><small>'+n+'.0</small><span class="key">'+sec.key+'</span>'+inp('sections.'+si+'.title', sec.title, {ph:'Section title', aria:'Section '+sec.key+' title'})
         + '<span class="taxtag" data-taxtag="'+si+'"></span>'
         + '<label class="taxctl"><input type="checkbox" data-tax="'+si+'"'+(sec.taxable?' checked':'')+'/> SST taxable</label></h2><hr class="docrule">';
       h += '<div class="tblscroll"><table class="doct" data-si="'+si+'"><colgroup>'+(thumbs?'<col style="width:50px">':'')+'<col style="width:52px"><col class="c-desc"><col class="c-sup"><col class="c-qty"><col class="c-unit"><col style="width:112px"><col style="width:30px"></colgroup>'
@@ -591,21 +657,21 @@
     });
 
     /* totals */
-    h += '<h2 class="docsec"><small>'+n+'.0</small>Summary &amp; totals</h2><hr class="docrule">';
+    h += '<h2 class="docsec jump" id="s-totals"><small>'+n+'.0</small>Summary &amp; totals</h2><hr class="docrule">';
     h += '<div class="totals"><div>'+(S.opts.kpis ? '<div class="kpis"><div class="kpi"><div class="v" id="kpi-net"></div><div class="l">before SST</div></div><div class="kpi"><div class="v" id="kpi-total"></div><div class="l">total incl. SST</div></div><div class="kpi"><div class="v" id="kpi-count"></div><div class="l">line items</div></div><div class="kpi"><div class="v" id="kpi-tax"></div><div class="l">SST amount</div></div></div>' : '')
       + '<div id="tbc-note"></div></div>';
     h += '<table class="tot"><tbody>';
     S.sections.forEach(function(sec, si){ h += '<tr data-totrow="'+si+'"><td>Subtotal '+sec.key+' &mdash; <span data-subtitle="'+si+'">'+esc(sec.title)+'</span></td><td class="r" data-totsub="'+si+'"></td></tr>'; });
     h += '<tr><td><span class="ctl">Discount '+inp('pricing.discountPct', S.pricing.discountPct, {kind:'num', inl:true, aria:'Discount percent'})+' %</span></td><td class="r neg" id="t-disc"></td></tr>';
     h += '<tr class="sub"><td>Subtotal (before SST)</td><td class="r" id="t-net"></td></tr>';
-    h += '<tr><td><span class="ctl">SST '+inp('pricing.sstRate', S.pricing.sstRate, {kind:'num', inl:true, aria:'SST rate percent'})+' %</span> <span id="t-base" style="font-size:.72rem;color:#7b8aa3"></span></td><td class="r" id="t-sst"></td></tr>';
+    h += '<tr><td><span class="ctl">SST '+inp('pricing.sstRate', S.pricing.sstRate, {kind:'num', inl:true, aria:'SST rate percent'})+' %</span><span class="subnote" id="t-base"></span></td><td class="r" id="t-sst"></td></tr>';
     h += '<tr id="t-round-row"><td><span class="ctl">Rounding '+sel('pricing.rounding', S.pricing.rounding, [['0','none'],['1','to RM 1'],['10','to RM 10'],['100','to RM 100']], {inl:true, aria:'Rounding'})+'</span></td><td class="r" id="t-adj"></td></tr>';
     h += '<tr class="grand"><td>Total payable (incl. SST)</td><td class="r" id="t-total"></td></tr>';
     h += '</tbody></table></div>';
     n++;
 
     /* milestones */
-    h += '<h2 class="docsec"><small>'+n+'.0</small>Payment milestones</h2><hr class="docrule">';
+    h += '<h2 class="docsec jump" id="s-pay"><small>'+n+'.0</small>Payment milestones</h2><hr class="docrule">';
     h += '<div class="tblscroll"><table class="ms"><colgroup><col style="width:32%"><col><col class="c-pct"><col class="c-amt"><col class="c-x"></colgroup><thead><tr><th>Milestone</th><th>Trigger</th><th class="r">%</th><th class="r">Amount incl. SST (RM)</th><th class="x"></th></tr></thead><tbody>';
     S.milestones.forEach(function(m, mi){
       var p = 'milestones.'+mi+'.';
@@ -617,13 +683,13 @@
 
     /* notes + terms */
     h += '<div class="opt notebox" id="notes-box">'+ta('notes', S.notes, {ph:'Note to client (optional) - shown in this highlighted box', aria:'Note to client'})+'</div>';
-    h += '<h2 class="docsec"><small>'+n+'.0</small>Terms &amp; conditions</h2><hr class="docrule">';
+    h += '<h2 class="docsec jump" id="s-terms"><small>'+n+'.0</small>Terms &amp; conditions</h2><hr class="docrule">';
     h += '<div class="opt">'+ta('terms', S.terms, {kind:'terms', ph:'One term per line. A leading word plus full stop becomes the bold heading (e.g. "Validity. ...").', aria:'Terms and conditions'})+'</div>';
     n++;
 
     /* acceptance */
     if(S.opts.sig){
-      h += '<h2 class="docsec"><small>'+n+'.0</small>Acceptance</h2><hr class="docrule">';
+      h += '<h2 class="docsec jump" id="s-accept"><small>'+n+'.0</small>Acceptance</h2><hr class="docrule">';
       h += '<p>Signature below confirms acceptance of the schedules, the total of <b id="acc-total"></b> (incl. SST) and the terms above, and authorises '+esc(CO.name)+' to proceed against the payment milestones.</p>';
       h += '<div class="sigrow"><div class="sig"><b>For the Client</b><span id="sig-client-co"></span>'+inp('sig.client', S.sig.client, {ph:'Name, position', aria:'Client signatory'})+'<div class="line"></div><div class="sl">Name, signature &amp; company stamp</div><div class="line"></div><div class="sl">Date</div></div>'
         + '<div class="sig"><b>For '+esc(CO.name)+'</b>'+inp('sig.jrtech', S.sig.jrtech, {ph:'Name, position', aria:'JR-Tech signatory'})+'<div class="line"></div><div class="sl">Name &amp; signature</div><div class="line"></div><div class="sl">Date</div></div></div>';
@@ -656,7 +722,7 @@
     var q = function(id){ return document.getElementById(id); };
     q('t-disc').textContent = T.disc > 0 ? '- ' + fmt(T.disc) : fmt(0);
     q('t-net').textContent = fmt(T.net);
-    q('t-base').textContent = T.base > 0 ? 'on RM ' + fmt(T.base) + ' taxable' : 'no taxable sections';
+    q('t-base').textContent = T.base > 0 ? 'on taxable sections: RM ' + fmt(T.base) : 'no taxable sections ticked';
     q('t-sst').textContent = fmt(T.sst);
     q('t-adj').textContent = (T.adj < 0 ? '- ' : '') + fmt(Math.abs(T.adj));
     q('t-round-row').classList.toggle('opt', true); q('t-round-row').classList.toggle('empty', Math.abs(T.adj) < 0.005);
@@ -858,7 +924,88 @@
   });
   window.addEventListener('resize', function(){ doc.querySelectorAll('textarea.scr').forEach(grow); });
 
+  /* ═══════════════════════════════════════════════════════════════════
+     JUMP NAV (sticky toolbar) — scrolls without touching the URL hash
+     ═══════════════════════════════════════════════════════════════════ */
+  var jumpBtns = document.querySelectorAll('[data-jump]');
+  jumpBtns.forEach(function(b){ b.addEventListener('click', function(){
+    var t = document.getElementById(b.getAttribute('data-jump')); if(!t) return;
+    var y = t.getBoundingClientRect().top + window.pageYOffset - (document.querySelector('.toolbar').offsetHeight + 12);
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  }); });
+  /* "More" menu */
+  var moreBtn = document.getElementById('more-btn'), moreMenu = document.getElementById('more-menu');
+  moreBtn.addEventListener('click', function(e){ e.stopPropagation(); moreMenu.hidden = !moreMenu.hidden; moreBtn.setAttribute('aria-expanded', moreMenu.hidden ? 'false' : 'true'); });
+  moreMenu.addEventListener('click', function(e){ if(e.target.closest('button')) { moreMenu.hidden = true; moreBtn.setAttribute('aria-expanded','false'); } });
+  document.addEventListener('click', function(e){ if(!moreMenu.hidden && !e.target.closest('.more')){ moreMenu.hidden = true; moreBtn.setAttribute('aria-expanded','false'); } });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !moreMenu.hidden){ moreMenu.hidden = true; moreBtn.setAttribute('aria-expanded','false'); } });
+  function markJump(){
+    var ids = Array.prototype.map.call(jumpBtns, function(b){ return b.getAttribute('data-jump'); }), cur = ids[0], line = 140;
+    ids.forEach(function(id){ var el = document.getElementById(id); if(el && el.getBoundingClientRect().top <= line) cur = id; });
+    jumpBtns.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-jump') === cur); });
+  }
+  window.addEventListener('scroll', markJump, {passive:true});
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SHARE LINK — the quotation data is packed (deflate + base64url) into
+     the hash of quotation.html, a separate read-only page.
+     ═══════════════════════════════════════════════════════════════════ */
+  function b64url(u8){ var s = ''; for(var i=0;i<u8.length;i+=0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i+0x8000)); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+  function unb64url(str){ str = str.replace(/-/g,'+').replace(/_/g,'/'); while(str.length % 4) str += '='; var bin = atob(str), u8 = new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) u8[i] = bin.charCodeAt(i); return u8; }
+  function encodeState(s){
+    var bytes = new TextEncoder().encode(JSON.stringify(s));
+    if(typeof CompressionStream !== 'function') return Promise.resolve('j.' + b64url(bytes));
+    var cs = new CompressionStream('deflate-raw'), w = cs.writable.getWriter(); w.write(bytes); w.close();
+    return new Response(cs.readable).arrayBuffer().then(function(buf){ return 'd.' + b64url(new Uint8Array(buf)); });
+  }
+  function decodeState(str){
+    var kind = str.slice(0,2), u8 = unb64url(str.slice(2));
+    if(kind === 'j.') return Promise.resolve(JSON.parse(new TextDecoder().decode(u8)));
+    if(kind !== 'd.' || typeof DecompressionStream !== 'function') return Promise.reject(new Error('unsupported'));
+    var ds = new DecompressionStream('deflate-raw'), w = ds.writable.getWriter(); w.write(u8); w.close();
+    return new Response(ds.readable).arrayBuffer().then(function(buf){ return JSON.parse(new TextDecoder().decode(new Uint8Array(buf))); });
+  }
+  function viewerBase(){
+    var here = location.href.split('#')[0].split('?')[0];
+    return /quotation-builder\.html$/i.test(here) && /^https?:/i.test(here) ? here.replace(/quotation-builder\.html$/i, 'quotation.html') : 'https://technextsg.github.io/jrtech-website/quotation.html';
+  }
+  var share = document.getElementById('share'), shareUrl = document.getElementById('share-url'), shareMsg = document.getElementById('share-msg'), shareNote = document.getElementById('share-note');
+  document.getElementById('act-share').addEventListener('click', function(){
+    var btn = this; btn.disabled = true;
+    encodeState(S).then(function(enc){
+      var url = viewerBase() + '#q=' + enc, uploads = 0;
+      S.sections.forEach(function(s){ s.items.forEach(function(it){ if(/^data:/i.test(it.img||'')) uploads++; }); });
+      shareUrl.value = url; document.getElementById('share-open').href = url; shareMsg.textContent = '';
+      shareNote.innerHTML = 'Link length: ' + url.length.toLocaleString() + ' characters.'
+        + (uploads ? ' <span class="warn">It includes ' + uploads + ' uploaded photo' + (uploads>1?'s':'') + ', which makes it long &mdash; some chat apps truncate very long links. Prefer image URLs or send the PDF if that happens.</span>' : '')
+        + ' To edit this quotation again later, keep working here (it autosaves) or Export JSON.';
+      share.hidden = false; shareUrl.focus(); shareUrl.select();
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(function(){ shareMsg.textContent = 'Copied to clipboard'; }, function(){}); }
+    }).catch(function(){ alert('Could not build the link in this browser.'); }).then(function(){ btn.disabled = false; });
+  });
+  document.getElementById('share-copy').addEventListener('click', function(){
+    shareUrl.focus(); shareUrl.select();
+    var done = function(){ shareMsg.textContent = 'Copied to clipboard'; };
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(shareUrl.value).then(done, function(){ try { document.execCommand('copy'); done(); } catch(e){} });
+    else { try { document.execCommand('copy'); done(); } catch(e){} }
+  });
+  document.getElementById('share-close').addEventListener('click', function(){ share.hidden = true; });
+  share.addEventListener('click', function(e){ if(e.target === share) share.hidden = true; });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !share.hidden) share.hidden = true; });
+
+  /* opened with #q=… (a quotation link pasted onto the builder): offer to load it */
+  function importFromHash(){
+    var m = location.hash.match(/^#q=([A-Za-z0-9._-]+)/); if(!m) return;
+    decodeState(m[1]).then(function(o){
+      if(!o || !o.meta || !Array.isArray(o.sections)) throw 0;
+      if(!totals().count || confirm('This link carries a quotation ('+(o.meta.no||'untitled')+'). Load it into the builder, replacing the current one?')){ S = normalise(o); render(); save(); }
+      history.replaceState(null, '', location.pathname + location.search);
+    }).catch(function(){ alert('The link did not contain a readable quotation.'); history.replaceState(null, '', location.pathname + location.search); });
+  }
+
   render();
+  markJump();
+  importFromHash();
 })();
 </script>
 </body>
