@@ -1007,10 +1007,12 @@
   }); });
   /* own easing: some browsers ignore scrollTo({behavior:'smooth'}) */
   function smoothTo(y){
-    var y0 = window.pageYOffset, dy = y - y0, t0 = null, dur = Math.min(650, 250 + Math.abs(dy) / 6);
+    var y0 = window.pageYOffset, dy = y - y0, t0 = null, dur = Math.min(650, 250 + Math.abs(dy) / 6), started = false;
     if(!dy) return;
-    function step(ts){ if(t0 === null) t0 = ts; var p = Math.min(1, (ts - t0) / dur), e = p < .5 ? 2*p*p : -1 + (4 - 2*p)*p; window.scrollTo(0, y0 + dy*e); if(p < 1) requestAnimationFrame(step); }
+    if(document.hidden || !window.requestAnimationFrame){ window.scrollTo(0, y); return; }
+    function step(ts){ started = true; if(t0 === null) t0 = ts; var p = Math.min(1, (ts - t0) / dur), e = p < .5 ? 2*p*p : -1 + (4 - 2*p)*p; window.scrollTo(0, y0 + dy*e); if(p < 1) requestAnimationFrame(step); }
     requestAnimationFrame(step);
+    setTimeout(function(){ if(!started) window.scrollTo(0, y); }, 150); /* frames paused (background tab): jump instead */
   }
   /* "More" menu */
   var moreBtn = document.getElementById('more-btn'), moreMenu = document.getElementById('more-menu');
