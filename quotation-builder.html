@@ -656,7 +656,7 @@
     var q = function(id){ return document.getElementById(id); };
     q('t-disc').textContent = T.disc > 0 ? '- ' + fmt(T.disc) : fmt(0);
     q('t-net').textContent = fmt(T.net);
-    q('t-base').textContent = T.base > 0 ? 'on taxable sections RM ' + fmt(T.base) : 'no taxable sections';
+    q('t-base').textContent = T.base > 0 ? 'on RM ' + fmt(T.base) + ' taxable' : 'no taxable sections';
     q('t-sst').textContent = fmt(T.sst);
     q('t-adj').textContent = (T.adj < 0 ? '- ' : '') + fmt(Math.abs(T.adj));
     q('t-round-row').classList.toggle('opt', true); q('t-round-row').classList.toggle('empty', Math.abs(T.adj) < 0.005);
