@@ -130,6 +130,17 @@
     select.scr { appearance: auto; cursor: pointer; padding: 2px 4px; }
     input.scr[type="date"] { padding: 2px 6px; }
     .scr.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .scr.tbc-in { background: #fdf6ec; border-bottom: 1px solid #d9a13b; }
+    .scr.tbc-in::placeholder { color: #b7791f; font-weight: 700; }
+
+    /* toast (bottom centre) */
+    .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 700; display: flex; align-items: center; gap: 14px; background: #0D1117; color: #fff; font-size: .8rem; padding: 11px 16px; border-radius: 6px; box-shadow: 0 10px 30px rgba(13,17,23,.35); border: 1px solid rgba(144,186,210,.3); max-width: calc(100vw - 32px); }
+    .toast button { background: linear-gradient(180deg,#8FAEC0,#5A7A90); color: #fff; border: 0; border-radius: 4px; padding: 6px 12px; font-size: .76rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .hist { list-style: none; max-height: 320px; overflow: auto; border: 1px solid #E5EAF1; border-radius: 6px; }
+    .hist li { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-bottom: 1px solid #E5EAF1; font-size: .8rem; color: #33415a; }
+    .hist li:last-child { border-bottom: 0; }
+    .hist li b { color: #0D1117; } .hist li small { color: #7b8aa3; display: block; font-size: .7rem; }
+    .hist li .btn { margin-left: auto; }
     .prt { display: none; }
     .ph { color: #9aa5b8; }
 
@@ -312,6 +323,8 @@
           <hr/>
           <button type="button" id="act-export">Export JSON<small>Download a file you can re-import later</small></button>
           <label for="act-import">Import JSON<small>Load a previously exported file</small><input type="file" id="act-import" class="file" accept="application/json,.json"/></label>
+          <hr/>
+          <button type="button" id="act-hist">Restore an earlier version<small>Snapshots taken before each clear, delete, new or import</small></button>
         </div>
       </div>
       <span class="status" id="save-status">Autosaves in this browser</span>
@@ -387,6 +400,18 @@
     <label class="btn btn-ghost btn-sm" for="pop-file">Upload<input type="file" id="pop-file" class="file" accept="image/*"/></label>
     <button type="button" class="btn btn-ghost btn-sm" id="pop-remove">Remove</button>
     <button type="button" class="btn btn-primary btn-sm" id="pop-apply">Apply</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+
+<!-- Restore modal -->
+<div class="modal" id="histm" hidden role="dialog" aria-label="Restore an earlier version">
+  <div class="modal-box">
+    <h3>Restore an earlier version</h3>
+    <p>A snapshot is kept in this browser before every clear, delete, new quotation, sample load or import. Restoring replaces what is on the sheet now (a snapshot of that is kept too).</p>
+    <ul class="hist" id="hist-list"></ul>
+    <div class="acts"><button type="button" class="btn btn-ghost btn-sm" id="hist-close">Close</button></div>
   </div>
 </div>
 
@@ -711,6 +736,7 @@
     S.sections.forEach(function(sec, si){
       sec.items.forEach(function(it, ii){
         var el = doc.querySelector('[data-amt="'+si+'.'+ii+'"]'); if(el) el.innerHTML = it.price == null ? '<span class="tbc">TBC</span>' : fmt(lineAmt(it));
+        var pin = doc.querySelector('[data-b="sections.'+si+'.items.'+ii+'.price"]'); if(pin) pin.classList.toggle('tbc-in', it.price == null);
       });
       var sub = doc.querySelector('[data-sub="'+si+'"]'); if(sub) sub.textContent = fmt(T.subs[si]);
       var ts = doc.querySelector('[data-totsub="'+si+'"]'); if(ts) ts.textContent = fmt(T.subs[si]);
@@ -798,7 +824,12 @@
   });
   /* money fields: raw number while editing, formatted when you leave */
   doc.addEventListener('focusin', function(e){ var el = e.target; if(el.getAttribute && el.getAttribute('data-kind') === 'money'){ var m = money(el.value); el.value = m == null ? '' : String(m); el.select(); } });
-  doc.addEventListener('focusout', function(e){ var el = e.target; if(el.getAttribute && el.getAttribute('data-kind') === 'money'){ var m = money(el.value); el.value = m == null ? '' : fmt(m); set(S, el.getAttribute('data-b'), m); recalc(); save(); } });
+  doc.addEventListener('focusout', function(e){
+    var el = e.target; if(!el.getAttribute || el.getAttribute('data-kind') !== 'money') return;
+    var m = money(el.value); el.value = m == null ? '' : fmt(m); set(S, el.getAttribute('data-b'), m);
+    var tr = el.closest('tr[data-si]'); if(tr){ var it = S.sections[+tr.getAttribute('data-si')].items[+tr.getAttribute('data-ii')]; if(it && it.sku) rememberPrice(it.sku, m); }
+    recalc(); save();
+  });
   doc.addEventListener('keydown', function(e){
     /* Enter in a single-line table field moves down to the same field on the next row; Enter in description adds a new line only with Shift */
     var el = e.target; if(e.key !== 'Enter' || !el.hasAttribute('data-b')) return;
@@ -817,15 +848,56 @@
     if(act === 'add'){ addLine(si, 'desc'); }
     else if(act === 'addcat'){
       var p = catById(tools.querySelector('[data-act="prod"]').value); if(!p) return;
-      S.sections[si].items.push(item({ desc: p.brand+' '+p.name+' - '+p.cat, supplier: p.brand, qty:1, price:null, img: p.img, sku: p.id }));
+      var known = priceBook()[p.id], sec = S.sections[si];
+      sec.items.push(item({ desc: p.brand+' '+p.name+' - '+p.cat, supplier: p.brand, qty:1, price: known != null ? known : null, img: p.img, sku: p.id }));
       render(); save(); focusLast(si, 'price');
+      var id = itemId(sec, sec.items.length-1);
+      toast(known != null ? 'Added ' + id + ' at RM ' + fmt(known) + ' (your last price for this product).' : 'Added ' + id + '. Type its unit price now - the catalogue carries no prices; blank shows as TBC.');
     }
-    else if(act === 'clear'){ if(!confirm('Clear all lines in section '+S.sections[si].key+'?')) return; S.sections[si].items = []; render(); save(); }
-    else if(act === 'del'){ S.sections[si].items.splice(+tr.getAttribute('data-ii'), 1); render(); save(); }
+    else if(act === 'clear'){ var k = S.sections[si].key, cnt = S.sections[si].items.length; if(!cnt || !confirm('Clear all '+cnt+' line'+(cnt>1?'s':'')+' in section '+k+'?')) return; snap('Before clearing section '+k); S.sections[si].items = []; render(); save(); toast('Section '+k+' cleared ('+cnt+' line'+(cnt>1?'s':'')+').', 'Undo'); }
+    else if(act === 'del'){ var ii = +tr.getAttribute('data-ii'), rid = itemId(S.sections[si], ii); snap('Before removing '+rid); S.sections[si].items.splice(ii, 1); render(); save(); toast(rid+' removed.', 'Undo'); }
     else if(act === 'img'){ openPop(si, +tr.getAttribute('data-ii'), btn); }
     else if(act === 'msadd'){ S.milestones.push({ name:'M'+(S.milestones.length+1), trigger:'', pct:0 }); render(); save(); var f = doc.querySelectorAll('tr[data-mi]'); if(f.length) f[f.length-1].querySelector('input').focus(); }
-    else if(act === 'msdel'){ S.milestones.splice(+tr.getAttribute('data-mi'), 1); render(); save(); }
+    else if(act === 'msdel'){ snap('Before removing a milestone'); S.milestones.splice(+tr.getAttribute('data-mi'), 1); render(); save(); toast('Milestone removed.', 'Undo'); }
   });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SAFETY NET: snapshots (undo / restore), price book, toast
+     ═══════════════════════════════════════════════════════════════════ */
+  var HKEY = KEY + ':hist', PKEY = KEY + ':prices';
+  function hist(){ try { return JSON.parse(localStorage.getItem(HKEY) || '[]'); } catch(e){ return []; } }
+  function snap(label){
+    var T = totals(); if(!T.count && !String(S.client.company).trim()) return;
+    var h = hist(); h.unshift({ t: Date.now(), label: label, no: S.meta.no, count: T.count, total: T.total, state: S });
+    while(h.length > 8) h.pop();
+    try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch(e){ h.splice(3); try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch(e2){} }
+  }
+  function fmtTime(t){ var d = new Date(t); return d.toLocaleDateString('en-GB', {day:'numeric', month:'short'}) + ', ' + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); }
+  function restore(i){
+    var h = hist(); if(!h[i]) return;
+    var cur = S; S = normalise(h[i].state);
+    /* keep what was on the sheet as a snapshot too, so restoring is itself reversible */
+    var T = totals(); var keep = { t: Date.now(), label: 'Before restoring '+fmtTime(h[i].t), no: cur.meta.no, count: cur.sections.reduce(function(a,s){ return a+s.items.length; },0), total: 0, state: cur };
+    h.splice(i, 1); h.unshift(keep); while(h.length > 8) h.pop(); try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch(e){}
+    render(); save(); toast('Restored ' + (S.meta.no || 'quotation') + ' (' + T.count + ' line' + (T.count===1?'':'s') + ').');
+  }
+  function priceBook(){ try { return JSON.parse(localStorage.getItem(PKEY) || '{}'); } catch(e){ return {}; } }
+  function rememberPrice(sku, price){ var pb = priceBook(); if(price == null) delete pb[sku]; else pb[sku] = price; try { localStorage.setItem(PKEY, JSON.stringify(pb)); } catch(e){} }
+  var toastEl = document.getElementById('toast'), toastT;
+  function toast(msg, undoLabel){
+    toastEl.innerHTML = '<span>'+esc(msg)+'</span>' + (undoLabel ? '<button type="button" id="toast-undo">'+esc(undoLabel)+'</button>' : '');
+    toastEl.hidden = false; clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, undoLabel ? 12000 : 4500);
+    var u = document.getElementById('toast-undo'); if(u) u.addEventListener('click', function(){ toastEl.hidden = true; restore(0); });
+  }
+  var histm = document.getElementById('histm');
+  document.getElementById('act-hist').addEventListener('click', function(){
+    var h = hist(), ul = document.getElementById('hist-list');
+    ul.innerHTML = h.length ? h.map(function(x, i){ return '<li><div><b>'+esc(x.no || 'Quotation')+'</b> &middot; '+x.count+' line'+(x.count===1?'':'s')+(x.total ? ' &middot; RM '+fmt(x.total) : '')+'<small>'+esc(x.label)+' &middot; '+fmtTime(x.t)+'</small></div><button type="button" class="btn btn-outline btn-sm" data-restore="'+i+'">Restore</button></li>'; }).join('')
+      : '<li><span style="color:#7b8aa3">No earlier versions yet. Snapshots appear here after you clear, delete, start a new quotation, load the sample or import.</span></li>';
+    histm.hidden = false;
+  });
+  histm.addEventListener('click', function(e){ var b = e.target.closest('[data-restore]'); if(b){ histm.hidden = true; restore(+b.getAttribute('data-restore')); } else if(e.target === histm || e.target.id === 'hist-close') histm.hidden = true; });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !histm.hidden) histm.hidden = true; });
   function addLine(si, focusField){
     S.sections[si].items.push(item({ supplier: SECS[si].supplier, qty:1, price:null })); render(); save(); focusLast(si, focusField || 'desc');
   }
@@ -895,12 +967,12 @@
      ═══════════════════════════════════════════════════════════════════ */
   document.getElementById('act-print').addEventListener('click', function(){ closePop(); syncPrint(); window.print(); });
   document.getElementById('act-new').addEventListener('click', function(){
-    if(totals().count && !confirm('Start a new blank quotation? The current one is cleared from this browser (export it first if you need it).')) return;
-    bumpSeq(); S = blank(); render(); save();
+    if(totals().count && !confirm('Start a new blank quotation? The current one is kept as a snapshot under More > Restore an earlier version.')) return;
+    snap('Before starting a new quotation'); bumpSeq(); S = blank(); render(); save(); window.scrollTo(0, 0); toast('New quotation ' + S.meta.no + ' started.', 'Undo');
   });
   document.getElementById('act-sample').addEventListener('click', function(){
-    if(totals().count && !confirm('Replace the current quotation with the worked sample?')) return;
-    S = sample(); render(); save();
+    if(totals().count && !confirm('Replace the current quotation with the worked sample? The current one is kept as a snapshot.')) return;
+    snap('Before loading the sample'); S = sample(); render(); save(); toast('Sample quotation loaded (19 lines, RM 223,620.80).', 'Undo');
   });
   document.getElementById('act-revise').addEventListener('click', function(){
     var m = String(S.meta.rev||'R1').match(/^R?(\d+)$/i); S.meta.rev = 'R' + ((m ? parseInt(m[1],10) : 1) + 1); S.meta.date = today();
@@ -915,7 +987,7 @@
   document.getElementById('act-import').addEventListener('change', function(e){
     var f = e.target.files && e.target.files[0]; if(!f) return;
     var rd = new FileReader();
-    rd.onload = function(){ try { var o = JSON.parse(rd.result); if(!o || typeof o !== 'object' || !o.meta || !Array.isArray(o.sections)) throw 0; S = normalise(o); render(); save(); } catch(err){ alert('That file is not a quotation export from this builder.'); } e.target.value = ''; };
+    rd.onload = function(){ try { var o = JSON.parse(rd.result); if(!o || typeof o !== 'object' || !o.meta || !Array.isArray(o.sections)) throw 0; snap('Before importing a file'); S = normalise(o); render(); save(); toast('Imported ' + (S.meta.no || 'quotation') + '.', 'Undo'); } catch(err){ alert('That file is not a quotation export from this builder.'); } e.target.value = ''; };
     rd.readAsText(f);
   });
   document.getElementById('module-toggle').addEventListener('click', function(){
@@ -931,8 +1003,15 @@
   jumpBtns.forEach(function(b){ b.addEventListener('click', function(){
     var t = document.getElementById(b.getAttribute('data-jump')); if(!t) return;
     var y = t.getBoundingClientRect().top + window.pageYOffset - (document.querySelector('.toolbar').offsetHeight + 12);
-    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    smoothTo(Math.max(0, y));
   }); });
+  /* own easing: some browsers ignore scrollTo({behavior:'smooth'}) */
+  function smoothTo(y){
+    var y0 = window.pageYOffset, dy = y - y0, t0 = null, dur = Math.min(650, 250 + Math.abs(dy) / 6);
+    if(!dy) return;
+    function step(ts){ if(t0 === null) t0 = ts; var p = Math.min(1, (ts - t0) / dur), e = p < .5 ? 2*p*p : -1 + (4 - 2*p)*p; window.scrollTo(0, y0 + dy*e); if(p < 1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
   /* "More" menu */
   var moreBtn = document.getElementById('more-btn'), moreMenu = document.getElementById('more-menu');
   moreBtn.addEventListener('click', function(e){ e.stopPropagation(); moreMenu.hidden = !moreMenu.hidden; moreBtn.setAttribute('aria-expanded', moreMenu.hidden ? 'false' : 'true'); });
@@ -998,7 +1077,7 @@
     var m = location.hash.match(/^#q=([A-Za-z0-9._-]+)/); if(!m) return;
     decodeState(m[1]).then(function(o){
       if(!o || !o.meta || !Array.isArray(o.sections)) throw 0;
-      if(!totals().count || confirm('This link carries a quotation ('+(o.meta.no||'untitled')+'). Load it into the builder, replacing the current one?')){ S = normalise(o); render(); save(); }
+      if(!totals().count || confirm('This link carries a quotation ('+(o.meta.no||'untitled')+'). Load it into the builder, replacing the current one?')){ snap('Before loading a quotation link'); S = normalise(o); render(); save(); toast('Loaded ' + (S.meta.no || 'quotation') + ' from the link.', 'Undo'); }
       history.replaceState(null, '', location.pathname + location.search);
     }).catch(function(){ alert('The link did not contain a readable quotation.'); history.replaceState(null, '', location.pathname + location.search); });
   }
