@@ -188,9 +188,9 @@
       project: Object.assign({ title:'', site:'', scope:'' }, o.project||{}),
       pricing: Object.assign({ discountPct:0, sstRate:8, rounding:'0' }, o.pricing||{}),
       sig: Object.assign({ jrtech:'', client:'' }, o.sig||{}),
-      opts: Object.assign({ thumbs:true, gallery:true, kpis:true, sig: o.showSig !== false }, o.opts||{}),
+      opts: { thumbs: true, sig: !(o.opts && o.opts.sig === false) && o.showSig !== false },
       milestones: Array.isArray(o.milestones) ? o.milestones.map(function(m){ return { name:String(m.name||''), trigger:String(m.trigger||''), pct:num(m.pct) }; }) : [],
-      terms: typeof o.terms === 'string' ? o.terms : '', notes: String(o.notes||'') };
+      terms: Array.isArray(o.terms) ? o.terms.map(String) : (typeof o.terms === 'string' ? o.terms.split('\n') : []), notes: String(o.notes||'') };
     s.sections = keys.map(function(k, i){ var os = (Array.isArray(o.sections) && o.sections[i]) || {}; return { key:k, title:String(os.title||titles[i]), taxable: typeof os.taxable === 'boolean' ? os.taxable : (i === 2),
       items: (Array.isArray(os.items) ? os.items : []).map(function(it){ var p = money(it.price); if(p === 0) p = null; return { desc:String(it.desc||''), supplier:String(it.supplier||''), qty: it.qty == null ? 1 : num(it.qty), price:p, img:safeUrl(it.img), sku:String(it.sku||'') }; }) }; });
     if(!STATUS[s.meta.status]) s.meta.status = 'draft';
@@ -241,7 +241,6 @@
     });
     if(!T.count) h += '<div class="notebox warn">This quotation has no line items.</div>';
     h += '<h2 class="docsec"><small>'+n+'.0</small>Summary &amp; totals</h2><hr class="docrule"><div class="totals"><div>';
-    if(S.opts.kpis) h += '<div class="kpis"><div class="kpi"><div class="v">RM '+fmt0(T.net)+'</div><div class="l">before SST</div></div><div class="kpi"><div class="v">RM '+fmt0(T.total)+'</div><div class="l">total incl. SST</div></div><div class="kpi"><div class="v">'+T.count+'</div><div class="l">line items</div></div><div class="kpi"><div class="v">RM '+fmt0(T.sst)+'</div><div class="l">SST amount</div></div></div>';
     if(T.tbc) h += '<div class="notebox warn"><b>'+T.tbc+' line'+(T.tbc>1?'s':'')+' marked TBC</b> &mdash; unit price to be confirmed; totals exclude '+(T.tbc>1?'these items':'this item')+'.</div>';
     h += '</div><table class="tot"><tbody>';
     S.sections.forEach(function(sec, si){ if(sec.items.length) h += '<tr><td>Subtotal '+sec.key+' &mdash; '+escOr(sec.title,'Section')+'</td><td class="r">'+fmt(T.subs[si])+'</td></tr>'; });
@@ -257,7 +256,7 @@
       h += '</tbody></table></div>'; n++;
     }
     if(String(S.notes).trim()) h += '<div class="notebox">'+esc(S.notes)+'</div>';
-    var terms = String(S.terms).split('\n').map(function(t){ return t.trim(); }).filter(Boolean);
+    var terms = S.terms.map(function(t){ return String(t).trim(); }).filter(Boolean);
     if(terms.length){ h += '<h2 class="docsec"><small>'+n+'.0</small>Terms &amp; conditions</h2><hr class="docrule"><ol class="terms">'+terms.map(function(t){ var mm = t.match(/^([A-Za-z][A-Za-z &\/-]{1,28})\.\s+(.*)$/); return '<li>'+(mm ? '<b>'+esc(mm[1])+'.</b> '+esc(mm[2]) : esc(t))+'</li>'; }).join('')+'</ol>'; n++; }
     if(S.opts.sig){
       h += '<h2 class="docsec"><small>'+n+'.0</small>Acceptance</h2><hr class="docrule"><p>Signature below confirms acceptance of the schedules, the total of <b>RM '+fmt(T.total)+'</b> (incl. SST) and the terms above, and authorises '+esc(CO.name)+' to proceed against the payment milestones.</p>';
